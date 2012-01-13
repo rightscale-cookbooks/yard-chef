@@ -23,5 +23,8 @@ EOS
   gem.homepage = 'https://github.com/rightscale/yard-chef'
   gem.authors = ['Douglas Thrift', 'Nick Stakanov']
 end
+Jeweler::RubygemsDotOrgTasks.new
 
 YARD::Rake::YardocTask.new
+
+task :default
