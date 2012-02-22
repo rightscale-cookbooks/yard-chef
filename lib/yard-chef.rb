@@ -93,15 +93,15 @@ YARD::Parser::SourceParser.before_parse_file do |parser|
 
 end
 
-YARD.parse(paths)
+#YARD.parse(paths)
 
 #Remove duplicates in Top Level Namespace
-a = YARD::Registry.paths
-a.each do |e|
-  #puts e
-  if e[0].chr == '#'
-    duplicate = YARD::Registry.resolve(:root, e, true)
-    YARD::Registry.delete(duplicate)
-    YARD::Registry.save
-  end
-end
+#a = YARD::Registry.paths
+#a.each do |e|
+#  #puts e
+#  if e[0].chr == '#'
+#    duplicate = YARD::Registry.resolve(:root, e, true)
+#    YARD::Registry.delete(duplicate)
+#    YARD::Registry.save
+#  end
+#end
