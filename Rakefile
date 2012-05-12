@@ -21,7 +21,7 @@ yard-chef is a YARD plugin for Chef that adds support for documenting Chef resou
 EOS
   gem.email = 'douglas@rightscale.com'
   gem.homepage = 'https://github.com/rightscale/yard-chef'
-  gem.authors = ['Douglas Thrift', 'Nick Stakanov']
+  gem.authors = ['Douglas Thrift', 'Nick Stakanov', 'Nitin Mohan']
 end
 Jeweler::RubygemsDotOrgTasks.new
 
