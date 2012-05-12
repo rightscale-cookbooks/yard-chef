@@ -19,40 +19,27 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require 'yard'
+class ChefDefineHandler < YARD::Handlers::Ruby::Base
+  handles method_call(:define)
+  namespace_only
 
-module YARD::Handlers::Chef
-  module AbstractDefineHandler
-    def process
-      path_arr = @@parsed_file.to_s.split('/')
-      ext_obj = YARD::Registry.resolve(:root, "#{path_arr[0].to_s}::#{path_arr[1].to_s}::#{path_arr[2].to_s}::#{path_arr[3].to_s}", true)
-
-      name = statement.parameters.first.jump(:tstring_content, :ident).source
-      object = YARD::CodeObjects::MethodObject.new(ext_obj, name)
-      register(object)
-      object.object_id
-      parse_block(statement.last.last)
-      object.dynamic = true
-    end
-
-    YARD::Parser::SourceParser.before_parse_file do |p|
-      @@parsed_file =  p.file.to_s
-    end
+  YARD::Parser::SourceParser.before_parse_file do |p|
+    @@parsed_file =  p.file.to_s
   end
 
-  class DefineHandler < YARD::Handlers::Ruby::Base
-    include AbstractDefineHandler
-
-    handles method_call(:define)
-    namespace_only
-  end
-
-  module Legacy
-    class DefineHandler < YARD::Handlers::Ruby::Legacy::Base
-      include AbstractDefineHandler
-
-      handles /\Adefine[\s\(].*/m
-      namespace_only
-    end
+  def process
+    path_arr = @@parsed_file.to_s.split('/')
+    #puts("#{path_arr[0].to_s}::#{path_arr[1].to_s}::#{path_arr[2].to_s}::#{path_arr[3].to_s}")
+    ext_obj = YARD::Registry.resolve(:root, "#{path_arr[0].to_s}::#{path_arr[1].to_s}::#{path_arr[2].to_s}::#{path_arr[3].to_s}")
+    #puts("Null Object") if ext_obj.nil?
+    define_stmt = statement[1].source.to_s.split(",")
+    #puts "#{define_stmt.to_s}"
+    define_name = define_stmt[0].slice(1..-1)
+    #puts "Define Handler is working: #{define_name}"
+    define_obj = YARD::CodeObjects::MethodObject.new(ext_obj, define_name)
+    #puts("#{define_obj.object_id}: #{define_obj.path}")
+    register(define_obj)
+    parse_block(statement.last.last)
+    #define_obj.dynamic = false
   end
 end

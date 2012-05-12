@@ -19,40 +19,27 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require 'yard'
+class ChefActionHandler < YARD::Handlers::Ruby::Base
+  handles method_call(:action)
+  namespace_only
 
-module YARD::Handlers::Chef
-  module AbstractActionHandler
-    def process
-      path_arr = @@parsed_file.to_s.split('/')
-      ext_obj = YARD::Registry.resolve(:root, "#{path_arr[0].to_s}::#{path_arr[1].to_s}::#{path_arr[2].to_s}::#{path_arr[3].to_s}", true)
-
-      name = statement.parameters.first.jump(:tstring_content, :ident).source
-      object = YARD::CodeObjects::MethodObject.new(ext_obj, name)
-      register(object)
-      object.object_id
-      parse_block(statement.last.last)
-      object.dynamic = false
-    end
-
-    YARD::Parser::SourceParser.before_parse_file do |p|
-      @@parsed_file =  p.file.to_s
-    end
+  YARD::Parser::SourceParser.before_parse_file do |p|
+    @@parsed_file =  p.file.to_s
   end
 
-  class ActionHandler < YARD::Handlers::Ruby::Base
-    include AbstractActionHandler
-
-    handles method_call(:action)
-    namespace_only
-  end
-
-  module Legacy
-    class ActionHandler < YARD::Handlers::Ruby::Legacy::Base
-      include AbstractActionHandler
-
-      handles /\Aaction[\s\(].*/m
-      namespace_only
-    end
+  def process
+    path_arr = @@parsed_file.to_s.split('/')
+    puts("File: #{@@parsed_file.to_s}")
+    #puts "#{path_arr.to_s}"
+    ext_obj = YARD::Registry.resolve(:root, "#{path_arr[0].to_s}::#{path_arr[1].to_s}::#{path_arr[2].to_s}::#{path_arr[3].to_s}")
+    #puts "#{DocString.docstring.to_s}" if !namespace.nil?
+    #action_name = statement.parameters.first.jump(:tstring_content, :ident).source
+    action_name = statement[1].source.slice(1..-1)
+    #puts "Action Handler is working: #{action_name}"
+    action_obj = YARD::CodeObjects::MethodObject.new(ext_obj, action_name)
+    puts("#{action_obj.object_id}: #{action_obj.path}")
+    register(action_obj)
+    parse_block(statement.last.last)
+    #action_obj.dynamic = false
   end
 end
