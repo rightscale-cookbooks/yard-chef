@@ -27,4 +27,6 @@ Jeweler::RubygemsDotOrgTasks.new
 
 YARD::Rake::YardocTask.new
 
+CLOBBER.include('*.gemspec')
+
 task :default

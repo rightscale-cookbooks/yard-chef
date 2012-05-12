@@ -1,3 +1,4 @@
+*.gemspec
 .yardoc
 Gemfile.lock
 doc
