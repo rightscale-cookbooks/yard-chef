@@ -17,11 +17,13 @@ Jeweler::Tasks.new do |gem|
   gem.name = 'yard-chef'
   gem.summary = %Q{YARD plugin for Chef}
   gem.description = <<EOS
-yard-chef is a YARD plugin for Chef that adds support for documenting Chef resources, providers, and definitions.}
+yard-chef is a YARD plugin for Chef that adds support for documenting Chef
+resources, providers, and definitions.
 EOS
   gem.email = 'douglas@rightscale.com'
   gem.homepage = 'https://github.com/rightscale/yard-chef'
   gem.authors = ['Douglas Thrift', 'Nick Stakanov', 'Nitin Mohan']
+  gem.license = 'MIT'
 end
 Jeweler::RubygemsDotOrgTasks.new
 
