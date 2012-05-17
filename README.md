@@ -10,7 +10,7 @@ resources, providers, and definitions.
 
 It is available from RubyGems:
 
-```bash
+```
 gem install yard-chef
 ```
 
@@ -18,7 +18,7 @@ gem install yard-chef
 
 It can be used with yard as a plugin:
 
-```bash
+```
 yardoc --plugin chef
 ```
 
