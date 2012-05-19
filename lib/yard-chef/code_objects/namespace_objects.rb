@@ -19,25 +19,24 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-class ChefAttributeHandler < YARD::Handlers::Ruby::Base
-  handles method_call(:attribute)
-  namespace_only
+require "yard"
 
-  #YARD::Parser::SourceParser.before_parse_file do |p|
-    #@@parsed_file =  p.file.to_s
-  #end
+module YARD::CodeObjects
+  module Chef
+    class NamespaceObject < YARD::CodeObjects::NamespaceObject
+      def initialize(namespace, name)
+        super(namespace, name)
+      end
+    end
 
-  def process
-    #path_arr = @@parsed_file.to_s.split('/')
-    #ext_obj = YARD::Registry.resolve(namespace, "#{path_arr[0].to_s}::#{path_arr[1].to_s}::#{path_arr[2].to_s}::#{path_arr[3].to_s}")
-    #puts "#{path_arr.to_s}"
-    attrib_stmt = statement[1].source.to_s.split(",")
-    attrib_name = attrib_stmt[0]
-    #puts "Attribute Handler is working: #{attrib_name}"
-    #puts "#{ext_obj}"
-    attrib_obj = YARD::CodeObjects::MethodObject.new(namespace, attrib_name)
-    register(attrib_obj)
-    #parse_block(statement.last.last, :owner => attrib_obj)  #getting some errors
-    attrib_obj.dynamic = false
+    class CookbookObject < NamespaceObject ; end
+    class CookbookElementObject < NamespaceObject ; end
+
+    CHEF_NAMESPACE = CookbookObject.new(:root, "Chef")
+
+    # TODO: Try to create cookbook elements from the path and not hard-coding them
+    PROVIDER_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Provider")
+    RESOURCE_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Resource")
+    DEFINITION_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Definition")
   end
 end

@@ -19,77 +19,22 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-YARD::Parser::SourceParser.before_parse_file do |parser|
-  path_var = parser.file.to_s.split('/')
-  #puts("#{path_var}\n0=#{path_var[0]}::1=#{path_var[1]}::2=#{path_var[2]}::3=#{path_var[3]}")
-  #Root cookbook object
-  id0 = YARD::CodeObjects::ClassObject.new(:root, path_var[0].to_s) do |o|
-    #Description for coobooks
-    if (File.exists?(File.join(File.dirname(__FILE__)+'/', 'LICENSE.rdoc')))
-      o.docstring = IO.read(File.join(File.dirname(__FILE__)+'/', 'LICENSE.rdoc'))
-    else
-      o.docstring = "#{path_var[0]} folder"
-    end
-  end
-  id0.add_file('/'+path_var[0].to_s, nil, false)
-  YARD::Registry.register(id0)
+require 'yard-chef/code_objects/namespace_objects'
+require 'yard-chef/code_objects/cookbook_name'
+require 'yard-chef/code_objects/method_objects'
 
-  #Cookooks registration
-  id1 = YARD::CodeObjects::ClassObject.new(id0, path_var[1].to_s) do |o|
-    if (File.exists?(File.dirname(__FILE__)+'/'+path_var[0].to_s+'/'+path_var[1].to_s+'/'+'README.rdoc'))
-      o.docstring = IO.read(File.join(File.dirname(__FILE__)+'/'+path_var[0].to_s+'/'+path_var[1].to_s+'/', 'README.rdoc'))
-    else
-      o.docstring = "#{path_var[1]} folder"
-    end
-  end
-  id1.add_file('/'+path_var[0].to_s+'/'+path_var[1].to_s, nil, false)
-  id1.superclass = id0
-  YARD::Registry.register(id1)
+require 'yard-chef/handlers/action'
+require 'yard-chef/handlers/attribute'
+require 'yard-chef/handlers/define'
 
-  #Cookbooks elements registration
-  id2 = YARD::CodeObjects::ClassObject.new(id1, path_var[2].to_s) do |o|
-    o.docstring = "#{path_var[2]} folder"
+YARD::Parser::SourceParser.after_parse_list do |parser|
+  a = YARD::Registry.paths
+  a.each do |e|
+    puts e
   end
-  id2.add_file('/'+path_var[0].to_s+'/'+path_var[1].to_s+'/'+path_var[2].to_s, nil, false)
-  id2.superclass = id1
-  YARD::Registry.register(id2)
-  #puts("File: #{parser.file.to_s}")
-
-
-  #This block was written by Nick
-  #===============================
-  desc =  IO.readlines(parser.file)
-  str=""
-  for i in 0..6
-    str_t = desc[i].delete  '#'
-    if i == 1
-      str_t.insert(0, ' =')
-    end
-    str << str_t
-  end
-  id3 = YARD::CodeObjects::ClassObject.new(id2, path_var[3].to_s) do |o|
-    o.docstring = str
-  end
-  id3.add_file("#{parser.file.to_s}", nil, false)
-   #=======================================
-
-  #This written by me
-  #====================
-  #id3 = YARD::CodeObjects::ClassObject.new(id2, path_var[3].to_s) do |o|
-   # o.docstring = "#{path_var[3]} folder"
+  #YARD::Registry.each do |o|
+    #puts o.type
   #end
-  #id3.add_file('/'+path_var[0].to_s+'/'+path_var[1].to_s+'/'+path_var[2].to_s+'/'+path_var[3].to_s, nil, false)
-  #=======================
-
-  id3.superclass = id2
-  YARD::Registry.register(id3)
 end
-puts ("hi")
-#if RUBY19
-#require 'yard-chef/class'
-  require 'yard-chef/action'
-  #require '~/yard-chef/lib/yard-chef/class'
-  #require 'yard-chef/attribute'
-  require 'yard-chef/define'
-#end
-#end
+
+YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
