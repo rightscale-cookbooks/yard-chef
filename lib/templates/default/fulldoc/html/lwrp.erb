@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=<%= charset %>" />
+    <title>Lightweight Resources and Providers</title>
+  </head>
+  <body>
+    <h3>RightScale</h3>
+    <hr>
+    <ul>
+      <% @cookbooks.each do |cookbook| %>
+        <% @cookbook = cookbook %>
+      <li>
+        <%= cookbook.name.to_s %>
+        <%= erb(:action_table) %>
+        <%= erb(:attribute_table) %>
+      </li>  
+      <% end %>
+    </ul>
+  </body>
+</html>

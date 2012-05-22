@@ -1,0 +1,22 @@
+ <% actions = items_of_type(@cookbook, :action) %>
+ <% if !actions.empty? %>
+  <div>
+    <h4>Actions</h4>
+    <table style="width:580px;">
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% actions.each do |action| %>
+        <tr>
+          <td><%= action.name.to_s %></td>
+          <td><%= action.docstring.to_s %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

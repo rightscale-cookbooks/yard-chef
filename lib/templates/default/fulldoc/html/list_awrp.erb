@@ -1,0 +1,10 @@
+<% @items.each do |item| %>
+  <li class="r<%= n %>">
+    <%= linkify item, h(item.name(true)) %>
+    <% if item.namespace && !item.namespace.root? %>
+      <small><%= item.namespace %></small>
+    <% else %>
+      <small>Top Level Namespace</small>
+    <% end %>
+  </li>
+<% end %>

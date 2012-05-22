@@ -1,0 +1,24 @@
+<% attribs = items_of_type(@cookbook, :attribute) %>
+<% if !attribs.empty? %>
+  <div>      
+    <h4>Attributes</h4>
+    <table style="width:580px">
+      <thead>
+        <tr>
+          <th>Attribute</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% attribs.each do |attrib| %>
+        <tr>
+          <td><%= attrib.name.to_s %></td>
+          <td><%= attrib.docstring.to_s %></td>
+          <td><%= attrib.default %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

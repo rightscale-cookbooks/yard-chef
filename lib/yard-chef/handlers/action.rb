@@ -29,11 +29,14 @@ module YARD::Handlers
       def process
         path_arr = parser.file.to_s.split("/")
       
-        name = statement.parameters.first.jump(:string_content, :ident).source
-        namespace = CookbookNameObject.findNamespace(path_arr[3].to_s)
-        cookbook_name = CookbookNameObject.fixName(path_arr[2].to_s)
+        # Find cookbook name from the file path
+        ns_obj = YARD::Registry.resolve(:root, "#{CHEF_NAMESPACE}::#{path_arr[2].to_s}")
 
-        ns_obj = YARD::Registry.resolve(:root, "#{namespace}::#{cookbook_name}")
+        name = statement.parameters.first.jump(:string_content, :ident).source
+        #namespace = CookbookNameObject.findNamespace(path_arr[3].to_s)
+        #cookbook_name = CookbookNameObject.fixName(path_arr[2].to_s)
+
+        #ns_obj = YARD::Registry.resolve(:root, "#{namespace}::#{cookbook_name}")
 
         action_obj = ActionObject.new(ns_obj, name) do |action|
           action.source    = statement.source
@@ -42,6 +45,7 @@ module YARD::Handlers
           action.add_file(statement.file, statement.line)
         end
         register(action_obj)
+        ns_obj.action.push(action_obj)
         log.info "Creating [Action] #{name} (#{action_obj.object_id}) => #{action_obj.path}"
         #puts("#{action_obj.docstring}")
         #puts("#{action_obj.source}")

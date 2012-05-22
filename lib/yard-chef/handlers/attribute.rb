@@ -29,12 +29,13 @@ module YARD::Handlers
       
       def process
         path_arr = parser.file.to_s.split("/")
+        ns_obj = YARD::Registry.resolve(:root, "#{CHEF_NAMESPACE}::#{path_arr[2].to_s}")
 
         name = statement.parameters.first.jump(:string_content, :ident).source
-        namespace = CookbookNameObject.findNamespace(path_arr[3].to_s)
-        cookbook_name = CookbookNameObject.fixName(path_arr[2].to_s)
+        #namespace = CookbookNameObject.findNamespace(path_arr[3].to_s)
+        #cookbook_name = CookbookNameObject.fixName(path_arr[2].to_s)
 
-        ns_obj = YARD::Registry.resolve(:root, "#{namespace}::#{cookbook_name}")
+        #ns_obj = YARD::Registry.resolve(:root, "#{namespace}::#{cookbook_name}")
         attrib_obj = AttributeObject.new(ns_obj, name) do |attrib|
           attrib.source     = statement.source
           attrib.scope      = :instance
@@ -45,6 +46,7 @@ module YARD::Handlers
           insert_params(attrib_obj, param)
         end
         register(attrib_obj)
+        ns_obj.attributes.push(attrib_obj)
         log.info "Creating [Attribute] #{name} (#{attrib_obj.object_id}) => #{attrib_obj.path}"
         #puts("#{attrib_obj.source}")
         #puts("#{attrib_obj.files}")

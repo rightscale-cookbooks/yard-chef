@@ -24,10 +24,13 @@ require "yard"
 module YARD::CodeObjects
   module Chef
     class CookbookNameObject < YARD::CodeObjects::ClassObject
+      attr_accessor :actions, :attributes, :definitions
       def initialize(namespace, name)
-        @name = CookbookNameObject.fixName(name)
-        @namespace = CookbookNameObject.findNamespace(namespace)
-        super(@namespace, @name)
+        #@name = CookbookNameObject.fixName(name)
+        #@namespace = CookbookNameObject.findNamespace(namespace)
+        #super(@namespace, @name)
+        super(namespace, name)
+        @actions = @attributes = @definitions = []
       end
 
       def self.findNamespace(name)
@@ -73,12 +76,25 @@ module YARD::CodeObjects
         end
         return name
       end
-      
-      YARD::Parser::SourceParser.before_parse_file do |parser|
-        path_arr = parser.file.to_s.split("/")
-        name = CookbookNameObject.new(path_arr[3].to_s, path_arr[2].to_s)
-        log.info "Creating [Cookbook Name] #{name.name} (#{name.object_id}) => #{name.namespace}"
+    end
+
+    def read_comments(file)
+      desc =  IO.readlines(file)
+      str = ""
+      for i in 0..6
+        str_t = desc[i].delete '#'
+        if i == 1
+          str_t.insert(0, ' =')
+        end
+        str << str_t
       end
+    end
+
+    YARD::Parser::SourceParser.before_parse_file do |parser|
+      path_arr = parser.file.to_s.split("/")
+      #name = CookbookNameObject.new(path_arr[3].to_s, path_arr[2].to_s)
+      name = CookbookNameObject.new(CHEF_NAMESPACE, path_arr[2].to_s)
+      log.info "Creating [Cookbook Name] #{name.name} (#{name.object_id}) => #{name.namespace}"
     end
   end
 end
