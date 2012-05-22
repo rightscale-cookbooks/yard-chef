@@ -13,7 +13,7 @@
       <% n = 1 %>
       <% actions.each do |action| %>
         <tr class="r<%= n %>">
-          <td class=""><%= action.name.to_s %></td>
+          <td><a href="<%= @cookbook.name.to_s %>.html#<%= action.name.to_s %>-instance_<%= action.type %>"><%= action.name.to_s %></a></td>
           <td><%= action.docstring.to_s %></td>
         </tr>
         <% n = n == 2 ? 1 : 2 %>

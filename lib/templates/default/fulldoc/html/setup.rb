@@ -1,5 +1,3 @@
-include YARD::Templates::Helpers::HtmlHelper
-
 def init
   super
   @cookbooks = Registry.all(:cookbookname).sort_by{|cookbook| cookbook.name.to_s}
@@ -10,7 +8,6 @@ def init
   @cookbooks.each do |cookbook|
     serialize(cookbook)
   end
-  
 end
 
 # Called by menu_lists in layout/html/setup.rb by default

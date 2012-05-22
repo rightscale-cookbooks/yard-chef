@@ -5,7 +5,7 @@
     <% @cookbooks.each do |cookbook| %>
       <% @cookbook = cookbook %>
       <li>
-        <h4><%= cookbook.name.to_s %></h4>
+        <h4><a href="<%= cookbook.name.to_s %>.html"><%= cookbook.name.to_s %></a></h4>
         <p><%= cookbook.docstring %></p>
         <%= erb(:action_table) %>
         <%= erb(:attribute_table) %>

@@ -20,7 +20,7 @@
       <tbody>
       <% attribs.each do |attrib| %>
         <tr>
-          <td><%= attrib.name.to_s %></td>
+          <td><a href="<%= @cookbook.name.to_s %>.html#<%= attrib.name.to_s %>-instance_<%= attrib.type %>"><%= attrib.name.to_s %></a></td>
           <td><%= attrib.docstring.to_s %></td>
           <td><%= attrib.default %></td>
           <td><%= attrib.kind_of %></td>
