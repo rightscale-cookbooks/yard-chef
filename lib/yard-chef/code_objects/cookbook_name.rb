@@ -24,13 +24,13 @@ require "yard"
 module YARD::CodeObjects
   module Chef
     class CookbookNameObject < YARD::CodeObjects::ClassObject
-      attr_accessor :actions, :attributes, :definitions
+      #attr_accessor :actions, :attributes, :definitions
       def initialize(namespace, name)
         #@name = CookbookNameObject.fixName(name)
         #@namespace = CookbookNameObject.findNamespace(namespace)
         #super(@namespace, @name)
         super(namespace, name)
-        @actions = @attributes = @definitions = []
+       # @actions = @attributes = @definitions = []
       end
 
       def self.findNamespace(name)

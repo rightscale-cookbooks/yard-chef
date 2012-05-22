@@ -45,7 +45,7 @@ module YARD::Handlers
           action.add_file(statement.file, statement.line)
         end
         register(action_obj)
-        ns_obj.action.push(action_obj)
+        #ns_obj.actions.push(action_obj)
         log.info "Creating [Action] #{name} (#{action_obj.object_id}) => #{action_obj.path}"
         #puts("#{action_obj.docstring}")
         #puts("#{action_obj.source}")

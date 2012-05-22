@@ -43,7 +43,7 @@ module YARD::Handlers
         end
         
         register(define_obj)
-        ns_obj.definitions.push(define_obj)
+        #ns_obj.definitions.push(define_obj)
         log.info "Creating [Definition] #{name} (#{define_obj.object_id}) => #{define_obj.path}"
      end
     end

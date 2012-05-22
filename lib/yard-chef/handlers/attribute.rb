@@ -46,7 +46,7 @@ module YARD::Handlers
           insert_params(attrib_obj, param)
         end
         register(attrib_obj)
-        ns_obj.attributes.push(attrib_obj)
+        #ns_obj.attributes.push(attrib_obj)
         log.info "Creating [Attribute] #{name} (#{attrib_obj.object_id}) => #{attrib_obj.path}"
         #puts("#{attrib_obj.source}")
         #puts("#{attrib_obj.files}")

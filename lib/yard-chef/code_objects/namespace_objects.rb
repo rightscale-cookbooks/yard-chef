@@ -35,8 +35,8 @@ module YARD::CodeObjects
     CHEF_NAMESPACE = CookbookObject.new(:root, "Chef")
 
     # TODO: Try to create cookbook elements from the path and not hard-coding them
-    PROVIDER_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Provider")
-    RESOURCE_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Resource")
-    DEFINITION_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Definition")
+    #PROVIDER_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Provider")
+    #RESOURCE_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Resource")
+    #DEFINITION_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Definition")
   end
 end

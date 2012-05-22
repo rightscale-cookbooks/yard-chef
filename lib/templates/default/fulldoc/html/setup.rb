@@ -12,10 +12,6 @@ def init
   
   #TODO: need to generate lwrp.html
   @cookbooks = Registry.all(:cookbookname).sort_by{|cookbook| cookbook.name.to_s}
-  @cookbooks.each do |cookbook|
-    puts cookbook.class
-  end
-  #@cookbooks = @cookbooks.sort_by{|cookbook| cookbook.name.to_s}
   #generate_full_list(@cookbooks, "Cookbook", "cookbooks")
   
   #TODO: Don't understand why Registry.all() prints the same item thrice. Look into that
