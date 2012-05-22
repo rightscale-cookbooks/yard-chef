@@ -6,12 +6,24 @@ yard-chef is a [YARD](http://yardoc.org/) plugin for
 [Chef](http://www.opscode.com/chef/) that adds support for documenting Chef
 resources, providers, and definitions.
 
+## Requirements
+
+* Ruby 1.8.7 or higher
+* [YARD](http://yardoc.org/)
+* [Ripper](https://github.com/lsegal/ripper18) if you are using Ruby 1.8.x
+
 ## Installation
 
 It is available from RubyGems:
 
 ```
 gem install yard-chef
+```
+
+If you are using Ruby 1.8.x, you need to install Ripper as well:
+
+```
+gem install ripper
 ```
 
 ## Usage
