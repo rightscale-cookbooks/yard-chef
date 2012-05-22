@@ -1,12 +1,12 @@
  <% actions = items_of_type(@cookbook, :action) %>
  <% if !actions.empty? %>
-  <div>
+  <div class = "multiline">
     <h4>Actions</h4>
-    <table style="width:580px;">
+    <table style="width:580px;" border="1">
       <thead>
         <tr>
-          <th>Action</th>
-          <th>Description</th>
+          <th class="even">Action</th>
+          <th class="odd">Description</th>
         </tr>
       </thead>
       <tbody>

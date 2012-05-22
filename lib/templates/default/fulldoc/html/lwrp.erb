@@ -3,6 +3,8 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=<%= charset %>" />
     <title>Lightweight Resources and Providers</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="css/common.css" type="text/css" media="screen" charset="utf-8" />
   </head>
   <body>
     <h3>RightScale</h3>
@@ -11,7 +13,8 @@
       <% @cookbooks.each do |cookbook| %>
         <% @cookbook = cookbook %>
       <li>
-        <%= cookbook.name.to_s %>
+        <h4><%= cookbook.name.to_s %></h4>
+        <p><%= cookbook.docstring %></p>
         <%= erb(:action_table) %>
         <%= erb(:attribute_table) %>
       </li>  
