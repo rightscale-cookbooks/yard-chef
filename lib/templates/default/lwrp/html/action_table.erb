@@ -1,0 +1,24 @@
+<% actions = items_of_type(@cookbook, :action) %>
+<% if !actions.empty? %>
+  <div class = "multiline">
+    <h4>Actions</h4>
+    <table style="width:580px;" border="1">
+      <thead>
+        <tr>
+          <th class="even">Action</th>
+          <th class="odd">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% n = 1 %>
+      <% actions.each do |action| %>
+        <tr class="r<%= n %>">
+          <td class=""><%= action.name.to_s %></td>
+          <td><%= action.docstring.to_s %></td>
+        </tr>
+        <% n = n == 2 ? 1 : 2 %>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
