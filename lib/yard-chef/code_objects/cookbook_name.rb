@@ -78,22 +78,24 @@ module YARD::CodeObjects
       end
     end
 
-    def read_comments(file)
+    def self.read_cookbook_desc(file)
       desc =  IO.readlines(file)
       str = ""
       for i in 0..6
-        str_t = desc[i].delete '#'
+        str_t = desc[i].delete('#')
         if i == 1
           str_t.insert(0, ' =')
         end
         str << str_t
       end
+      return str
     end
 
     YARD::Parser::SourceParser.before_parse_file do |parser|
       path_arr = parser.file.to_s.split("/")
-      #name = CookbookNameObject.new(path_arr[3].to_s, path_arr[2].to_s)
       name = CookbookNameObject.new(CHEF_NAMESPACE, path_arr[2].to_s)
+      name.docstring = YARD::CodeObjects::Chef.read_cookbook_desc(parser.file)
+      #puts name.docstring
       log.info "Creating [Cookbook Name] #{name.name} (#{name.object_id}) => #{name.namespace}"
     end
   end

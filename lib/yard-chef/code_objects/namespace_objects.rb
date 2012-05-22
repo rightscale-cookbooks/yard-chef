@@ -23,7 +23,7 @@ require "yard"
 
 module YARD::CodeObjects
   module Chef
-    class NamespaceObject < YARD::CodeObjects::NamespaceObject
+    class NamespaceObject < YARD::CodeObjects::ClassObject
       def initialize(namespace, name)
         super(namespace, name)
       end
@@ -31,8 +31,10 @@ module YARD::CodeObjects
 
     class CookbookObject < NamespaceObject ; end
     class CookbookElementObject < NamespaceObject ; end
+    class LWRPObject < NamespaceObject ; end
 
     CHEF_NAMESPACE = CookbookObject.new(:root, "Chef")
+    LWRP_NAMESPACE = LWRPObject.new(CHEF_NAMESPACE, "LWRP")
 
     # TODO: Try to create cookbook elements from the path and not hard-coding them
     #PROVIDER_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Provider")
