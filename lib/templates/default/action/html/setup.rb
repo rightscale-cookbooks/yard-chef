@@ -1,4 +1,7 @@
+include T('default/method/html')
+
 def init
-  super
-  sections.push :table
+  puts object.inspect
+#def init
+ # super
 end

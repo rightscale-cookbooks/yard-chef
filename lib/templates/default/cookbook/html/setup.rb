@@ -1,6 +1,5 @@
-include T('default/namespace/html')
-
 def init
-  super 
-  sections.push :namespace
+  super
+  sections.push :lwrp
+  @namespace = object
 end

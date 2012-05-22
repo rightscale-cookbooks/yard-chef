@@ -2,57 +2,15 @@ include YARD::Templates::Helpers::HtmlHelper
 
 def init
   super
+  @cookbooks = Registry.all(:cookbookname).sort_by{|cookbook| cookbook.name.to_s}
+
   # Generate page for Chef
   serialize(YARD::CodeObjects::Chef::CHEF_NAMESPACE)
-
-  #@cookbook_elements = Registry.all(:cookbookelement)
-  #@cookbook_elements.find_all.each do |child|
-    #serialize(child)
-  #end
-  
-  #TODO: need to generate lwrp.html
-  @cookbooks = Registry.all(:cookbookname).sort_by{|cookbook| cookbook.name.to_s}
+  serialize(YARD::CodeObjects::Chef::LWRP_NAMESPACE)
   @cookbooks.each do |cookbook|
     serialize(cookbook)
   end
-  #generate_full_list(@cookbooks, "Cookbook", "cookbooks")
   
-  #TODO: Don't understand why Registry.all() prints the same item thrice. Look into that
-
-  generate_lwrp
-  
-  #erb(:action_table)  
-  #@cookbooks.each do |cookbook|
-    #puts cookbook.name
-    #meth = items_of_type(cookbook, :action)
-    #puts("Type: Actions")
-    #puts meth
-    #meth = items_of_type(cookbook, :attribute)
-    #puts("Type: Attributes")
-   # puts meth
-    #cookbook.meths.each do |method|
-     # puts method.name
-    #end
-  #end
-  #cookbook_elements.each do |elements|
-    #cookbook_names = elements.children
-    #cookbook_names.find_all.each do |child|
-      #serialize(child)
-    #end
-  #end
-end
-
-def items_of_type(cookbook, type)
-  meth_arr = Array.new
-  cookbook.meths.each do |method|
-    meth_arr.push(method) if method.type == type
-  end
-  return meth_arr
-end
-
-def generate_lwrp
-  #asset(url_for("lwrp"), erb(:lwrp))
-  asset("lwrp.html", erb(:lwrp))
 end
 
 # Called by menu_lists in layout/html/setup.rb by default
@@ -61,6 +19,9 @@ def generate_actions_list
   @actions = Registry.all(:action).uniq{|action| action.name.to_s}
   @actions = @actions.sort_by{|action| action.name.to_s}
   generate_full_list(@actions, "Action", "actions")
+  #@actions.each do |action|
+    #serialize(action)
+  #end
 end
 
 # Called by menu_lists in layout/html/setup.rb by default
