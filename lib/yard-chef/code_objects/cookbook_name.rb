@@ -95,6 +95,7 @@ module YARD::CodeObjects
       path_arr = parser.file.to_s.split("/")
       name = CookbookNameObject.new(CHEF_NAMESPACE, path_arr[2].to_s)
       name.docstring = YARD::CodeObjects::Chef.read_cookbook_desc(parser.file)
+      name.add_file(parser.file)
       #puts name.docstring
       log.info "Creating [Cookbook Name] #{name.name} (#{name.object_id}) => #{name.namespace}"
     end

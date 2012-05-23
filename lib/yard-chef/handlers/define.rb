@@ -53,10 +53,5 @@ module YARD::Handlers
       handles method_call(:define)
       handles method_call(:def)
     end
-
-    module Legacy
-      class DefinitionHandler < YARD::Handlers::Ruby::Legacy::Base
-      end
-    end
   end
 end

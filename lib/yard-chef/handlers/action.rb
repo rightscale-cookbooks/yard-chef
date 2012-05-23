@@ -58,11 +58,6 @@ module YARD::Handlers
       include AbstractActionHandler
       handles method_call(:action)
     end
-
-    module Legacy
-      class ActionHandler < YARD::Handlers::Ruby::Legacy::Base
-      end
-    end
   end
 end
 

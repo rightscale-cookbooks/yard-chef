@@ -83,10 +83,5 @@ module YARD::Handlers
       include AbstractAttributeHandler
       handles method_call(:attribute)
     end
-    
-    module Legacy
-      class AttributeHandler < YARD::Handlers::Ruby::Legacy::Base
-      end
-    end
   end
 end
