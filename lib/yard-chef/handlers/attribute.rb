@@ -67,12 +67,22 @@ module YARD::Handlers
             attrib.callbacks = args[1]
           when "respond_to"
             attrib.respond_to = args[1]
+          when "display_name"
+            attrib.display_name = args[1]
+          when "description"
+            attrib.description = args[1]
+          when "recipes"
+            attrib.recipes = args[1].remove(' ')
+          when "choice"
+            attrib.choice = args[1]
           end
         end
       end
 
       def resolve_namespace(path_arr)
-        if path_arr[4].to_s == 'default.rb'
+        if path_arr[3].to_s == 'metadata.rb'
+          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}")
+        elsif path_arr[4].to_s == 'default.rb'
           return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}")
         else
           return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}_#{path_arr[4].to_s.split('.')[0]}")

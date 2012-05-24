@@ -31,7 +31,7 @@ module YARD::CodeObjects
 
     class ActionObject < MethodObject ; end
     class AttributeObject < MethodObject
-      attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to
+      attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to, :display_name, :description, :recipes, :choice
     end
     class DefinitionObject < MethodObject ; end
   end
