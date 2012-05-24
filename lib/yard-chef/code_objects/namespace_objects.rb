@@ -35,7 +35,14 @@ module YARD::CodeObjects
 
     class ProviderObject < ClassObject ; end
 
-    class ResourceObject < ClassObject ; end
+    class ResourceObject < ClassObject
+      attr_accessor :actions
+
+      def initialize(namespace, name)
+        super(namespace, name)
+        @actions = []
+      end
+    end
 
     class CookbookObject < ClassObject
       def read_cookbook_desc(file)
