@@ -29,13 +29,12 @@ module YARD::Handlers
       
       def process
         path_arr = parser.file.to_s.split("/")
-        ns_obj = YARD::Registry.resolve(:root, "#{CHEF_NAMESPACE}::#{path_arr[2].to_s}")
+      
+        # Find namespace for attribute
+        ns_obj = resolve_namespace(path_arr)
 
         name = statement.parameters.first.jump(:string_content, :ident).source
-        #namespace = CookbookNameObject.findNamespace(path_arr[3].to_s)
-        #cookbook_name = CookbookNameObject.fixName(path_arr[2].to_s)
 
-        #ns_obj = YARD::Registry.resolve(:root, "#{namespace}::#{cookbook_name}")
         attrib_obj = AttributeObject.new(ns_obj, name) do |attrib|
           attrib.source     = statement.source
           attrib.scope      = :instance
@@ -45,13 +44,7 @@ module YARD::Handlers
         statement.first_line.split(%r{,\s*:}).each do |param|
           insert_params(attrib_obj, param)
         end
-        register(attrib_obj)
-        #ns_obj.attributes.push(attrib_obj)
-        log.info "Creating [Attribute] #{name} (#{attrib_obj.object_id}) => #{attrib_obj.path}"
-        #puts("#{attrib_obj.source}")
-        #puts("#{attrib_obj.files}")
-        #puts("#{attrib_obj.kind_of.to_s}")
-        #parse_block(statement.last.last, :owner => attrib_obj)
+        log.info "Creating [Attribute] #{attrib_obj.name} => #{attrib_obj.path}"
       end
     
       def insert_params(attrib, param)
@@ -77,6 +70,15 @@ module YARD::Handlers
           end
         end
       end
+
+      def resolve_namespace(path_arr)
+        if path_arr[4].to_s == 'default.rb'
+          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}")
+        else
+          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}_#{path_arr[4].to_s.split('.')[0]}")
+        end
+      end
+
     end
   
     class AttributeHandler < YARD::Handlers::Ruby::Base

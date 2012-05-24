@@ -23,22 +23,58 @@ require "yard"
 
 module YARD::CodeObjects
   module Chef
-    class NamespaceObject < YARD::CodeObjects::ClassObject
+    class ClassObject < YARD::CodeObjects::ClassObject
       def initialize(namespace, name)
         super(namespace, name)
       end
     end
+    
+    CHEF = ClassObject.new(:root, "Chef")
+    LWRP = ClassObject.new(CHEF, "LWRP")
+    #class CookbookElementObject < ClassObject ; end
 
-    class CookbookObject < NamespaceObject ; end
-    class CookbookElementObject < NamespaceObject ; end
-    class LWRPObject < NamespaceObject ; end
+    class ProviderObject < ClassObject ; end
 
-    CHEF_NAMESPACE = CookbookObject.new(:root, "Chef")
-    LWRP_NAMESPACE = LWRPObject.new(CHEF_NAMESPACE, "LWRP")
+    class ResourceObject < ClassObject ; end
 
-    # TODO: Try to create cookbook elements from the path and not hard-coding them
-    #PROVIDER_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Provider")
-    #RESOURCE_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Resource")
-    #DEFINITION_NAMESPACE = CookbookElementObject.new(CHEF_NAMESPACE, "Definition")
+    class CookbookObject < ClassObject
+      def read_cookbook_desc(file)
+        desc =  IO.readlines(file)
+        str = ""
+        for i in 0..6
+          str_t = desc[i].delete('#')
+          str_t.insert(0, '= ') if i == 1
+          str << str_t
+        end 
+        return str 
+      end
+
+      def get_lwrp_name(filename)
+        if filename == 'default.rb'
+          return @name
+        else
+          return "#{@name}_#{filename.split('.')[0]}"
+        end    
+      end 
+    end
+
+    # Register Providers and Resources along with Cookbooks before processing file
+    YARD::Parser::SourceParser.before_parse_file do |parser|
+      path_arr = parser.file.to_s.split("/")
+
+      cookbook = CookbookObject.new(CHEF, path_arr[2].to_s)
+      cookbook.docstring = cookbook.read_cookbook_desc(parser.file)
+      cookbook.add_file(parser.file)
+      log.info "Creating [Cookbook] #{cookbook.name} => #{cookbook.namespace}"
+
+      case path_arr[3].to_s
+      when 'providers'
+        provider = ProviderObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
+        log.info "Creating [Provider] #{provider.name} => #{provider.namespace}"
+      when 'resources'
+        resource = ResourceObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
+        log.info "Creating [Cookbook] #{resource.name} => #{resource.namespace}"
+      end
+    end
   end
 end

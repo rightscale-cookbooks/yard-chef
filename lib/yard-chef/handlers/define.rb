@@ -28,13 +28,10 @@ module YARD::Handlers
       
       def process
         path_arr = parser.file.to_s.split("/")
-        ns_obj = YARD::Registry.resolve(:root, "#{CHEF_NAMESPACE}::#{path_arr[2].to_s}")
 
+        ns_obj = YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}")
         name = statement.parameters.first.jump(:string_content, :ident).source
-        #namespace = CookbookNameObject.findNamespace(path_arr[3].to_s)
-        #cookbook_name = CookbookNameObject.fixName(path_arr[2].to_s)
-        
-        #ns_obj = YARD::Registry.resolve(:root, "#{namespace}::#{cookbook_name}")
+
         define_obj = DefinitionObject.new(ns_obj, name) do |define|
           define.source = statement.source
           define.scope = :instance
@@ -42,9 +39,7 @@ module YARD::Handlers
           define.add_file(statement.file, statement.line)
         end
         
-        register(define_obj)
-        #ns_obj.definitions.push(define_obj)
-        log.info "Creating [Definition] #{name} (#{define_obj.object_id}) => #{define_obj.path}"
+        log.info "Creating [Definition] #{define_obj.name} => #{define_obj.path}"
      end
     end
 

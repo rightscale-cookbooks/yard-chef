@@ -29,14 +29,10 @@ module YARD::Handlers
       def process
         path_arr = parser.file.to_s.split("/")
       
-        # Find cookbook name from the file path
-        ns_obj = YARD::Registry.resolve(:root, "#{CHEF_NAMESPACE}::#{path_arr[2].to_s}")
+        # Find namespace for the action
+        ns_obj = resolve_namespace(path_arr)
 
         name = statement.parameters.first.jump(:string_content, :ident).source
-        #namespace = CookbookNameObject.findNamespace(path_arr[3].to_s)
-        #cookbook_name = CookbookNameObject.fixName(path_arr[2].to_s)
-
-        #ns_obj = YARD::Registry.resolve(:root, "#{namespace}::#{cookbook_name}")
 
         action_obj = ActionObject.new(ns_obj, name) do |action|
           action.source    = statement.source
@@ -44,13 +40,16 @@ module YARD::Handlers
           action.docstring = statement.comments
           action.add_file(statement.file, statement.line)
         end
-        register(action_obj)
-        #ns_obj.actions.push(action_obj)
-        log.info "Creating [Action] #{name} (#{action_obj.object_id}) => #{action_obj.path}"
-        #puts("#{action_obj.docstring}")
-        #puts("#{action_obj.source}")
-        #puts("#{action_obj.files}")
+        log.info "Creating [Action] #{action_obj.name} => #{action_obj.path}"
         parse_block(statement.last.last, :owner => action_obj)
+      end
+
+      def resolve_namespace(path_arr)
+        if path_arr[4].to_s == 'default.rb'
+          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}")
+        else
+          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}_#{path_arr[4].to_s.split('.')[0]}")
+        end
       end
     end
   
@@ -60,4 +59,3 @@ module YARD::Handlers
     end
   end
 end
-

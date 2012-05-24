@@ -25,8 +25,6 @@ module YARD::CodeObjects
   module Chef
     class MethodObject < YARD::CodeObjects::MethodObject
       def initialize(namespace, name)
-        #@name = name
-        #@namespace = namespace
         super(namespace, name)
       end
     end
