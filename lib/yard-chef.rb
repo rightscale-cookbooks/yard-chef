@@ -19,22 +19,23 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+require 'yard'
+
 require 'yard-chef/code_objects/namespace_objects'
-require 'yard-chef/code_objects/cookbook_name'
 require 'yard-chef/code_objects/method_objects'
 
 require 'yard-chef/handlers/action'
 require 'yard-chef/handlers/attribute'
 require 'yard-chef/handlers/define'
 
-YARD::Parser::SourceParser.after_parse_list do |parser|
-  a = YARD::Registry.paths
-  a.each do |e|
-    puts e
-  end
-  #YARD::Registry.each do |o|
-    #puts o.type
+#YARD::Parser::SourceParser.after_parse_list do |parser|
+  #a = YARD::Registry.paths
+  #a.each do |e|
+    #puts e
   #end
-end
+ # YARD::Registry.each do |o|
+  #  puts o.type
+  #end
+#end
 
 YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
