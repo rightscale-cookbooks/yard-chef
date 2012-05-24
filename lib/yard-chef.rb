@@ -27,7 +27,7 @@ require 'yard-chef/code_objects/method_objects'
 require 'yard-chef/handlers/action'
 require 'yard-chef/handlers/attribute'
 require 'yard-chef/handlers/define'
-
+require 'yard-chef/handlers/actions'
 #YARD::Parser::SourceParser.after_parse_list do |parser|
   #a = YARD::Registry.paths
   #a.each do |e|
