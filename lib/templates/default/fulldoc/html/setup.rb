@@ -2,7 +2,7 @@ include YARD::CodeObjects::Chef
 
 def init
   super
-  @cookbooks = Registry.all(:cookbookname).sort_by{|cookbook| cookbook.name.to_s}
+  @cookbooks = Registry.all(:cookbook).sort_by{|cookbook| cookbook.name.to_s}
 
   # Generate page for Chef
   serialize(@@RS_NAMESPACE)
@@ -15,8 +15,7 @@ end
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_actions_list
   #TODO: Don't understand why Registry.all() prints the same item thrice. Look into that
-  @actions = YARD::Registry.all(:action).uniq{|action| action.name.to_s}
-  @actions = @actions.sort_by{|action| action.name.to_s}
+  @actions = YARD::Registry.all(:action).uniq.sort_by {|action| action.name.to_s}
   generate_full_list(@actions, "Action", "actions")
   #@actions.each do |action|
     #serialize(action)

@@ -1,0 +1,14 @@
+<% action_list = item_listing(:action) %>
+<% if action_list[0].size > 0 %>
+  <h2>Action Summary
+     <small>(<a href="#" class="summary_toggle">collapse</a>)</small>
+  </h2>
+  <% action_list[1].each do |namespace| %>
+    <h3>Provider Name : <%= namespace.to_s.split('::')[2] %></h3>
+    <ul class="summary">
+      <% action_list[0].each do |action| %>
+        <%= yieldall :item => action %>
+      <% end %>
+    </ul>
+  <% end %>
+<% end %>

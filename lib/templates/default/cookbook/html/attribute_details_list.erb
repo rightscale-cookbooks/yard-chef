@@ -1,0 +1,16 @@
+<% attrib_list = item_listing(:attribute) %>
+<div class="method_details_list">
+  <h2> Attribute Details</h2>
+  <% attrib_list[1].each do |namespace| %>
+    <% if namespace == object %>
+      <h3>Cookbook Level Attributes</h3>
+    <% else %>
+      <h3>Resource Name : <%= namespace.to_s.split('::')[2] %></h3>
+    <% end %>
+    <% attrib_list[0].each_with_index do |attrib, i| %>
+      <% if attrib.namespace == namespace %>
+        <%= yieldall :object => attrib, :owner => namespace, :index => i %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

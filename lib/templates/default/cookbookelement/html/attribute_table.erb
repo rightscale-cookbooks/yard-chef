@@ -3,7 +3,11 @@
   <div class = "multiline">
     <h3>Attributes</h3>
     <% attributes[1].each do |namespace| %>
-      <h4>Resource Name : <%= namespace.to_s.split('::')[2] %></h4>
+      <% if namespace.parent.to_s == "RightScale" %>
+        <h4>Cookbook Level Attributes</h4>
+      <% else %>
+        <h4>Resource Name : <% namespace.to_s.split('::')[2] %></h4>
+      <% end %>
       <table style="width:580px;" border="1">
         <thead>
           <tr>

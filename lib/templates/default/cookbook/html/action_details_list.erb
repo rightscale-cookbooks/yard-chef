@@ -1,0 +1,10 @@
+<% action_list = item_listing(:action) %>
+<div class="method_details_list">
+  <h2> Action Details</h2>
+  <% action_list[1].each do |namespace| %>
+    <h3>Provider Name : <%= namespace.to_s.split('::')[2] %></h3>
+    <% action_list[0].each_with_index do |action, i| %>
+      <%= yieldall :object => action, :owner => namespace, :index => i %>
+    <% end %>
+  <% end %>
+</div>
