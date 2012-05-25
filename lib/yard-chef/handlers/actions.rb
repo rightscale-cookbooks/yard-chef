@@ -42,7 +42,7 @@ module YARD::Handlers
           ns_obj.actions.push(statement.parameters.first.jump(:string_content, :ident).source)
         end
 
-        log.info "Found [Actions] in #{parser.file.to_s} => #{ns_obj.actions}"
+        log.info "Found [Actions] in #{parser.file.to_s}"
       end
 
       def resolve_namespace(path_arr)

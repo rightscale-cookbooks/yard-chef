@@ -29,15 +29,11 @@ module YARD::CodeObjects
       end
     end
     
-    CHEF = ClassObject.new(:root, "Chef")
-    LWRP = ClassObject.new(CHEF, "LWRP")
-    #class CookbookElementObject < ClassObject ; end
+    class CookbookElementObject < ClassObject ; end
+    class ProviderObject < CookbookElementObject ; end
 
-    class ProviderObject < ClassObject ; end
-
-    class ResourceObject < ClassObject
+    class ResourceObject < CookbookElementObject
       attr_accessor :actions
-
       def initialize(namespace, name)
         super(namespace, name)
         @actions = []
@@ -45,15 +41,8 @@ module YARD::CodeObjects
     end
 
     class CookbookObject < ClassObject
-      def read_cookbook_desc(file)
-        desc =  IO.readlines(file)
-        str = ""
-        for i in 0..6
-          str_t = desc[i].delete('#')
-          str_t.insert(0, '= ') if i == 1
-          str << str_t
-        end 
-        return str 
+      def initialize(namespace, name)
+        super(namespace, name)
       end
 
       def get_lwrp_name(filename)
@@ -65,22 +54,37 @@ module YARD::CodeObjects
       end 
     end
 
+    YARD::Parser::SourceParser.before_parse_list do |files, globals|
+      @@RS_NAMESPACE = ClassObject.new(:root, "RightScale")
+      #TODO: Should we had code this path?
+      @@RS_NAMESPACE.docstring = IO.read('rightscale_cookbooks/README.rdoc')
+
+      @@LWRP = CookbookElementObject.new(@@RS_NAMESPACE, "LWRP")
+    end
+
     # Register Providers and Resources along with Cookbooks before processing file
     YARD::Parser::SourceParser.before_parse_file do |parser|
       path_arr = parser.file.to_s.split("/")
-
-      cookbook = CookbookObject.new(CHEF, path_arr[2].to_s)
-      cookbook.docstring = cookbook.read_cookbook_desc(parser.file)
-      cookbook.add_file(parser.file)
-      log.info "Creating [Cookbook] #{cookbook.name} => #{cookbook.namespace}"
+      
+      # Check if cookbook has already been created
+      ns_obj = YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}")
+      if ns_obj == nil 
+        cookbook = CookbookObject.new(@@RS_NAMESPACE, path_arr[2].to_s)
+        cookbook.docstring = IO.read("#{path_arr[0].to_s}/#{path_arr[1].to_s}/README.rdoc")
+        cookbook.add_file(parser.file)
+        log.info "Creating [Cookbook] #{cookbook.name} => #{cookbook.namespace}"
+      else
+        cookbook = ns_obj
+        log.info "Using existing cookbook #{cookbook.name} => #{cookbook.namespace}"
+      end
 
       case path_arr[3].to_s
       when 'providers'
-        provider = ProviderObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
-        log.info "Creating [Provider] #{provider.name} => #{provider.namespace}"
+        @@provider = ProviderObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
+        log.info "Creating [Provider] #{@@provider.name} => #{@@provider.namespace}"
       when 'resources'
-        resource = ResourceObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
-        log.info "Creating [Cookbook] #{resource.name} => #{resource.namespace}"
+        @@resource = ResourceObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
+        log.info "Creating [Resource] #{@@resource.name} => #{@@resource.namespace}"
       end
     end
   end

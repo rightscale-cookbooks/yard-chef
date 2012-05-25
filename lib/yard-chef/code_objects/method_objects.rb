@@ -36,4 +36,3 @@ module YARD::CodeObjects
     class DefinitionObject < MethodObject ; end
   end
 end
-

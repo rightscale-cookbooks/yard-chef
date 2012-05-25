@@ -44,7 +44,7 @@ module YARD::Handlers
         statement.first_line.split(%r{,\s*:}).each do |param|
           insert_params(attrib_obj, param)
         end
-        log.info "Creating [Attribute] #{attrib_obj.name} => #{attrib_obj.path}"
+        log.info "Creating [Attribute] #{attrib_obj.name} #{attrib_obj.object_id} => #{attrib_obj.namespace}"
       end
     
       def insert_params(attrib, param)
@@ -82,10 +82,8 @@ module YARD::Handlers
       def resolve_namespace(path_arr)
         if path_arr[3].to_s == 'metadata.rb'
           return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}")
-        elsif path_arr[4].to_s == 'default.rb'
-          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}")
         else
-          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}_#{path_arr[4].to_s.split('.')[0]}")
+          return @@resource
         end
       end
 
