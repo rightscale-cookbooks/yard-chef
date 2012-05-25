@@ -81,7 +81,7 @@ module YARD::Handlers
 
       def resolve_namespace(path_arr)
         if path_arr[3].to_s == 'metadata.rb'
-          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}")
+          return YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}")
         else
           return @@resource
         end

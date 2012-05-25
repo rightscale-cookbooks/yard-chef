@@ -47,9 +47,9 @@ module YARD::Handlers
 
       def resolve_namespace(path_arr)
         if path_arr[4].to_s == 'default.rb'
-          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}")
+          return YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}::#{path_arr[2].to_s}")
         else
-          return YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}::#{path_arr[2].to_s}_#{path_arr[4].to_s.split('.')[0]}")
+          return YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}::#{path_arr[2].to_s}_#{path_arr[4].to_s.split('.')[0]}")
         end
       end
     end

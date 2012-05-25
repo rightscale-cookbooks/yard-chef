@@ -57,7 +57,8 @@ module YARD::CodeObjects
     YARD::Parser::SourceParser.before_parse_list do |files, globals|
       @@RS_NAMESPACE = ClassObject.new(:root, "RightScale")
       #TODO: Should we had code this path?
-      @@RS_NAMESPACE.docstring = IO.read('rightscale_cookbooks/README.rdoc')
+      rdoc_file = 'rightscale_cookbooks/README.rdoc'
+      @@RS_NAMESPACE.docstring = IO.read(rdoc_file) if File.exists?(rdoc_file)
 
       @@LWRP = CookbookElementObject.new(@@RS_NAMESPACE, "LWRP")
     end
@@ -66,25 +67,28 @@ module YARD::CodeObjects
     YARD::Parser::SourceParser.before_parse_file do |parser|
       path_arr = parser.file.to_s.split("/")
       
-      # Check if cookbook has already been created
-      ns_obj = YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}")
-      if ns_obj == nil 
-        cookbook = CookbookObject.new(@@RS_NAMESPACE, path_arr[2].to_s)
-        cookbook.docstring = IO.read("#{path_arr[0].to_s}/#{path_arr[1].to_s}/README.rdoc")
-        cookbook.add_file(parser.file)
-        log.info "Creating [Cookbook] #{cookbook.name} => #{cookbook.namespace}"
-      else
-        cookbook = ns_obj
-        log.info "Using existing cookbook #{cookbook.name} => #{cookbook.namespace}"
-      end
+      if path_arr[1].to_s == 'cookbooks'
+        # Check if cookbook has already been created
+        ns_obj = YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}")
+        if ns_obj == nil 
+          cookbook = CookbookObject.new(@@RS_NAMESPACE, path_arr[2].to_s)
+          rdoc_file = "#{path_arr[0].to_s}/#{path_arr[1].to_s}/#{path_arr[2].to_s}/README.rdoc"
+          cookbook.docstring = IO.read(rdoc_file) if File.exists?(rdoc_file)
+          cookbook.add_file(parser.file)
+          log.info "Creating [Cookbook] #{cookbook.name} => #{cookbook.namespace}"
+        else
+          cookbook = ns_obj
+          log.info "Using existing cookbook #{cookbook.name} => #{cookbook.namespace}"
+        end
 
-      case path_arr[3].to_s
-      when 'providers'
-        @@provider = ProviderObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
-        log.info "Creating [Provider] #{@@provider.name} => #{@@provider.namespace}"
-      when 'resources'
-        @@resource = ResourceObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
-        log.info "Creating [Resource] #{@@resource.name} => #{@@resource.namespace}"
+        case path_arr[3].to_s
+        when 'providers'
+          @@provider = ProviderObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
+          log.info "Creating [Provider] #{@@provider.name} => #{@@provider.namespace}"
+        when 'resources'
+          @@resource = ResourceObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
+          log.info "Creating [Resource] #{@@resource.name} => #{@@resource.namespace}"
+        end
       end
     end
   end

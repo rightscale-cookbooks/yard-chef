@@ -29,7 +29,7 @@ module YARD::Handlers
       def process
         path_arr = parser.file.to_s.split("/")
 
-        ns_obj = YARD::Registry.resolve(:root, "#{CHEF}::#{path_arr[2].to_s}")
+        ns_obj = YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}")
         name = statement.parameters.first.jump(:string_content, :ident).source
 
         define_obj = DefinitionObject.new(ns_obj, name) do |define|
