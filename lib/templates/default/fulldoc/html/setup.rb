@@ -1,10 +1,12 @@
+include YARD::CodeObjects::Chef
+
 def init
   super
   @cookbooks = Registry.all(:cookbookname).sort_by{|cookbook| cookbook.name.to_s}
 
   # Generate page for Chef
-  serialize(YARD::CodeObjects::Chef::CHEF)
-  serialize(YARD::CodeObjects::Chef::LWRP)
+  serialize(@@RS_NAMESPACE)
+  serialize(@@LWRP)
   @cookbooks.each do |cookbook|
     serialize(cookbook)
   end
