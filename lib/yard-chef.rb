@@ -28,14 +28,5 @@ require 'yard-chef/handlers/action'
 require 'yard-chef/handlers/attribute'
 require 'yard-chef/handlers/define'
 require 'yard-chef/handlers/actions'
-#YARD::Parser::SourceParser.after_parse_list do |parser|
-  #a = YARD::Registry.paths
-  #a.each do |e|
-    #puts e
-  #end
- # YARD::Registry.each do |o|
-  #  puts o.type
-  #end
-#end
 
 YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
