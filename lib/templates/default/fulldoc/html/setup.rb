@@ -14,12 +14,8 @@ end
 
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_actions_list
-  #TODO: Don't understand why Registry.all() prints the same item thrice. Look into that
   @actions = YARD::Registry.all(:action).uniq.sort_by {|action| action.name.to_s}
   generate_full_list(@actions, "Action", "actions")
-  #@actions.each do |action|
-    #serialize(action)
-  #end
 end
 
 # Called by menu_lists in layout/html/setup.rb by default

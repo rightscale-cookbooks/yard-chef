@@ -1,9 +1,9 @@
-<% actions = get_items_of_cookbook(@actions, @cookbook) %>
-<% if !actions[0].empty? %>
+<% providers = get_items_of_type(@cookbook, :provider) %>
+<% if !providers.empty? %>
   <div class = "multiline">
     <h3>Actions</h3>
-    <% actions[1].each do |namespace| %>
-      <h4>Provider Name : <%= namespace.to_s.split('::')[2] %></h4>
+    <% providers.each do |provider| %>
+      <h4>Provider Name : <%= provider.name.to_s.split('~')[0] %></h4>
       <table style="width:580px;" border="1">
         <thead>
           <tr>
@@ -12,12 +12,10 @@
           </tr>
         </thead>
         <tbody>
-          <% actions[0].each do |action| %>
+          <% provider.children.each do |action| %>
             <tr class="">
-              <% if action.namespace == namespace %>
-                <td><a href="<%= @cookbook.name.to_s %>.html#<%= action.name.to_s %>-instance_<%= action.type %>"><%= action.name.to_s %></a></td>
-                <td><%= action.docstring.to_s %></td>
-              <% end %>
+              <td><a href="<%= @cookbook.name.to_s %>.html#<%= action.name.to_s %>-instance_<%= action.type %>"><%= action.name.to_s %></a></td>
+              <td><%= action.docstring.to_s %></td>
             </tr>
           <% end %>
         </tbody>

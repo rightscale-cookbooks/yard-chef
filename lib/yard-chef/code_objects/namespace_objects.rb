@@ -83,10 +83,10 @@ module YARD::CodeObjects
 
         case path_arr[3].to_s
         when 'providers'
-          @@provider = ProviderObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
+          @@provider = ProviderObject.new(cookbook, "#{cookbook.get_lwrp_name(path_arr[4].to_s)}~prov")
           log.info "Creating [Provider] #{@@provider.name} => #{@@provider.namespace}"
         when 'resources'
-          @@resource = ResourceObject.new(cookbook, cookbook.get_lwrp_name(path_arr[4].to_s))
+          @@resource = ResourceObject.new(cookbook, "#{cookbook.get_lwrp_name(path_arr[4].to_s)}~res")
           log.info "Creating [Resource] #{@@resource.name} => #{@@resource.namespace}"
         end
       end

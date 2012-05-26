@@ -1,7 +1,7 @@
-<% define_list = item_listing(:definition) %>
+<% definitions = get_items_of_type(object, :definition) %>
 <div class="method_details_list">
   <h2>Definition Details</h2>
-  <% define_list[0].each_with_index do |define, i| %>
+  <% definitions.each_with_index do |define, i| %>
     <%= yieldall :object => define, :owner => object, :index => i %>
   <% end %>
 </div>

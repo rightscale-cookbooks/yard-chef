@@ -29,9 +29,6 @@ module YARD::Handlers
       def process
         path_arr = parser.file.to_s.split("/")
       
-        # Find namespace for the action
-        # ns_obj = resolve_namespace(path_arr)
-
         name = statement.parameters.first.jump(:string_content, :ident).source
         action_obj = ActionObject.new(@@provider, name) do |action|
           action.source    = statement.source
@@ -41,15 +38,6 @@ module YARD::Handlers
         end
         log.info "Creating [Action] #{action_obj.name} #{action_obj.object_id} => #{action_obj.namespace}"
         parse_block(statement.last.last, :owner => action_obj)
-      end
-
-      def resolve_namespace(path_arr)
-        if path_arr[4].to_s == 'default.rb'
-          namespace = YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}::#{path_arr[2].to_s}")
-          return YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}::#{path_arr[2].to_s}")
-        else
-          return YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}::#{path_arr[2].to_s}_#{path_arr[4].to_s.split('.')[0]}")
-        end
       end
     end
   

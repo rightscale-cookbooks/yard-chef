@@ -1,13 +1,10 @@
-<% attributes = get_items_of_cookbook(@attributes, @cookbook) %>
-<% if !attributes[1].empty? %>
+<% resources = get_items_of_type(@cookbook, :resource) %>
+<% cookbook_attrib = get_items_of_type(@cookbook, :attribute) %>
+<% if !resources.empty? or !cookbook_attrib.empty? %>
   <div class = "multiline">
     <h3>Attributes</h3>
-    <% attributes[1].each do |namespace| %>
-      <% if namespace.parent.to_s == "RightScale" %>
-        <h4>Cookbook Level Attributes</h4>
-      <% else %>
-        <h4>Resource Name : <% namespace.to_s.split('::')[2] %></h4>
-      <% end %>
+    <% if !cookbook_attrib.empty? %>
+      <h4>Cookbook Level Attributes</h4>
       <table style="width:580px;" border="1">
         <thead>
           <tr>
@@ -24,9 +21,44 @@
           </tr>
         </thead>
         <tbody>
-          <% attributes[0].each do |attrib| %>
+          <% cookbook_attrib.each do |attrib| %>
             <tr class="">
-              <% if attrib.namespace == namespace %>
+              <td><a href="<%= @cookbook.name.to_s %>.html#<%= attrib.name.to_s %>-instance_<%= attrib.type %>"><%= attrib.name.to_s %></a></td>
+              <td><%= attrib.docstring.to_s %></td>
+              <td><%= attrib.default %></td>
+              <td><%= attrib.kind_of %></td>
+              <td><%= attrib.required %></td>
+              <td><%= attrib.regex %></td>
+              <td><%= attrib.equal_to %></td>
+              <td><%= attrib.name_attribute %></td>
+              <td><%= attrib.callbacks %></td>
+              <td><%= attrib.respond_to %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+    <% if resources.size > 0 %>
+      <% resources.each do |resource| %>
+        <h4>Resource Name : <%= resource.name.to_s.split('~')[0] %></h4>
+        <table style="width:580px;" border="1">
+          <thead>
+            <tr>
+              <th class="even">Attribute</th>
+              <th class="odd">Description</th>
+              <th>Default</th>
+              <th>Kind Of</th>
+              <th>Required</th>
+              <th>Regex</th>
+              <th>Equal To</th>
+              <th>Name Attribute</th>
+              <th>Callbacks</th>
+              <th>Respond To</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% resource.children.each do |attrib| %>
+              <tr class="">
                 <td><a href="<%= @cookbook.name.to_s %>.html#<%= attrib.name.to_s %>-instance_<%= attrib.type %>"><%= attrib.name.to_s %></a></td>
                 <td><%= attrib.docstring.to_s %></td>
                 <td><%= attrib.default %></td>
@@ -37,11 +69,11 @@
                 <td><%= attrib.name_attribute %></td>
                 <td><%= attrib.callbacks %></td>
                 <td><%= attrib.respond_to %></td>    
-              <% end %>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% end %>
     <% end %>
   </div>
 <% end %>

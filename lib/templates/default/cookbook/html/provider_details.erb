@@ -1,0 +1,10 @@
+<% providers = get_items_of_type(object, :provider) %>
+<div class="method_details_list">
+  <h2>Provider Details</h2>
+  <% providers.each do |provider| %>
+    <h3>Provider Name : <%= provider.name.to_s.split('~')[0] %></h3>
+    <% provider.children.each_with_index do |action, i| %>
+      <%= yieldall :object => action, :owner => provider, :index => i %>
+    <% end %>
+  <% end %>
+</div>
