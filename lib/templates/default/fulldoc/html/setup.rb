@@ -45,3 +45,16 @@ end
 def generate_list_contents
   asset(url_for_list(@list_type), erb(:full_list))
 end
+
+def link_object(object, title = nil)
+  return title if title
+  case object
+  when YARD::CodeObjects::Base, YARD::CodeObjects::Proxy
+    object.namespace
+  when String, Symbol
+    P(object).path
+  else
+    object
+  end 
+end 
+

@@ -1,11 +1,15 @@
 <% n = 1 %>
 <% @items.each do |item| %>
   <li class="r<%= n %>">
-    <%= linkify item, h(item.name(true)) %>
-    <% if item.namespace && !item.namespace.root? %>
+    <% if item.parent.namespace.to_s == "RightScale" %>
+      <%= linkify(item, h(item.name(true))) %>
       <small><%= item.namespace %></small>
     <% else %>
-      <small>Top Level Namespace</small>
+      <span class="object_link">
+        <% path_arr = item.path.split('::') %>
+        <a href="<%= path_arr[0] %>/<%= path_arr[1] %>.html#<%= h(item.name) %>-instance_attribute" title="<%= item.parent.namespace %>#<%= h(item.name) %> (attribute)"><%= h(item.name) %></a>
+      </span>
+      <small><%= item.namespace.to_s.split('~')[0] %></small>
     <% end %>
   </li>
   <% n = n == 2 ? 1 : 2 %>
