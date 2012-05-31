@@ -1,0 +1,13 @@
+<div> 
+  <h2>Lightweight Resources and Providers</h2>
+  <ul>
+    <% @cookbooks.each do |cookbook| %>
+      <% @cookbook = cookbook %>
+      <li>
+        <h2><a href="RightScale/<%= cookbook.name.to_s %>.html"><%= cookbook.name.to_s %></a></h2>
+        <%= erb(:action_table) %>
+        <%= erb(:attribute_table) %>
+      </li>  
+    <% end %>
+  </ul>
+</div>
