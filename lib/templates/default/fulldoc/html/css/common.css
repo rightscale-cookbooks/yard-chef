@@ -1,0 +1,12 @@
+table {
+  border: 0px;
+}
+
+th {
+  background-color: gray;
+  color: white;
+}
+
+tr.r1 { background: #f0f0f0; }
+tr.r2 { background: #fafafa; }
+
