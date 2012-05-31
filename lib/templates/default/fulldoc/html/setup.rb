@@ -2,11 +2,12 @@ include YARD::CodeObjects::Chef
 
 def init
   super
-  @cookbooks = Registry.all(:cookbook).sort_by{|cookbook| cookbook.name.to_s}
+  asset('css/common.css', file('css/common.css', true))
 
-  # Generate page for Chef
+  @cookbooks = Registry.all(:cookbook).sort_by{|cookbook| cookbook.name.to_s}
+  
+  # Generate page for RightScale
   serialize(@@RS_NAMESPACE)
-  serialize(@@LWRP)
   @cookbooks.each do |cookbook|
     serialize(cookbook)
   end
@@ -46,6 +47,13 @@ def generate_list_contents
   asset(url_for_list(@list_type), erb(:full_list))
 end
 
+def generate_class_list
+  @items = YARD::Registry.all(:class).sort_by{|cl| cl.name.to_s}
+  @list_title = "Class List"
+  @list_type = "class"
+  generate_list_contents
+end
+
 def link_object(object, title = nil)
   return title if title
   case object
@@ -57,4 +65,3 @@ def link_object(object, title = nil)
     object
   end 
 end 
-

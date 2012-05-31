@@ -1,7 +1,9 @@
 <% definitions = get_items_of_type(object, :definition) %>
-<div class="method_details_list">
-  <h2>Definition Details</h2>
-  <% definitions.each_with_index do |define, i| %>
-    <%= yieldall :object => define, :owner => object, :index => i %>
-  <% end %>
-</div>
+<% if definitions.size > 0 %>
+  <div class="method_details_list">
+    <h2>Definition Details</h2>
+    <% definitions.each_with_index do |define, i| %>
+      <%= yieldall :object => define, :owner => object, :index => i %>
+    <% end %>
+  </div>
+<% end %>
