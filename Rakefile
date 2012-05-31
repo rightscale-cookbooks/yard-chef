@@ -26,6 +26,7 @@ EOS
   gem.license = 'MIT'
   gem.files.include(Dir.glob('lib/**/*.erb'))
   gem.files.include(Dir.glob('lib/**/*.rb'))
+  gem.files.include(Dir.glob('lib/**/*.css'))
 end
 Jeweler::RubygemsDotOrgTasks.new
 
