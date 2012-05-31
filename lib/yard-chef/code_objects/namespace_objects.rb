@@ -59,8 +59,6 @@ module YARD::CodeObjects
       #TODO: Should we had code this path?
       rdoc_file = 'rightscale_cookbooks/README.rdoc'
       @@RS_NAMESPACE.docstring = IO.read(rdoc_file) if File.exists?(rdoc_file)
-
-      @@LWRP = CookbookElementObject.new(@@RS_NAMESPACE, "LWRP")
     end
 
     # Register Providers and Resources along with Cookbooks before processing file

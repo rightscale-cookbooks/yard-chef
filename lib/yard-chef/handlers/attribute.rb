@@ -41,7 +41,7 @@ module YARD::Handlers
           attrib.docstring  = statement.comments
           attrib.add_file(statement.file, statement.line)
         end
-        statement.first_line.split(%r{,\s*:}).each do |param|
+        statement.source.split(%r{,\s*:}).each do |param|
           insert_params(attrib_obj, param)
         end
         log.info "Creating [Attribute] #{attrib_obj.name} #{attrib_obj.object_id} => #{attrib_obj.namespace}"
@@ -72,7 +72,7 @@ module YARD::Handlers
           when "description"
             attrib.description = args[1]
           when "recipes"
-            attrib.recipes = args[1].remove(' ')
+            attrib.recipes = args[1]
           when "choice"
             attrib.choice = args[1]
           end
