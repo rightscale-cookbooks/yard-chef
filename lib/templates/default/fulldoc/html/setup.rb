@@ -4,25 +4,41 @@ def init
   super
   asset('css/common.css', file('css/common.css', true))
 
-  @cookbooks = Registry.all(:cookbook).sort_by{|cookbook| cookbook.name.to_s}
-  
-  # Generate page for RightScale
-  serialize(@@RS_NAMESPACE)
-  @cookbooks.each do |cookbook|
-    serialize(cookbook)
+  #@cookbooks = Registry.all(:cookbook).sort_by{|cookbook| cookbook.name.to_s}
+  @chef = object.child(:type => :chef)
+  @@cookbooks = get_items_by_type(@chef, :cookbook)
+
+  # Generate page for Chef
+  serialize(@chef)
+
+  # Generate a page for Recipes
+  serialize(@chef.child(:type => :recipe))
+
+  # Generate a page for Resources
+  serialize(@chef.child(:type => :resource))
+end
+
+def get_items_by_type(object, type)
+  items = Array.new()
+  if not object.children.empty?
+    object.children.each do |child|
+      items.push(child) if child.type == type
+    end
   end
+  items.sort_by {|item| item.name.to_s}
+end
+
+
+# Called by menu_lists in layout/html/setup.rb by default
+def generate_recipes_list
+  @recipes = YARD::Registry.all(:recipe).uniq.sort_by {|recipe| recipe.name.to_s}
+  generate_full_list(@recipes, "Recipe", "recipes")
 end
 
 # Called by menu_lists in layout/html/setup.rb by default
-def generate_actions_list
-  @actions = YARD::Registry.all(:action).uniq.sort_by {|action| action.name.to_s}
-  generate_full_list(@actions, "Action", "actions")
-end
-
-# Called by menu_lists in layout/html/setup.rb by default
-def generate_attributes_list
-  @attributes = YARD::Registry.all(:attribute).uniq.sort_by{|attribute| attribute.name.to_s}
-  generate_full_list(@attributes, "Attribute", "attributes")
+def generate_resources_list
+  @resources = YARD::Registry.all(:resource).uniq.sort_by{|resource| resource.name.to_s}
+  generate_full_list(@resources, "Resource", "resources")
 end
 
 # Called by menu_lists in layout/html/setup.rb by default
