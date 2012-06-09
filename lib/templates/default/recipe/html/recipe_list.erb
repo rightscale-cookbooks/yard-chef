@@ -1,0 +1,13 @@
+<% @objects.each do |object| %>
+  <% recipes = get_items_by_type(object, :recipe) %>
+  <% if recipes.size > 0 %>
+    <div class="method_details_list">
+    <h3>Cookbook : <%= object.name %></h3>
+    <% recipes.each_with_index do |recipe, i| %>
+      <div class="method_details <%= i==0?'first':''%>">
+        <%= yieldall :object => recipe, :owner => object, :index => i %>
+      </div>
+    <% end %>
+    </div>
+  <% end %>
+<% end %>
