@@ -21,12 +21,24 @@
 
 require 'yard'
 
-require 'yard-chef/code_objects/namespace_objects'
-require 'yard-chef/code_objects/method_objects'
+#require 'yard-chef/code_objects/namespace_objects'
+#require 'yard-chef/code_objects/method_objects'
+require 'yard-chef/code_objects/chef_objects'
 
-require 'yard-chef/handlers/action'
-require 'yard-chef/handlers/attribute'
-require 'yard-chef/handlers/define'
-require 'yard-chef/handlers/actions'
+#require 'yard-chef/handlers/action'
+#require 'yard-chef/handlers/attribute'
+#require 'yard-chef/handlers/define'
+#require 'yard-chef/handlers/actions'
+require 'yard-chef/handlers/recipe'
+
+#YARD::Parser::SourceParser.before_parse_file do |parser|
+  #path = parser.file.split('/')
+  #i = path.index("cookbooks")
+  #puts parser.file
+  #puts path.size
+  #puts path.slice(i, path.size) if not i.nil?
+  #puts
+  #puts path.slice(0, i)
+#end
 
 YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
