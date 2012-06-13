@@ -4,7 +4,6 @@ def init
   super
   asset('css/common.css', file('css/common.css', true))
 
-  #@cookbooks = Registry.all(:cookbook).sort_by{|cookbook| cookbook.name.to_s}
   @chef = object.child(:type => :chef)
   @@cookbooks = get_items_by_type(@chef, :cookbook)
 
@@ -12,10 +11,17 @@ def init
   serialize(@chef)
 
   # Generate a page for Recipes
-  serialize(@chef.child(:type => :recipe))
+  @recipe = @chef.child(:type => :recipe)
+  serialize(@recipe)
 
   # Generate a page for Resources
-  serialize(@chef.child(:type => :resource))
+  @resource = @chef.child(:type => :resource)
+  serialize(@resource)
+
+  # Generate cookbook pages
+  @@cookbooks.each do |cookbook|
+    serialize(cookbook)
+  end
 end
 
 def get_items_by_type(object, type)
@@ -28,7 +34,6 @@ def get_items_by_type(object, type)
   items.sort_by {|item| item.name.to_s}
 end
 
-
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_recipes_list
   @recipes = YARD::Registry.all(:recipe).uniq.sort_by {|recipe| recipe.name.to_s}
@@ -37,7 +42,7 @@ end
 
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_resources_list
-  @resources = YARD::Registry.all(:resource).uniq.sort_by{|resource| resource.name.to_s}
+  @resources = YARD::Registry.all(:resource).uniq.sort_by {|resource| resource.name.to_s}
   generate_full_list(@resources, "Resource", "resources")
 end
 
@@ -48,7 +53,7 @@ def generate_definitions_list
 end
 
 def generate_cookbooks_list
-  @cookbooks = YARD::Registry.all(:cookbook).sort_by{|cookbook| cookbook.name.to_s}
+  @cookbooks = YARD::Registry.all(:cookbook).uniq.sort_by{|cookbook| cookbook.name.to_s}
   generate_full_list(@cookbooks, "Cookbooks", "cookbooks")
 end
 
@@ -69,15 +74,3 @@ def generate_class_list
   @list_type = "class"
   generate_list_contents
 end
-
-def link_object(object, title = nil)
-  return title if title
-  case object
-  when YARD::CodeObjects::Base, YARD::CodeObjects::Proxy
-    object.namespace
-  when String, Symbol
-    P(object).path
-  else
-    object
-  end 
-end 
