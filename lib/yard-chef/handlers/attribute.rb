@@ -23,19 +23,20 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
-    
-    module AbstractAttributeHandler
+    class AttributeHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
+      handles method_call(:attribute)
       
       def process
         path_arr = parser.file.to_s.split("/")
+        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
       
         # Find namespace for attribute
-        ns_obj = resolve_namespace(path_arr)
+        resource = resolve_namespace(cookbook_path)
 
         name = statement.parameters.first.jump(:string_content, :ident).source
 
-        attrib_obj = AttributeObject.new(ns_obj, name) do |attrib|
+        attrib_obj = AttributeObject.new(resource, name) do |attrib|
           attrib.source     = statement.source
           attrib.scope      = :instance
           attrib.docstring  = statement.comments
@@ -80,18 +81,15 @@ module YARD::Handlers
       end
 
       def resolve_namespace(path_arr)
-        if path_arr[3].to_s == 'metadata.rb'
-          return YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}")
+        cookbook = YARD::Registry.resolve(:root, "#{@@CHEF}::#{path_arr[1].to_s}")
+        if path_arr[2].to_s == 'metadata.rb'
+          # Return cookbook
+          cookbook
         else
-          return @@resource
+          # Return Resource
+          YARD::Registry.resolve(:root, "#{@@RESOURCE}::#{cookbook.get_lwrp_name(path_arr[3].to_s)}")
         end
       end
-
-    end
-  
-    class AttributeHandler < YARD::Handlers::Ruby::Base
-      include AbstractAttributeHandler
-      handles method_call(:attribute)
     end
   end
 end
