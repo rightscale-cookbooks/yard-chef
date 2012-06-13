@@ -1,0 +1,23 @@
+<% cookbooks = get_items_by_type(object, :cookbook) %>
+<table>
+  <thead>
+    <tr>
+      <th>Cookbook</th>
+      <th>Description</th>
+      <th>Version</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% n = 1 %> 
+  <% cookbooks.each do |cookbook| %>
+    <tr class="r<%= n %>">
+      <td><a href="<%= object.name.to_s %>/<%= cookbook.name.to_s %>.html">
+        <%= htmlify(cookbook.name.to_s) %></a>
+      </td>
+      <td><%= htmlify(cookbook.short_desc) %></td>
+      <td><%= htmlify(cookbook.version) %></td>
+    </tr>
+    <% n = n == 2 ? 1 : 2 %>
+  <% end %>
+  </tbody>
+</table>
