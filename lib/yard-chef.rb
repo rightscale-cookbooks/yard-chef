@@ -25,13 +25,25 @@ require 'yard'
 #require 'yard-chef/code_objects/method_objects'
 require 'yard-chef/code_objects/chef_objects'
 
-#require 'yard-chef/handlers/action'
-#require 'yard-chef/handlers/attribute'
+require 'yard-chef/handlers/action'
+require 'yard-chef/handlers/attribute'
 #require 'yard-chef/handlers/define'
-#require 'yard-chef/handlers/actions'
+require 'yard-chef/handlers/actions'
 require 'yard-chef/handlers/recipe'
+require 'yard-chef/handlers/cookbook_desc'
+require 'yard-chef/handlers/class'
 
-#YARD::Parser::SourceParser.before_parse_file do |parser|
+#YARD::Parser::SourceParser.after_parse_list do |files|
+  #resources = YARD::Registry.all(:resource)
+  #resources.each do |resource|
+    #puts resource
+    #puts "Actions"
+    #puts resource.actions
+    #puts "======="
+    #puts "Providers"
+    #puts resource.providers
+    #puts
+  #end
   #path = parser.file.split('/')
   #i = path.index("cookbooks")
   #puts parser.file
