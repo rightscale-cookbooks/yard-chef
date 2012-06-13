@@ -1,0 +1,20 @@
+<table>
+  <thead>
+    <tr>
+      <th>Recipe</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% n = 1 %>
+    <% @object.each do |recipe| %>
+      <tr class="r<%= n %>">
+        <% recipe_name = recipe.get_recipe_name(recipe) %>
+        <td><a href="Recipe.html#<%= recipe_name %>">
+          <%= recipe_name %></a></td>
+        <td><%= recipe.docstring %></td>
+      </tr>
+      <% n = n == 2 ? 1 : 2 %>
+    <% end %>
+  </tbody>
+</table>
