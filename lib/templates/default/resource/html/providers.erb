@@ -1,0 +1,8 @@
+<% if object.providers.size > 0 %>
+  <h4>Providers</h4>
+  <ul>
+    <% object.providers.each do |provider| %>
+      <li><%= provider %></li>
+    <% end %>
+  </ul>
+<% end %>

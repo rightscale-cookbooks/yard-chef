@@ -1,0 +1,5 @@
+<% resources = get_items_by_type(object, :resource) %>
+<% resources.each do |resource| %>
+  <h3><a name="Chef/Resource.html#<%= resource.name.to_s %>"><%= htmlify(resource.name.to_s) %></a></h3>
+  <%= yieldall :object => resource %>
+<% end %>

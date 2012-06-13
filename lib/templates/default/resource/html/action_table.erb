@@ -1,0 +1,21 @@
+<% if object.actions.size > 0 %>
+  <h4>Actions</h4>
+  <table>
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% n = 1 %>
+      <% object.actions.each do |action| %>
+        <tr class="r<%= n %>">
+          <td><%= htmlify(action.to_s) %></a></td>
+          <td></td>
+        </tr>
+        <% n = n == 2 ? 1 : 2 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
