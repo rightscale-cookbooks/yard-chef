@@ -30,20 +30,46 @@ module YARD::CodeObjects
     end
 
     class ProviderObject < ChefObject ; end
-    class RecipeObject < ChefObject ; end
-    class LibraryObject < ChefObject ; end
+
+    class RecipeObject < ChefObject
+      def get_recipe_name(recipe)
+        cookbook_name = recipe.parent.name.to_s
+        cookbook_name == recipe.name.to_s ? cookbook_name : cookbook_name << '::' << recipe.name.to_s
+      end
+    end
+
+    class ActionObject < ChefObject ; end
+
+    class AttributeObject < ChefObject
+      attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to, :display_name, :description, :recipes, :choice
+
+      def get_attribute_name(attribute)
+        attrib_name = ''
+        if attribute.name =~ /\//
+          array = attribute.name.to_s.split('/')
+          array.each do |o|
+            attrib_name << "[:#{o}]"
+          end
+        else
+          attrib_name = attribute.name
+        end
+        attrib_name
+      end    
+    end
 
     class ResourceObject < ChefObject
+      attr_accessor :actions, :providers
       def initialize(namespace, name)
         super(namespace, name)
+        @actions = []
+        @providers = []
       end
     end
       
     class CookbookObject < ChefObject
-      attr_accessor :resources, :providers, :attributes, :recipes
+      attr_accessor :short_desc, :version
       def initialize(namespace, name)
         super(namespace, name)
-        @resources = @providers = @attributes = @recipes = Array.new()
       end
 
       def get_lwrp_name(filename)
@@ -83,8 +109,8 @@ module YARD::CodeObjects
       end
       @@CHEF.docstring = IO.read(readme_file) if File.exists?(readme_file)
 
-      RESOURCE = ResourceObject.new(@@CHEF, "Resource")
-      PROVIDER = ProviderObject.new(@@CHEF, "Provider")
+      @@RESOURCE = ResourceObject.new(@@CHEF, "Resource")
+      @@PROVIDER = ProviderObject.new(@@CHEF, "Provider")
       RECIPE = RecipeObject.new(@@CHEF, "Recipe")
 
       files.each do |file|
@@ -101,10 +127,10 @@ module YARD::CodeObjects
         # Register providers, resources, recipes
         case cookbook_path[2].to_s
         when 'providers'
-          provider = ProviderObject.new(PROVIDER, cookbook.get_lwrp_name(cookbook_path[3].to_s))
+          provider = ProviderObject.new(@@PROVIDER, cookbook.get_lwrp_name(cookbook_path[3].to_s))
           log.info "Creating [Provider] #{provider.name} => #{provider.namespace}"
         when 'resources'
-          resource = ResourceObject.new(RESOURCE, cookbook.get_lwrp_name(cookbook_path[3].to_s))
+          resource = ResourceObject.new(@@RESOURCE, cookbook.get_lwrp_name(cookbook_path[3].to_s))
           log.info "Creating [Resource] #{resource.name} => #{resource.namespace}"
         when 'recipes'
           recipe = RecipeObject.new(cookbook, cookbook_path[3].to_s.sub('.rb', ''))
