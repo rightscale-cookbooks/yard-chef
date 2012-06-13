@@ -23,27 +23,34 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
-    
-    module AbstractActionHandler
+    class ActionHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
+      handles method_call(:action)
+
       def process
         path_arr = parser.file.to_s.split("/")
-      
+        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
+
+        provider = resolve_namespace(cookbook_path)
+        
         name = statement.parameters.first.jump(:string_content, :ident).source
-        action_obj = ActionObject.new(@@provider, name) do |action|
+        action_obj = ActionObject.new(provider, name) do |action|
           action.source    = statement.source
-          action.scope     = :instance
           action.docstring = statement.comments
           action.add_file(statement.file, statement.line)
         end
         log.info "Creating [Action] #{action_obj.name} #{action_obj.object_id} => #{action_obj.namespace}"
         parse_block(statement.last.last, :owner => action_obj)
       end
-    end
-  
-    class ActionHandler < YARD::Handlers::Ruby::Base
-      include AbstractActionHandler
-      handles method_call(:action)
+
+      def resolve_namespace(path_arr)
+        cookbook = YARD::Registry.resolve(:root, "#{@@CHEF}::#{path_arr[1].to_s}")
+        return YARD::Registry.resolve(:root, "#{@@PROVIDER}::#{cookbook.get_lwrp_name(path_arr[3].to_s)}")
+      end
+
+      def find_resource(path_arr)
+        
+      end
     end
   end
 end
