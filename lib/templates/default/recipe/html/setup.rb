@@ -11,8 +11,3 @@ def source
   return if object.source.nil?
   erb(:source)
 end
-
-def get_recipe_name(recipe)
-  cookbook_name = recipe.parent.name.to_s
-  cookbook_name == recipe.name.to_s ? cookbook_name : cookbook_name << '::' << recipe.name.to_s
-end
