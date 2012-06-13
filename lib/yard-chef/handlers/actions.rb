@@ -30,27 +30,25 @@ module YARD::Handlers
 
       def process
         path_arr = parser.file.to_s.split("/")
+        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
 
         # Find the resource which lists the actions
-        ns_obj = resolve_namespace(path_arr)
+        resource_obj = find_resource(cookbook_path)
         # if multiple actions listed in same line, split the actions and add them to the list
         if statement.first_line =~ /,/
           statement.first_line.split(%r{,?\s*:}).each do |action|
-            ns_obj.actions.push(action) if action != 'actions'
+            resource_obj.actions.push(action) if action != 'actions'
           end
         else
-          ns_obj.actions.push(statement.parameters.first.jump(:string_content, :ident).source)
+          resource_obj.actions.push(statement.parameters.first.jump(:string_content, :ident).source)
         end
 
         log.info "Found [Actions] in #{parser.file.to_s}"
       end
 
-      def resolve_namespace(path_arr)
-        if path_arr[4].to_s == 'default.rb'
-          return YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}::#{path_arr[2].to_s}~res")
-        else
-          return YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}::#{path_arr[2].to_s}_#{path_arr[4].to_s.split('.')[0]}~res")
-        end
+      def find_resource(path_arr)
+        cookbook = YARD::Registry.resolve(:root, "#{@@CHEF}::#{path_arr[1].to_s}")
+        return YARD::Registry.resolve(:root, "#{@@RESOURCE}::#{cookbook.get_lwrp_name(path_arr[3].to_s)}")
       end
     end
   end
