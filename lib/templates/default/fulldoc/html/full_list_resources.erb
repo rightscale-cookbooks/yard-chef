@@ -1,16 +1,10 @@
 <% n = 1 %>
 <% @items.each do |item| %>
   <li class="r<%= n %>">
-    <% if item.parent.namespace.to_s == "RightScale" %>
-      <%= linkify(item, h(item.name(true))) %>
-      <small><%= item.namespace %></small>
-    <% else %>
-      <span class="object_link">
-        <% path_arr = item.path.split('::') %>
-        <a href="<%= path_arr[0] %>/<%= path_arr[1] %>.html#<%= h(item.name) %>-instance_attribute" title="<%= item.parent.namespace %>#<%= h(item.name) %> (attribute)"><%= h(item.name) %></a>
+    <span class="object_link">
+      <a href="Chef/Resource.html#<%= item.parent.name %>" title="<%= item.parent.name %>"><%= h(item.name) %></a>
       </span>
-      <small><%= item.namespace.to_s.split('~')[0] %></small>
-    <% end %>
+      <small><%= item.namespace %></small>
   </li>
   <% n = n == 2 ? 1 : 2 %>
 <% end %>
