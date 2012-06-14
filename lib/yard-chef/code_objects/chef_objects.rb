@@ -30,7 +30,9 @@ module YARD::CodeObjects
     end
 
     class ProviderObject < ChefObject ; end
+    class DefinitionObject < ChefObject ; end
 
+    #TODO: No need to pass the instance to its own class
     class RecipeObject < ChefObject
       def get_recipe_name(recipe)
         cookbook_name = recipe.parent.name.to_s
@@ -43,6 +45,7 @@ module YARD::CodeObjects
     class AttributeObject < ChefObject
       attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to, :display_name, :description, :recipes, :choice
 
+      #TODO: No need to pass the instance to its own class
       def get_attribute_name(attribute)
         attrib_name = ''
         if attribute.name =~ /\//
@@ -98,6 +101,7 @@ module YARD::CodeObjects
     # Read 'README.rdoc' file in the top level if available
     # Assumption: User must input relative path to the cookbooks
     YARD::Parser::SourceParser.before_parse_list do |files, globals|
+      puts files
       path_arr = files[0].split('/')
       @@CHEF = ChefObject.new(:root, "Chef")
       log.info "Creating [Chef] as root namespace"
@@ -112,6 +116,7 @@ module YARD::CodeObjects
       @@RESOURCE = ResourceObject.new(@@CHEF, "Resource")
       @@PROVIDER = ProviderObject.new(@@CHEF, "Provider")
       RECIPE = RecipeObject.new(@@CHEF, "Recipe")
+      @@DEFINITION = DefinitionObject.new(@@CHEF, "Definition")
 
       files.each do |file|
         path_arr = file.to_s.split('/')
