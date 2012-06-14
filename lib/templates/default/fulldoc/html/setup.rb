@@ -18,6 +18,10 @@ def init
   @resource = @chef.child(:type => :resource)
   serialize(@resource)
 
+  # Generate a page for Definitions
+  @definition = @chef.child(:type => :definition)
+  serialize(@definition)
+
   # Generate cookbook pages
   @@cookbooks.each do |cookbook|
     serialize(cookbook)
