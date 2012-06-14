@@ -1,0 +1,11 @@
+<% definitions = get_items_by_type(object, :definition) %>
+<% if definitions.size > 0 %>
+  <div class="method_details_list">
+    <% definitions.each_with_index do |definition, i| %>
+      <% puts definition.inspect %>
+      <div class="method_details <%= i==0?'first':''%>">
+        <%= yieldall :object => definition, :owner => object, :index => i %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
