@@ -23,30 +23,24 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
-    module AbstractDefinitionHandler
+    class DefinitionHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
+      handles method_call(:define)
       
       def process
         path_arr = parser.file.to_s.split("/")
+        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
 
-        ns_obj = YARD::Registry.resolve(:root, "#{@@RS_NAMESPACE}::#{path_arr[2].to_s}")
         name = statement.parameters.first.jump(:string_content, :ident).source
 
-        define_obj = DefinitionObject.new(ns_obj, name) do |define|
+        define_obj = DefinitionObject.new(@@DEFINITION, name) do |define|
           define.source = statement.source
-          define.scope = :instance
           define.docstring = statement.comments
           define.add_file(statement.file, statement.line)
         end
         
         log.info "Creating [Definition] #{define_obj.name} => #{define_obj.path}"
      end
-    end
-
-    class DefinitionHandler < YARD::Handlers::Ruby::Base
-      include AbstractDefinitionHandler
-      handles method_call(:define)
-      handles method_call(:def)
     end
   end
 end
