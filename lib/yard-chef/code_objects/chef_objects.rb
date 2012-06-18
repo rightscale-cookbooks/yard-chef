@@ -27,10 +27,20 @@ module YARD::CodeObjects
       def initialize(namespace, name)
         super(namespace, name)
       end
+
+      def self.resolve_namespace(path_arr, type)
+      end
     end
+    CHEF = ChefObject.new(:root, 'Chef')
+    log.info "Creating [Chef] as root namespace"
 
     class ProviderObject < ChefObject ; end
+    PROVIDER = ProviderObject.new(CHEF, 'Provider')
+    log.info "Creating [Provider] namespace => #{PROVIDER.namespace}"
+
     class DefinitionObject < ChefObject ; end
+    DEFINITION = DefinitionObject.new(CHEF, 'Definition')
+    log.info "Creating [Definition] namespace => #{DEFINITION.namespace}"
 
     #TODO: No need to pass the instance to its own class
     class RecipeObject < ChefObject
@@ -39,6 +49,8 @@ module YARD::CodeObjects
         cookbook_name == recipe.name.to_s ? cookbook_name : cookbook_name << '::' << recipe.name.to_s
       end
     end
+    RECIPE = RecipeObject.new(CHEF, 'Recipe')
+    log.info "Creating [Recipe] namespace => #{RECIPE.namespace}"
 
     class ActionObject < ChefObject ; end
 
@@ -68,6 +80,8 @@ module YARD::CodeObjects
         @providers = []
       end
     end
+    RESOURCE = ResourceObject.new(CHEF, 'Resource')
+    log.info "Creating [Resource] namespace => #{RESOURCE.namespace}"
       
     class CookbookObject < ChefObject
       attr_accessor :short_desc, :version
@@ -97,53 +111,44 @@ module YARD::CodeObjects
       end
     end
 
-    # Register 'root' namespace as Chef
-    # Read 'README.rdoc' file in the top level if available
-    # Assumption: User must input relative path to the cookbooks
-    YARD::Parser::SourceParser.before_parse_list do |files, globals|
-      puts files
-      path_arr = files[0].split('/')
-      @@CHEF = ChefObject.new(:root, "Chef")
-      log.info "Creating [Chef] as root namespace"
-      readme_file = path_arr.slice(0, path_arr.index("cookbooks"))
-      if readme_file.empty?
-        readme_file = './README.rdoc'
-      else
-        readme_file = readme_file.join('/') + '/README.rdoc'
-      end
-      @@CHEF.docstring = IO.read(readme_file) if File.exists?(readme_file)
-
-      @@RESOURCE = ResourceObject.new(@@CHEF, "Resource")
-      @@PROVIDER = ProviderObject.new(@@CHEF, "Provider")
-      RECIPE = RecipeObject.new(@@CHEF, "Recipe")
-      @@DEFINITION = DefinitionObject.new(@@CHEF, "Definition")
-
-      files.each do |file|
-        path_arr = file.to_s.split('/')
-        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
-
-        # Register Cookbooks
-        cookbook = CookbookObject.new(@@CHEF, cookbook_path[1].to_s)
-        readme_file = path_arr.slice(0, path_arr.size-1).join('/') + '/README.rdoc'
-        cookbook.docstring = IO.read(readme_file) if File.exists?(readme_file)
-        cookbook.add_file(file)
-        log.info "Creating [Cookbook] #{cookbook.name} => #{cookbook.namespace}"
-
-        # Register providers, resources, recipes
-        case cookbook_path[2].to_s
-        when 'providers'
-          provider = ProviderObject.new(@@PROVIDER, cookbook.get_lwrp_name(cookbook_path[3].to_s))
-          log.info "Creating [Provider] #{provider.name} => #{provider.namespace}"
-        when 'resources'
-          resource = ResourceObject.new(@@RESOURCE, cookbook.get_lwrp_name(cookbook_path[3].to_s))
-          log.info "Creating [Resource] #{resource.name} => #{resource.namespace}"
-        when 'recipes'
-          recipe = RecipeObject.new(cookbook, cookbook_path[3].to_s.sub('.rb', ''))
-          recipe.source = IO.read(file)
-          recipe.add_file(file)
-          log.info "Creating [Recipe] #{recipe.name} => #{recipe.namespace}"
-        end
-      end
+    def find_cookbook(cookbook_name)
+      YARD::Registry.resolve(:root, "#{CHEF}::#{cookbook_name}")
     end
+
+    def register_cookbook(path_arr)
+      # Get cookbook name from the path
+      # By convention 'metadata.rb' should be at the top of the cookbook folder
+      cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
+      cookbook = CookbookObject.new(CHEF, cookbook_name) do |o|
+        readme_file = path_arr.slice(0, path_arr.size-1).join('/') + '/README.rdoc'
+        o.docstring = IO.read(readme_file) if File.exists?(readme_file)
+        o.add_file(path_arr.join('/'))
+      end
+      log.info "Creating [Cookbook] #{cookbook.name} => #{cookbook.namespace}"
+      cookbook
+    end
+
+    def register_lwrp(path_arr, type)
+      cookbook = self.find_cookbook(path_arr[path_arr.index(type) - 1])
+      lwrp_name = cookbook.get_lwrp_name(path_arr[path_arr.index(type) + 1])
+      if type == 'providers'
+        lwrp = ProviderObject.new(PROVIDER, lwrp_name)
+      elsif type == 'resources'
+        lwrp = ResourceObject.new(RESOURCE, lwrp_name)
+      end
+      log.info "Creating [#{lwrp.type}] #{lwrp.name} => #{lwrp.namespace}"
+      lwrp
+    end
+
+    def register_recipe(path_arr)
+      cookbook = self.find_cookbook(path_arr[path_arr.index('recipes') - 1])
+      recipe_name = path_arr[path_arr.index('recipes') + 1]
+      recipe = RecipeObject.new(cookbook, recipe_name.to_s.sub('.rb', '')) do |o|
+        o.source = IO.read(path_arr.join('/'))
+        o.add_file(path_arr.join('/'))
+      end
+      log.info "Creating [Recipe] #{recipe.name} => #{recipe.namespace}"
+      recipe
+    end  
   end
 end
