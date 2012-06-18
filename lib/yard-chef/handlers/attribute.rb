@@ -28,15 +28,17 @@ module YARD::Handlers
       handles method_call(:attribute)
       
       def process
-        path_arr = parser.file.to_s.split("/")
-        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
+        path_arr = parser.file.to_s.split('/')
+        if path_arr.include?('metadata.rb')
+          namespace = find_cookbook(path_arr[path_arr.index('metadata.rb') - 1])
+        else
+          cookbook = find_cookbook(path_arr[path_arr.index('resources') - 1])
+          resource_name = cookbook.get_lwrp_name(path_arr[path_arr.size - 1])
+          namespace = YARD::Registry.resolve(:root, "#{RESOURCE}::#{resource_name}")
+        end
       
-        # Find namespace for attribute
-        resource = resolve_namespace(cookbook_path)
-
         name = statement.parameters.first.jump(:string_content, :ident).source
-
-        attrib_obj = AttributeObject.new(resource, name) do |attrib|
+        attrib_obj = AttributeObject.new(namespace, name) do |attrib|
           attrib.source     = statement.source
           attrib.scope      = :instance
           attrib.docstring  = statement.comments
@@ -45,7 +47,7 @@ module YARD::Handlers
         statement.source.split(%r{,\s*:}).each do |param|
           insert_params(attrib_obj, param)
         end
-        log.info "Creating [Attribute] #{attrib_obj.name} #{attrib_obj.object_id} => #{attrib_obj.namespace}"
+        log.info "Creating [Attribute] #{attrib_obj.name} => #{attrib_obj.namespace}"
       end
     
       def insert_params(attrib, param)
@@ -77,17 +79,6 @@ module YARD::Handlers
           when "choice"
             attrib.choice = args[1]
           end
-        end
-      end
-
-      def resolve_namespace(path_arr)
-        cookbook = YARD::Registry.resolve(:root, "#{@@CHEF}::#{path_arr[1].to_s}")
-        if path_arr[2].to_s == 'metadata.rb'
-          # Return cookbook
-          cookbook
-        else
-          # Return Resource
-          YARD::Registry.resolve(:root, "#{@@RESOURCE}::#{cookbook.get_lwrp_name(path_arr[3].to_s)}")
         end
       end
     end

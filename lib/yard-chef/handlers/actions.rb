@@ -30,10 +30,11 @@ module YARD::Handlers
 
       def process
         path_arr = parser.file.to_s.split("/")
-        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
+        cookbook = find_cookbook(path_arr[path_arr.index('resources') - 1])
+        resource_name = cookbook.get_lwrp_name(path_arr[path_arr.size - 1])
 
         # Find the resource which lists the actions
-        resource_obj = find_resource(cookbook_path)
+        resource_obj = YARD::Registry.resolve(:root, "#{RESOURCE}::#{resource_name}")
         # if multiple actions listed in same line, split the actions and add them to the list
         if statement.first_line =~ /,/
           statement.first_line.split(%r{,?\s*:}).each do |action|
@@ -44,11 +45,6 @@ module YARD::Handlers
         end
 
         log.info "Found [Actions] in #{parser.file.to_s}"
-      end
-
-      def find_resource(path_arr)
-        cookbook = YARD::Registry.resolve(:root, "#{@@CHEF}::#{path_arr[1].to_s}")
-        return YARD::Registry.resolve(:root, "#{@@RESOURCE}::#{cookbook.get_lwrp_name(path_arr[3].to_s)}")
       end
     end
   end

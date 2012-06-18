@@ -29,17 +29,17 @@ module YARD::Handlers
       
       def process
         path_arr = parser.file.to_s.split("/")
-        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
+        cookbook = find_cookbook(path_arr[path_arr.index('definitions') - 1])
 
         name = statement.parameters.first.jump(:string_content, :ident).source
 
-        define_obj = DefinitionObject.new(@@DEFINITION, name) do |define|
+        define_obj = DefinitionObject.new(DEFINITION, name) do |define|
           define.source = statement.source
           define.docstring = statement.comments
           define.add_file(statement.file, statement.line)
         end
         
-        log.info "Creating [Definition] #{define_obj.name} => #{define_obj.path}"
+        log.info "Creating [Definition] #{define_obj.name} => #{define_obj.namespace}"
      end
     end
   end

@@ -29,7 +29,7 @@ module YARD::Handlers
 
       def process
         name = statement.parameters.first.jump(:string_content).source
-        recipe_obj = YARD::Registry.resolve(:root, "#{@@CHEF}::#{name}")
+        recipe_obj = YARD::Registry.resolve(:root, "#{CHEF}::#{name}")
         log.info "Found Recipe #{recipe_obj.name} => #{recipe_obj.namespace}"
         recipe_obj.docstring = statement.parameters[1]
       end

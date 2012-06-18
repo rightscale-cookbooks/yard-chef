@@ -30,14 +30,13 @@ module YARD::Handlers
 
       def process
         path_arr = parser.file.to_s.split('/')
-        cookbook_path = path_arr.slice(path_arr.index("cookbooks"), path_arr.size)
-        cookbook_obj = YARD::Registry.resolve(:root, "#{@@CHEF}::#{cookbook_path[1]}")
+        cookbook = find_cookbook(path_arr[path_arr.index('metadata.rb') - 1])
 
         case statement[0].source
         when 'description'
-          cookbook_obj.short_desc = statement.parameters.first.jump(:string_content).source
+          cookbook.short_desc = statement.parameters.first.jump(:string_content).source
         when 'version'
-          cookbook_obj.version = statement.parameters.first.jump(:string_content).source
+          cookbook.version = statement.parameters.first.jump(:string_content).source
         end
       end
     end
