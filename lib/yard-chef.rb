@@ -31,6 +31,22 @@ require 'yard-chef/handlers/define'
 require 'yard-chef/handlers/actions'
 require 'yard-chef/handlers/recipe'
 require 'yard-chef/handlers/cookbook_desc'
-require 'yard-chef/handlers/class'
+#require 'yard-chef/handlers/class'
+
+include YARD::CodeObjects::Chef
+YARD::Parser::SourceParser.before_parse_list do |files, globals|
+  files.each do |file|
+    path_arr = file.to_s.split('/')
+    if path_arr.include?('metadata.rb')
+      register_cookbook(path_arr)
+    elsif path_arr.include?('providers')
+      register_lwrp(path_arr, 'providers')
+    elsif path_arr.include?('resources')
+      register_lwrp(path_arr, 'resources')
+    elsif path_arr.include?('recipes')
+      register_recipe(path_arr)
+    end
+  end
+end
 
 YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
