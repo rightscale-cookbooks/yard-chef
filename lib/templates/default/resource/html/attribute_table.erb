@@ -20,16 +20,18 @@
       <% n = 1 %>
       <% attributes.each do |attrib| %>
         <tr class="r<%= n %>">
-          <td><a href="Chef/Resource.html"><%= htmlify(attrib.name.to_s) %></a></td>
-          <td><%= htmlify(attrib.docstring.to_s) %></td>
-          <td><%= htmlify(attrib.default) %></td>
-          <td><%= htmlify(attrib.kind_of) %></td>
-          <td><%= htmlify(attrib.required) %></td>
-          <td><%= htmlify(attrib.regex) %></td>
-          <td><%= htmlify(attrib.equal_to) %></td>
-          <td><%= htmlify(attrib.name_attribute) %></td>
-          <td><%= htmlify(attrib.callbacks) %></td>
-          <td><%= htmlify(attrib.respond_to) %></td>    
+          <td><a href="<%= object.parent %>/<%= object.name %>.html">
+              <%= attrib.name.to_s %></a>
+          </td>
+          <td><%= attrib.docstring.to_s %></td>
+          <td><%= attrib.default %></td>
+          <td><%= attrib.kind_of %></td>
+          <td><%= attrib.required %></td>
+          <td><%= attrib.regex %></td>
+          <td><%= attrib.equal_to %></td>
+          <td><%= attrib.name_attribute %></td>
+          <td><%= attrib.callbacks %></td>
+          <td><%= attrib.respond_to %></td>    
         </tr>
         <% n = n == 2 ? 1 : 2 %>
       <% end %>

@@ -1,8 +1,13 @@
 <% if object.providers.size > 0 %>
+  <% providers = object.providers.uniq {|prov| prov.name.to_s} %>
   <h4>Providers</h4>
   <ul>
-    <% object.providers.each do |provider| %>
-      <li><%= provider %></li>
+    <% providers.each do |provider| %>
+      <li>
+        <a href="<%= provider.parent.name %>.html#<%= provider.name %>">
+          <%= provider.parent.parent %>::<%= provider.parent.name.to_s.capitalize %>::<%= provider.name%>
+        </a>
+      </li>
     <% end %>
   </ul>
 <% end %>
