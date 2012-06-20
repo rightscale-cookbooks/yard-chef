@@ -24,8 +24,30 @@ require 'yard'
 module YARD::CodeObjects
   module Chef
     class ChefObject < YARD::CodeObjects::ClassObject
+      attr_accessor :Name, :Path
       def initialize(namespace, name)
         super(namespace, name)
+      end
+
+      def Name
+        if self.parent.root?
+          @Name = @name.to_s
+        elsif @namespace.parent.root?
+          @Name = @name.to_s.capitalize
+        else
+          @Name = @name.to_s
+        end
+        @Name
+      end
+
+      def Path
+        if self.parent.root?
+          @Path = @path
+        elsif @namespace.parent.root?
+          @Path = @namespace.to_s << '::' << @Name
+        else
+          @Path = @namespace.parent.name.to_s << '::' << self.parent.Name << '::' << @name.to_s
+        end
       end
     end
     CHEF = ChefObject.new(:root, 'Chef')
@@ -40,6 +62,15 @@ module YARD::CodeObjects
     log.info "Creating [Definition] namespace => #{DEFINITION.namespace}"
 
     class RecipeObject < ChefObject
+      def Name
+        @Name = self.parent.name.to_s << '::' << @name.to_s
+        @Name
+      end
+
+      def Path
+        @path
+      end
+
       def get_recipe_name
         cookbook_name = self.parent.name.to_s
         cookbook_name == @name.to_s ? cookbook_name : cookbook_name << '::' << @name.to_s
@@ -48,10 +79,41 @@ module YARD::CodeObjects
     RECIPE = RecipeObject.new(CHEF, 'recipe')
     log.info "Creating [Recipe] namespace => #{RECIPE.namespace}"
 
-    class ActionObject < ChefObject ; end
+    class ActionObject < ChefObject
+      def Name
+        @Name = @name
+        @Name
+      end
+
+      def Path
+        @Path = self.parent.Path << '::' << @name.to_s
+        @Path
+      end
+    end
 
     class AttributeObject < ChefObject
       attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to, :display_name, :description, :recipes, :choice
+
+      def Name
+        if @namespace.parent.root?
+          if @name =~ /\//
+            array = @name.to_s.split('/')
+            array.each do |o|
+              @Name << "[:#{o}]"
+            end
+          else
+            @Name = @name
+          end
+        else
+          @Name = @name
+        end
+        @Name
+      end
+
+      def Path
+        @Path = @namespace.parent.root? ? @path : self.parent.Path << '::' << @name.to_s
+        @Path
+      end
 
       def get_attribute_name
         attrib_name = ''
@@ -85,6 +147,16 @@ module YARD::CodeObjects
         @resources = Array.new()
         @libraries = Array.new()
         @definitions = Array.new()
+      end
+
+      def Name
+        @Name = @name.to_s
+        @Name
+      end
+
+      def Path
+        @Path = @path
+        @Path
       end
 
       def get_lwrp_name(filename)
