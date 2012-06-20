@@ -1,11 +1,10 @@
 <% n = 1 %>
 <% @items.each do |item| %>
-  <% puts item.parent.inspect %>
   <% if not item.namespace.parent.root? %>
     <li class="r<%= n %>">
       <span class="object_link">
         <a href="<%= url_for(item.parent, item.name, false) %>" 
-          title="<%= item.parent.Path %> (Resource)">
+          title="<%= item.Path %> (Resource)">
           <%= h(item.name) %>
         </a>
         </span>
