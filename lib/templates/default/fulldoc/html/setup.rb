@@ -1,5 +1,3 @@
-include YARD::CodeObjects::Chef
-
 def init
   super
   asset('css/common.css', file('css/common.css', true))
@@ -17,6 +15,10 @@ def init
   # Generate a page for Resources
   @resource = @chef.child(:type => :resource)
   serialize(@resource)
+
+  # Generate a page for Providers
+  @provider = @chef.child(:type => :provider)
+  serialize(@provider)
 
   # Generate a page for Definitions
   @definition = @chef.child(:type => :definition)
@@ -72,9 +74,37 @@ def generate_list_contents
   asset(url_for_list(@list_type), erb(:full_list))
 end
 
-def generate_class_list
-  @items = YARD::Registry.all(:class).sort_by{|cl| cl.name.to_s}
-  @list_title = "Class List"
-  @list_type = "class"
+def generate_libraries_list
+  @items = YARD::Registry.all(:class).sort_by {|lib| lib.name.to_s}
+  @list_title = "Library List"
+  @list_type = "libraries"
   generate_list_contents
+end
+
+def libraries_list(root = Registry.root)
+  out = ""
+  children = run_verifier(root.children)
+  if root == Registry.root
+    children += @items.select {|o| o.namespace.is_a?(CodeObjects::Proxy) }
+  end
+  children.reject {|c| c.nil? }.sort_by {|child| child.path }.map do |child|
+    if child.is_a?(CodeObjects::ModuleObject)
+      name = child.namespace.is_a?(CodeObjects::Proxy) ? child.path : child.name
+      has_children = child.children.any? {|o| o.is_a?(CodeObjects::NamespaceObject) }
+      out << "<li>"
+      out << "<a class='toggle'></a> " if has_children
+      out << linkify(child, name)
+      out << " &lt; #{child.superclass.name}" if child.is_a?(CodeObjects::ClassObject) && child.superclass
+      out << "<small class='search_info'>"
+      if !child.namespace || child.namespace.root?
+        out << "Top Level Namespace"
+      else
+        out << child.namespace.path
+      end
+      out << "</small>"
+      out << "</li>"
+      out << "<ul>#{libraries_list(child)}</ul>" if has_children
+    end
+  end
+  out
 end
