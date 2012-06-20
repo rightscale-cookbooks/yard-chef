@@ -1,8 +1,14 @@
 <% n = 1 %>
-<% @items.each do |item| %>
+<% chef = @items[0].parent.parent %>
+<% recipe = chef.child(:type => :recipe) %>
+<% recipes = @items.sort_by {|rec| rec.namespace.to_s} %>
+<% recipes.each do |item| %>
   <li class="r<%= n %>">
     <span class="object_link">
-      <a href="Chef/Recipe.html#<%= item.parent.name %>::<%= item.name %>" title="<%= item.parent.name %>::<%= item.name %> (recipe)"><%= h(item.name) %></a>
+      <a href="<%= chef.name %>/<%= recipe.name %>.html#<%= item.parent.name %>::<%= item.name %>"
+      title="<%= item.parent.name %>::<%= item.name %> (recipe)">
+        <%= h(item.parent.name) %>::<%= h(item.name) %>
+      </a>
     </span>
     <small><%= item.namespace %></small>
   </li>

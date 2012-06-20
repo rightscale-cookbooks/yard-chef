@@ -2,7 +2,10 @@
 <% @items.each do |item| %>
   <li class="r<%= n %>">
     <span class="object_link">
-      <a href="Chef/Resource.html#<%= item.parent.name %>" title="<%= item.parent.name %>"><%= h(item.name) %></a>
+      <a href="<%= item.parent.parent.name %>/<%= item.parent.name %>.html#<%= item.name %>" 
+        title="<%= item.path %> (Resource)">
+        <%= h(item.name) %>
+      </a>
       </span>
       <small><%= item.namespace %></small>
   </li>
