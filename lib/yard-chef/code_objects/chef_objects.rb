@@ -27,29 +27,25 @@ module YARD::CodeObjects
       def initialize(namespace, name)
         super(namespace, name)
       end
-
-      def self.resolve_namespace(path_arr, type)
-      end
     end
     CHEF = ChefObject.new(:root, 'Chef')
     log.info "Creating [Chef] as root namespace"
 
     class ProviderObject < ChefObject ; end
-    PROVIDER = ProviderObject.new(CHEF, 'Provider')
+    PROVIDER = ProviderObject.new(CHEF, 'provider')
     log.info "Creating [Provider] namespace => #{PROVIDER.namespace}"
 
     class DefinitionObject < ChefObject ; end
-    DEFINITION = DefinitionObject.new(CHEF, 'Definition')
+    DEFINITION = DefinitionObject.new(CHEF, 'definition')
     log.info "Creating [Definition] namespace => #{DEFINITION.namespace}"
 
-    #TODO: No need to pass the instance to its own class
     class RecipeObject < ChefObject
-      def get_recipe_name(recipe)
-        cookbook_name = recipe.parent.name.to_s
-        cookbook_name == recipe.name.to_s ? cookbook_name : cookbook_name << '::' << recipe.name.to_s
+      def get_recipe_name
+        cookbook_name = self.parent.name.to_s
+        cookbook_name == @name.to_s ? cookbook_name : cookbook_name << '::' << @name.to_s
       end
     end
-    RECIPE = RecipeObject.new(CHEF, 'Recipe')
+    RECIPE = RecipeObject.new(CHEF, 'recipe')
     log.info "Creating [Recipe] namespace => #{RECIPE.namespace}"
 
     class ActionObject < ChefObject ; end
@@ -57,16 +53,15 @@ module YARD::CodeObjects
     class AttributeObject < ChefObject
       attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to, :display_name, :description, :recipes, :choice
 
-      #TODO: No need to pass the instance to its own class
-      def get_attribute_name(attribute)
+      def get_attribute_name
         attrib_name = ''
-        if attribute.name =~ /\//
-          array = attribute.name.to_s.split('/')
+        if @name =~ /\//
+          array = @name.to_s.split('/')
           array.each do |o|
             attrib_name << "[:#{o}]"
           end
         else
-          attrib_name = attribute.name
+          attrib_name = @name
         end
         attrib_name
       end    
@@ -80,13 +75,16 @@ module YARD::CodeObjects
         @providers = []
       end
     end
-    RESOURCE = ResourceObject.new(CHEF, 'Resource')
+    RESOURCE = ResourceObject.new(CHEF, 'resource')
     log.info "Creating [Resource] namespace => #{RESOURCE.namespace}"
       
     class CookbookObject < ChefObject
-      attr_accessor :short_desc, :version
+      attr_accessor :short_desc, :version, :resources, :libraries, :definitions
       def initialize(namespace, name)
         super(namespace, name)
+        @resources = Array.new()
+        @libraries = Array.new()
+        @definitions = Array.new()
       end
 
       def get_lwrp_name(filename)
@@ -135,6 +133,7 @@ module YARD::CodeObjects
         lwrp = ProviderObject.new(PROVIDER, lwrp_name)
       elsif type == 'resources'
         lwrp = ResourceObject.new(RESOURCE, lwrp_name)
+        cookbook.resources.push(lwrp)
       end
       log.info "Creating [#{lwrp.type}] #{lwrp.name} => #{lwrp.namespace}"
       lwrp
@@ -149,6 +148,17 @@ module YARD::CodeObjects
       end
       log.info "Creating [Recipe] #{recipe.name} => #{recipe.namespace}"
       recipe
-    end  
+    end
+
+    def register_library(path_arr)
+      cookbook = self.find_cookbook(path_arr[path_arr.index('libraries') - 1])
+      cookbook.libraries.push(path_arr.join('/'))
+    end
+
+    def map_providers_with_resource(resource, provider)
+      res_name = resource.split('::')
+      res_obj = YARD::Registry.at("#{res_name[0]}::#{res_name[1].downcase}::#{res_name[2]}")
+      res_obj.providers.push(provider.parent)
+    end
   end
 end
