@@ -44,10 +44,11 @@ module YARD::CodeObjects
         if self.parent.root?
           @Path = @path
         elsif @namespace.parent.root?
-          @Path = @namespace.to_s << '::' << @Name
+          @Path = @namespace.name.to_s << '::' << @Name
         else
           @Path = @namespace.parent.name.to_s << '::' << self.parent.Name << '::' << @name.to_s
         end
+        @Path
       end
 
       def children_by_type(type)
