@@ -49,6 +49,16 @@ module YARD::CodeObjects
           @Path = @namespace.parent.name.to_s << '::' << self.parent.Name << '::' << @name.to_s
         end
       end
+
+      def children_by_type(type)
+        children = Array.new()
+        if not self.children.empty?
+          self.children.each do |child|
+            children.push(child) if child.type == type
+          end
+        end
+        children.sort_by {|item| item.name.to_s}
+      end
     end
     CHEF = ChefObject.new(:root, 'Chef')
     log.info "Creating [Chef] as root namespace"
