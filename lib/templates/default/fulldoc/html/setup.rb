@@ -42,7 +42,7 @@ end
 
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_recipes_list
-  recipes = YARD::Registry.all(:recipe).uniq.sort_by {|recipe| recipe.name.to_s}
+  recipes = YARD::Registry.all(:recipe).uniq.sort_by {|recipe| recipe.Name.to_s}
   generate_full_list(recipes, 'Recipe', 'recipes')
 end
 
