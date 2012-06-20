@@ -66,7 +66,7 @@ end
 
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_libraries_list
-  libraries = YARD::Registry.all(:class).sort_by {|lib| lib.name.to_s}
+  libraries = options.objects if options.objects
   generate_full_list(libraries, 'Library', 'libraries')
 end
 
@@ -90,7 +90,7 @@ def libraries_list(root = Registry.root)
   children.reject {|c| c.nil? }.sort_by {|child| child.path }.map do |child|
     if child.is_a?(CodeObjects::ModuleObject)
       name = child.namespace.is_a?(CodeObjects::Proxy) ? child.path : child.name
-      has_children = child.children.any? {|o| o.is_a?(CodeObjects::NamespaceObject) }
+      has_children = child.children.any? {|o| o.is_a?(CodeObjects::ModuleObject) }
       out << "<li>"
       out << "<a class='toggle'></a> " if has_children
       out << linkify(child, name)
