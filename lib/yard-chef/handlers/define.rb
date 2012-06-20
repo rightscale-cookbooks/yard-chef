@@ -38,6 +38,7 @@ module YARD::Handlers
           define.docstring = statement.comments
           define.add_file(statement.file, statement.line)
         end
+        cookbook.definitions.push(define_obj)
         
         log.info "Creating [Definition] #{define_obj.name} => #{define_obj.namespace}"
      end
