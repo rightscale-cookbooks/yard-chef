@@ -21,8 +21,6 @@
 
 require 'yard'
 
-#require 'yard-chef/code_objects/namespace_objects'
-#require 'yard-chef/code_objects/method_objects'
 require 'yard-chef/code_objects/chef_objects'
 
 require 'yard-chef/handlers/action'
@@ -31,7 +29,8 @@ require 'yard-chef/handlers/define'
 require 'yard-chef/handlers/actions'
 require 'yard-chef/handlers/recipe'
 require 'yard-chef/handlers/cookbook_desc'
-#require 'yard-chef/handlers/class'
+
+#require 'yard-chef/tags/resource_tag'
 
 include YARD::CodeObjects::Chef
 YARD::Parser::SourceParser.before_parse_list do |files, globals|
@@ -45,8 +44,21 @@ YARD::Parser::SourceParser.before_parse_list do |files, globals|
       register_lwrp(path_arr, 'resources')
     elsif path_arr.include?('recipes')
       register_recipe(path_arr)
+    elsif path_arr.include?('libraries')
+      register_library(path_arr)
     end
   end
 end
 
+YARD::Tags::Library.define_tag('Map Chef Providers with Chef Resources', :resource)
 YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
+
+# Map providers with resources
+YARD::Parser::SourceParser.after_parse_list do
+  YARD::Registry.paths.each do |path|
+    obj = YARD::Registry.at(path)
+    obj.tags(:resource).each do |tag|
+      map_providers_with_resource(tag.text, tag.object)
+    end
+  end
+end
