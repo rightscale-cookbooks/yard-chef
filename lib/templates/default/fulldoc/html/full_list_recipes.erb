@@ -1,16 +1,15 @@
 <% n = 1 %>
-<% chef = @items[0].parent.parent %>
-<% recipe = chef.child(:type => :recipe) %>
-<% recipes = @items.sort_by {|rec| rec.namespace.to_s} %>
-<% recipes.each do |item| %>
-  <li class="r<%= n %>">
-    <span class="object_link">
-      <a href="<%= chef.name %>/<%= recipe.name %>.html#<%= item.parent.name %>::<%= item.name %>"
-      title="<%= item.parent.name %>::<%= item.name %> (recipe)">
-        <%= h(item.parent.name) %>::<%= h(item.name) %>
-      </a>
-    </span>
-    <small><%= item.namespace %></small>
-  </li>
-  <% n = n == 2 ? 1 : 2 %>
+<% recipe = object.child(:type => :chef).child(:type => :recipe) %>
+<% @items.each do |item| %>
+  <% if not item.namespace.parent.root? %>
+    <li class="r<%= n %>">
+      <span class="object_link">
+        <a href="<%= url_for(recipe, item.Name, false) %>" title="<%= item.Name %> (recipe)">
+          <%= h(item.Name) %>
+        </a>
+      </span>
+      <small><%= item.namespace %></small>
+    </li>
+    <% n = n == 2 ? 1 : 2 %>
+  <% end %>
 <% end %>
