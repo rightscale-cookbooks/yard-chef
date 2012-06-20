@@ -1,0 +1,5 @@
+<ul>
+  <% @object.each do |define| %> 
+    <li><a href="<%= define.type.to_s %>.html#<%= define.name %>"><%= define.name %></a></li>
+  <% end %>
+</ul>

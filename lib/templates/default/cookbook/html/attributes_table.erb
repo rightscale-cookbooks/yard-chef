@@ -14,7 +14,7 @@
     <% n = 1 %>
     <% @object.each do |attribute| %>
       <tr class="r<%= n %>">
-        <% attrib_name = attribute.get_attribute_name(attribute) %>
+        <% attrib_name = attribute.get_attribute_name %>
         <td><%= attrib_name %></a></td>
         <td><%= attribute.display_name %></td>
         <td><%= attribute.description %></td>

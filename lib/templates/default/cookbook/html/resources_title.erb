@@ -1,6 +1,0 @@
-<% resource = object.parent.child(:type => :resource) %>
-<% resources = get_items_by_type(resource, :resource) %>
-<% if resources.size > 0 %>
-  <h3>Resources</h3>
-  <%= yieldall :object => resources %>
-<% end %>

@@ -1,0 +1,7 @@
+<ul>
+  <% @object.each do |o| %>
+    <li><a href="<%= o.parent.name %>.html#<%= o.name %>">
+      <%= o.parent.parent %>::<%= o.parent.name.to_s.capitalize %>::<%= o.name %></a>
+    </li>
+  <% end %>
+</ul>

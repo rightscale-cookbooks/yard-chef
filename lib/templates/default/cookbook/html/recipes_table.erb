@@ -9,7 +9,7 @@
     <% n = 1 %>
     <% @object.each do |recipe| %>
       <tr class="r<%= n %>">
-        <% recipe_name = recipe.get_recipe_name(recipe) %>
+        <% recipe_name = recipe.get_recipe_name %>
         <td><a href="Recipe.html#<%= recipe_name %>">
           <%= recipe_name %></a></td>
         <td><%= recipe.docstring %></td>

@@ -1,0 +1,8 @@
+<ul>
+  <% @object.each do |library_file| %>
+    <% libraries = find_library(library_file) %>
+    <% libraries.each do |lib| %>
+      <li><a href="../<%= url_for(lib, nil, false) %>"><%= lib %></a></li>
+    <% end %>
+  <% end %>
+</ul>

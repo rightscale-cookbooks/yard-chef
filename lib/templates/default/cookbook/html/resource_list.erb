@@ -1,6 +1,5 @@
 <ul>
   <% @object.each do |resource| %>
-    <% puts resource.inspect %>
-    <li><%= resource.name %></li>
+    <li><%= resource.path %></li>
   <% end %>
 </ul>
