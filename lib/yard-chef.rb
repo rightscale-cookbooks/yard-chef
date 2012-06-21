@@ -30,8 +30,6 @@ require 'yard-chef/handlers/actions'
 require 'yard-chef/handlers/recipe'
 require 'yard-chef/handlers/cookbook_desc'
 
-#require 'yard-chef/tags/resource_tag'
-
 include YARD::CodeObjects::Chef
 YARD::Parser::SourceParser.before_parse_list do |files, globals|
   files.each do |file|
@@ -55,10 +53,8 @@ YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__),
 
 # Map providers with resources
 YARD::Parser::SourceParser.after_parse_list do
-  YARD::Registry.paths.each do |path|
-    obj = YARD::Registry.at(path)
-    obj.tags(:resource).each do |tag|
-      map_providers_with_resource(tag.text, tag.object)
-    end
+  providers = PROVIDER.children_by_type(:provider)
+  RESOURCE.children_by_type(:resource).each do |resource|
+      resource.map_providers(providers)
   end
 end
