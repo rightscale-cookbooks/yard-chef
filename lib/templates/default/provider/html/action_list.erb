@@ -1,15 +1,16 @@
-<% actions = get_items_by_type(@object, :action) %>
+<% actions = @object.children_by_type(:action) %>
 <div class="method_details_list">
   <ul class="summary">
     <% actions.each_with_index do |action, i| %>
-      <li class="public"><span class="summary_signature">
-        <strong><%= action.name %></strong>
-        <%= htmlify(action.docstring) %>
-      </span>
+      <li class="public">
+        <div class="method_details first">
+          <span class="summary_signature">
+            <strong><%= action.name %> </strong>
+          </span>
+          <%= action.docstring %><br>
+          <%= yieldall :object => action, :owner => object, :index => i %>
+        </div>
       </li>
-      <div class="method_details first">
-        <%= yieldall :object => action, :owner => object, :index => i %>
-      </div>
     <% end %>
   </ul>
 </div>

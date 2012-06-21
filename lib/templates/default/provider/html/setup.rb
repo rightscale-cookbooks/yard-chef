@@ -1,7 +1,5 @@
-include T('default/fulldoc/html')
-
 def init
-  sections.push :title, :provider_list, [:action_list, [T('docstring'), :source]]
+  sections.push :title, [:provider_list, [:action_list, [:source]]]
 end
 
 def source
