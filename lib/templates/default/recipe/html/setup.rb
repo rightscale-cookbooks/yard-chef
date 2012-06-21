@@ -1,8 +1,5 @@
-include T('default/fulldoc/html')
-
 def init
-  @objects = @@cookbooks
-  sections.push :title, :recipe_list, [:recipe_name, T('docstring'), :source]
+  sections.push :title, [:recipe_list, [:source]]
 end
 
 def source
