@@ -1,6 +1,6 @@
 <% if object.providers.size > 0 %>
   <% providers = object.providers.uniq {|prov| prov.name.to_s} %>
-  <h4>Providers</h4>
+  <h3>Providers</h3>
   <ul class="summary compact">
     <% providers.each do |provider| %>
       <li>
