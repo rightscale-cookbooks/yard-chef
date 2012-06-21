@@ -1,4 +1,4 @@
-<% cookbooks = get_items_by_type(object, :cookbook) %>
+<% cookbooks = object.children_by_type(:cookbook) %>
 <table>
   <thead>
     <tr>
@@ -11,11 +11,9 @@
   <% n = 1 %> 
   <% cookbooks.each do |cookbook| %>
     <tr class="r<%= n %>">
-      <td><a href="<%= object.name.to_s %>/<%= cookbook.name.to_s %>.html">
-        <%= htmlify(cookbook.name.to_s) %></a>
-      </td>
-      <td><%= htmlify(cookbook.short_desc) %></td>
-      <td><%= htmlify(cookbook.version) %></td>
+      <td><%= linkify cookbook %></td>
+      <td><%= cookbook.short_desc %></td>
+      <td><%= cookbook.version %></td>
     </tr>
     <% n = n == 2 ? 1 : 2 %>
   <% end %>
