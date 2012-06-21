@@ -1,11 +1,15 @@
 <% actions = get_items_by_type(@object, :action) %>
 <div class="method_details_list">
-  <% actions.each_with_index do |action, i| %>
-    <h3 class="signature <%= i==0?'first':'' %>">
-      <strong><%= action.name %></strong>
-    </h3>
-    <div class="method_details <%= i==0?'first':''%>">
-      <%= yieldall :object => action, :owner => object, :index => i %>
-    </div>
-  <% end %>
+  <ul class="summary">
+    <% actions.each_with_index do |action, i| %>
+      <li class="public"><span class="summary_signature">
+        <strong><%= action.name %></strong>
+        <%= htmlify(action.docstring) %>
+      </span>
+      </li>
+      <div class="method_details first">
+        <%= yieldall :object => action, :owner => object, :index => i %>
+      </div>
+    <% end %>
+  </ul>
 </div>
