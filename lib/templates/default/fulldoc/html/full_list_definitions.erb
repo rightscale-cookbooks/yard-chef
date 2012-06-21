@@ -8,7 +8,7 @@
           <%= h(item.name) %>
         </a>
       </span>
-      <small><%= item.parent.Path %></small>
+      <small><%= item.namespace.parent.Path %></small>
     </li>
   <% end %>
   <% n = n == 2 ? 1 : 2 %>
