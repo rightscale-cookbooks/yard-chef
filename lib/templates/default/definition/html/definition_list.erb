@@ -1,4 +1,4 @@
-<% definitions = get_items_by_type(object, :definition) %>
+<% definitions = object.children_by_type(:definition) %>
 <% if definitions.size > 0 %>
   <div class="method_details_list">
     <% definitions.each_with_index do |definition, i| %>

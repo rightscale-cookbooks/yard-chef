@@ -1,7 +1,4 @@
-include T('default/fulldoc/html')
-
 def init
-  @objects = @@cookbooks
   sections.push :title, :definition_list, [:definition_name, T('docstring'), :source]
 end
 
