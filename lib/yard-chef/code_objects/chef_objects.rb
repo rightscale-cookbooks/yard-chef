@@ -106,11 +106,12 @@ module YARD::CodeObjects
       attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to, :display_name, :description, :recipes, :choice
 
       def Name
-        if @namespace.parent.root?
+        @Name = ''
+        if @namespace.type == :cookbook
           if @name =~ /\//
             array = @name.to_s.split('/')
             array.each do |o|
-              @Name << "[:#{o}]"
+              @Name = @Name << "[:#{o}]"
             end
           else
             @Name = @name
@@ -122,7 +123,7 @@ module YARD::CodeObjects
       end
 
       def Path
-        @Path = @namespace.parent.root? ? @path : self.parent.Path << '::' << @name.to_s
+        @Path = @namespace.type == :cookbook ? @path : self.parent.Path << '::' << @name.to_s
         @Path
       end
 
