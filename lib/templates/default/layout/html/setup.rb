@@ -1,5 +1,6 @@
 def init
   super
+  @page_title = page_title
 end
 
 # Add yard-chef specific menus
@@ -10,4 +11,27 @@ def menu_lists
   { :type => 'resources', :title => 'Resources', :search_title => 'Resource List'},
   { :type => 'definitions', :title => 'Definitions', :search_title => 'Definitions List' },
   { :type => 'libraries', :title => 'Libraries', :search_title => 'Library List' } ]
+end
+
+def page_title
+  if object == '_index.html'
+    @options.title
+  elsif object.is_a? CodeObjects::Base
+    case object.type
+    when :cookbook
+      "Cookbook: #{object.path}"
+    when :recipe
+      "Cookbook Recipes"
+    when :resource
+      "Chef Resources"
+    when :provider
+      "Chef Providers"
+    when :definition
+      "Chef Definitions"
+    when :module, :class
+      format_object_title(object)
+    when :chef
+      "Chef Home Page"
+    end
+  end
 end
