@@ -1,12 +1,14 @@
 <% if object.providers.size > 0 %>
   <% providers = object.providers.uniq {|prov| prov.name.to_s} %>
   <h4>Providers</h4>
-  <ul>
+  <ul class="summary compact">
     <% providers.each do |provider| %>
       <li>
-        <a href="<%= provider.parent.name %>.html#<%= provider.name %>">
-          <%= provider.parent.parent %>::<%= provider.parent.name.to_s.capitalize %>::<%= provider.name%>
-        </a>
+        <span class="summary_signature">
+          <a href="../<%= url_for(provider.parent, provider.name.to_s, false) %>">
+            <%= provider.Path %>
+          </a>
+        </span>
       </li>
     <% end %>
   </ul>
