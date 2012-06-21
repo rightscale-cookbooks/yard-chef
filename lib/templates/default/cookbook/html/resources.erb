@@ -1,1 +1,5 @@
-<% @items = object.resources %>
+<% resources = object.resources %>
+<% if resources.size > 0 %>
+  <h3 style="border-bottom: 1px #aaa solid">Resources</h3>
+  <%= yieldall :objects => resources %>
+<% end %>
