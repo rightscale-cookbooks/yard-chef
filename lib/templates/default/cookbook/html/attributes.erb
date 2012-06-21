@@ -1,5 +1,5 @@
 <% attributes = object.children_by_type(:attribute) %>
 <% if attributes.size > 0 %>
-  <h3 style="border-bottom: 1px #aaa solid">Attributes</h3>
+  <h1>Attributes</h1>
   <%= yieldall :objects => attributes %>
 <% end %>

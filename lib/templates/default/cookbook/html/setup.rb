@@ -1,11 +1,10 @@
 def init
-  sections.push :cookbook_title, [:cookbook_desc]
-  sections.push :recipes, [:recipes_table]
-  sections.push :attributes, [:attributes_table]
-  sections.push :resources, [:resource_list]
-  sections.push :definitions, [:definitions_list]
-  sections.push :libraries, [:library_list]
-
+  sections.push :cookbook_title, [:cookbook_desc, 
+                :recipes, [:recipes_table],
+                :attributes, [:attributes_table],
+                :resources, [:resource_list],
+                :definitions, [:definitions_list],
+                :libraries, [:library_list]]
   @libraries = YARD::Registry.all(:module)
 end
 
