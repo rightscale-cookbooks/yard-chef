@@ -201,11 +201,12 @@ module YARD::CodeObjects
       # Get cookbook name from the path
       # By convention 'metadata.rb' should be at the top of the cookbook folder
       cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
-      cookbook = CookbookObject.new(CHEF, cookbook_name) do |o|
-        readme_file = path_arr.slice(0, path_arr.size-1).join('/') + '/README.rdoc'
-        o.docstring = IO.read(readme_file) if File.exists?(readme_file)
-        o.add_file(path_arr.join('/'))
+      cookbook = CookbookObject.new(CHEF, cookbook_name)
+      readme_file = path_arr.slice(0, path_arr.size-1).join('/') + '/README.rdoc'
+      if File.exists?(File.expand_path(readme_file))
+        cookbook.source = IO.read(File.expand_path(readme_file))
       end
+      cookbook.add_file(path_arr.join('/'))
       log.info "Creating [Cookbook] #{cookbook.name} => #{cookbook.namespace}"
       cookbook
     end
