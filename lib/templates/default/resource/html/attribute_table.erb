@@ -1,4 +1,4 @@
-<% attributes = get_items_by_type(object, :attribute) %>
+<% attributes = object.children_by_type(:attribute) %>
 <% if attributes.size > 0 %>
   <h4>Attributes</h4>
   <table>
@@ -20,9 +20,7 @@
       <% n = 1 %>
       <% attributes.each do |attrib| %>
         <tr class="r<%= n %>">
-          <td><a href="<%= object.parent %>/<%= object.name %>.html">
-              <%= attrib.name.to_s %></a>
-          </td>
+          <td><%= attrib.name.to_s %></td>
           <td><%= attrib.docstring.to_s %></td>
           <td><%= attrib.default %></td>
           <td><%= attrib.kind_of %></td>
