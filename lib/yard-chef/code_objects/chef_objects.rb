@@ -64,7 +64,24 @@ module YARD::CodeObjects
     CHEF = ChefObject.new(:root, 'Chef')
     log.info "Creating [Chef] as root namespace"
 
-    class ProviderObject < ChefObject ; end
+    class ProviderObject < ChefObject
+      attr_accessor :resources
+
+      def initialize(namespace, name)
+        super(namespace, name)
+        @resources = []
+      end
+
+      def read_tag(file)
+        file_handle = File.open(File.expand_path(file), 'r')
+        file_handle.readlines.each do |line|
+          if line =~ /@resource/
+            self.resources.push(line.split(%r{@resource })[1])
+          end
+        end
+      end
+    end
+        
     PROVIDER = ProviderObject.new(CHEF, 'provider')
     log.info "Creating [Provider] namespace => #{PROVIDER.namespace}"
 
@@ -148,6 +165,19 @@ module YARD::CodeObjects
         @actions = []
         @providers = []
       end
+
+      def map_providers(providers_list)
+        providers_list.each do |provider|
+          if provider.resources.size > 0
+            provider.resources.each do |res|
+              if self.Path.to_s == res.strip
+                self.providers.push(provider)
+                break
+              end
+            end
+          end
+        end
+      end
     end
     RESOURCE = ResourceObject.new(CHEF, 'resource')
     log.info "Creating [Resource] namespace => #{RESOURCE.namespace}"
@@ -216,6 +246,7 @@ module YARD::CodeObjects
       lwrp_name = cookbook.get_lwrp_name(path_arr[path_arr.index(type) + 1])
       if type == 'providers'
         lwrp = ProviderObject.new(PROVIDER, lwrp_name)
+        lwrp.read_tag(path_arr.join('/'))
       elsif type == 'resources'
         lwrp = ResourceObject.new(RESOURCE, lwrp_name)
         cookbook.resources.push(lwrp)
@@ -238,12 +269,6 @@ module YARD::CodeObjects
     def register_library(path_arr)
       cookbook = self.find_cookbook(path_arr[path_arr.index('libraries') - 1])
       cookbook.libraries.push(path_arr.join('/'))
-    end
-
-    def map_providers_with_resource(resource, provider)
-      res_name = resource.split('::')
-      res_obj = YARD::Registry.at("#{res_name[0]}::#{res_name[1].downcase}::#{res_name[2]}")
-      res_obj.providers.push(provider.parent)
     end
   end
 end
