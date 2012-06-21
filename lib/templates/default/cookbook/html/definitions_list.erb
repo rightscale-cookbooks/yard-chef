@@ -1,5 +1,7 @@
-<ul>
-  <% @object.each do |define| %> 
-    <li><a href="<%= define.type.to_s %>.html#<%= define.name %>"><%= define.name %></a></li>
+<ul class="summary compact">
+  <% @objects.each do |define| %> 
+    <li><span class="summary_signature">
+      <a href="../<%= url_for(define.parent, define.name, false) %>"><%= define.Name %></a>
+    </li>
   <% end %>
 </ul>
