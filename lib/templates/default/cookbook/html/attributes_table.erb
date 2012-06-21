@@ -12,10 +12,9 @@
   </thead>
   <tbody>
     <% n = 1 %>
-    <% @object.each do |attribute| %>
+    <% @objects.each do |attribute| %>
       <tr class="r<%= n %>">
-        <% attrib_name = attribute.get_attribute_name %>
-        <td><%= attrib_name %></a></td>
+        <td><%= attribute.Name %></a></td>
         <td><%= attribute.display_name %></td>
         <td><%= attribute.description %></td>
         <td><%= attribute.default %></td> 
