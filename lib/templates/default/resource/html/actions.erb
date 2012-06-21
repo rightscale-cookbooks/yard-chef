@@ -1,0 +1,11 @@
+<% if object.actions.size > 0 %>
+  <h4>Actions</h4>
+  <% actions = object.actions.delete_if{|item| item == '@action_list'} %>
+  <ul class="summary compact"> 
+    <% actions.each do |action| %>
+      <li class="public">
+        <span class="summary_signature"><%= action.to_s %></span>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
