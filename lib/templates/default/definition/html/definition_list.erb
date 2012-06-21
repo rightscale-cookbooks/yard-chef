@@ -1,10 +1,17 @@
 <% definitions = object.children_by_type(:definition) %>
 <% if definitions.size > 0 %>
   <div class="method_details_list">
-    <% definitions.each_with_index do |definition, i| %>
-      <div class="method_details <%= i==0?'first':''%>">
-        <%= yieldall :object => definition, :owner => object, :index => i %>
-      </div>
-    <% end %>
+    <ul class="summary">
+      <% definitions.each_with_index do |definition, i| %>
+        <div class="method_details first">
+          <li class="public">
+            <span class="summary_signature"><strong>
+              <a name="<%= definition.name %>"><%= definition.name %></a>
+            </strong></span><br>
+            <%= definition.docstring %><br>
+            <%= yieldall :object => definition, :owner => object, :index => i %>
+        </div>
+      <% end %>
+    </ul>
   </div>
 <% end %>

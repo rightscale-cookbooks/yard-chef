@@ -1,5 +1,5 @@
 def init
-  sections.push :title, :definition_list, [:definition_name, T('docstring'), :source]
+  sections.push :title, [:definition_list, [:source]]
 end
 
 def source
