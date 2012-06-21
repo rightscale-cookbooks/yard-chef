@@ -1,1 +1,5 @@
-<% @items = get_items_by_type(object, :recipe) %>
+<% recipes = object.children_by_type(:recipe) %>
+<% if recipes.size > 0 %>
+  <h3 style="border-bottom: 1px #aaa solid">Recipes</h3>
+  <%= yieldall :objects => recipes %>
+<% end %>
