@@ -30,13 +30,14 @@ module YARD::Handlers
 
       def process
         path_arr = parser.file.to_s.split('/')
-        cookbook = find_cookbook(path_arr[path_arr.index('metadata.rb') - 1])
-
-        case statement[0].source
-        when 'description'
-          cookbook.short_desc = statement.parameters.first.jump(:string_content).source
-        when 'version'
-          cookbook.version = statement.parameters.first.jump(:string_content).source
+        if path_arr.include?('metadata.rb')
+          cookbook = find_cookbook(path_arr[path_arr.index('metadata.rb') - 1])
+          case statement[0].source
+          when 'description'
+            cookbook.short_desc = statement.parameters.first.jump(:string_content).source
+          when 'version'
+            cookbook.version = statement.parameters.first.jump(:string_content).source
+          end
         end
       end
     end
