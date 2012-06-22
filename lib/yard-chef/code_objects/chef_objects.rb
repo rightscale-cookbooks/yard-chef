@@ -223,6 +223,17 @@ module YARD::CodeObjects
       end
     end
 
+    def top_level_readme(path_arr)
+      # path_arr array will contain 'metadata.rb' - repository/cookbook_name/metadata.rb
+      # top level repository README.rdoc may be present in repository directory
+      if (path_arr.size-3) >= 0 
+        readme_path = path_arr.slice(0, path_arr.size-3).join('/') + '/README.rdoc'
+        if File.exists?(File.expand_path(readme_path))
+          CHEF.docstring = IO.read(File.expand_path(readme_path))
+        end
+      end
+    end
+
     def find_cookbook(cookbook_name)
       YARD::Registry.resolve(:root, "#{CHEF}::#{cookbook_name}")
     end
