@@ -32,9 +32,14 @@ require 'yard-chef/handlers/cookbook_desc'
 
 include YARD::CodeObjects::Chef
 YARD::Parser::SourceParser.before_parse_list do |files, globals|
+  flag = true
   files.each do |file|
     path_arr = file.to_s.split('/')
     if path_arr.include?('metadata.rb')
+      if flag
+        top_level_readme(path_arr)
+        flag = false
+      end
       register_cookbook(path_arr)
     elsif path_arr.include?('providers')
       register_lwrp(path_arr, 'providers')
