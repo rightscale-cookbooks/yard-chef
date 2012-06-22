@@ -98,11 +98,6 @@ module YARD::CodeObjects
       def Path
         @path
       end
-
-      def get_recipe_name
-        cookbook_name = self.parent.name.to_s
-        cookbook_name == @name.to_s ? cookbook_name : cookbook_name << '::' << @name.to_s
-      end
     end
     RECIPE = RecipeObject.new(CHEF, 'recipe')
     log.info "Creating [Recipe] namespace => #{RECIPE.namespace}"
@@ -143,19 +138,6 @@ module YARD::CodeObjects
         @Path = @namespace.type == :cookbook ? @path : self.parent.Path << '::' << @name.to_s
         @Path
       end
-
-      def get_attribute_name
-        attrib_name = ''
-        if @name =~ /\//
-          array = @name.to_s.split('/')
-          array.each do |o|
-            attrib_name << "[:#{o}]"
-          end
-        else
-          attrib_name = @name
-        end
-        attrib_name
-      end    
     end
 
     class ResourceObject < ChefObject
