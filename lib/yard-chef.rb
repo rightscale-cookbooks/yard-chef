@@ -37,7 +37,7 @@ YARD::Parser::SourceParser.before_parse_list do |files, globals|
     path_arr = file.to_s.split('/')
     if path_arr.include?('metadata.rb')
       if flag
-        top_level_readme(path_arr)
+        top_level_readme(File.expand_path(file))
         flag = false
       end
       register_cookbook(path_arr)
