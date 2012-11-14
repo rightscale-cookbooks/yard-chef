@@ -30,11 +30,13 @@ module YARD::Handlers
       def process
         path_arr = parser.file.to_s.split("/")
         cookbook_name = path_arr[path_arr.index('resources') - 1]
+        cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
         resource_name = path_arr[path_arr.index('resources') + 1].to_s.sub('.rb','')
         lwrp_name = LWRPObject.name(cookbook_name, resource_name)
 
         # Find the resource which lists the actions
-        resource_obj = ResourceObject.register(lwrp_name)
+        resource_obj = ChefObject.register(RESOURCE, lwrp_name, :resource)
+        cookbook_obj.resources.push(resource_obj) unless cookbook_obj.resources.include?(resource_obj)
         # if multiple actions listed in same line, split the actions and add them to the list
         if statement.first_line =~ /,/
           statement.first_line.split(%r{,?\s*:}).each do |action|

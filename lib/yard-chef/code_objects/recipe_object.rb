@@ -24,11 +24,13 @@ require 'yard'
 module YARD::CodeObjects
   module Chef
     class RecipeObject < ChefObject
+      register_element :recipe
       def initialize(namespace, name)
         super(namespace, name)
       end
     end
-    RECIPE = RecipeObject.new(CHEF, 'recipe')
-    log.info "Created [Recipe] namespace => #{RECIPE.namespace}"
+
+    #RECIPE = RecipeObject.new(CHEF, 'recipe')
+    RECIPE = ChefObject.register(CHEF, 'recipe', :recipe)
   end
 end

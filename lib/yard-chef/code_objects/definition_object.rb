@@ -24,12 +24,12 @@ require 'yard'
 module YARD::CodeObjects
   module Chef
     class DefinitionObject < ChefObject
+      register_element :definition
       def initialize(namespace, name)
         super(namespace, name)
       end
     end
 
-    DEFINITION = DefinitionObject.new(CHEF, 'definition')
-    log.info "Creating [Definition] namespace => #{DEFINITION.namespace}"
+    DEFINITION = ChefObject.register(CHEF, 'definition', :definition)
   end
 end

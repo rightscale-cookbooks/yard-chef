@@ -24,21 +24,11 @@ require 'yard'
 module YARD::CodeObjects
   module Chef
     class ResourceObject < ChefObject
+      register_element :resource
       def initialize(namespace, name)
         super(namespace, name)
         @actions = []
         @providers = []
-      end
-
-      def self.register(resource_name)
-        resource = YARD::Registry.resolve(:root, "#{RESOURCE}::#{resource_name}")
-        if resource.nil?
-          resource_obj = self.new(RESOURCE, resource_name)
-          log.info "Created [RESOURCE] #{resource_obj.name} => #{resource_obj.namespace}"
-        else
-          resource_obj = resource
-        end
-        resource_obj
       end
 
       def map_providers(providers_list)
@@ -54,7 +44,6 @@ module YARD::CodeObjects
         end
       end
     end
-    RESOURCE = ResourceObject.new(CHEF, 'resource')
-    log.info "Created [Resource] namespace => #{RESOURCE.namespace}"
+    RESOURCE = ChefObject.register(CHEF, 'resource', :resource)
   end
 end

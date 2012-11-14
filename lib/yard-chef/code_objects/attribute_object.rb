@@ -24,6 +24,7 @@ require 'yard'
 module YARD::CodeObjects
   module Chef
     class AttributeObject < ChefObject
+      register_element :attribute
       attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to, :display_name, :description, :recipes, :choice
 
       def initialize(namespace, name)

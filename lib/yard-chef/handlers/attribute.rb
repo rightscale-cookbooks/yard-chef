@@ -31,22 +31,22 @@ module YARD::Handlers
         path_arr = parser.file.to_s.split('/')
         if path_arr.include?('metadata.rb')
           cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
-          namespace = CookbookObject.register(cookbook_name)
+          namespace = ChefObject.register(CHEF, cookbook_name, :cookbook)
         else
           cookbook_name = path_arr[path_arr.index('resources') - 1]
+          cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
           resource_name = path_arr[path_arr.index('resources') + 1].to_s.sub('.rb','')
           lwrp_name = LWRPObject.name(cookbook_name, resource_name)
-          namespace = ResourceObject.register(lwrp_name)
+          namespace = ChefObject.register(cookbook_obj, lwrp_name, :resource)
+          cookbook_obj.resources.push(namespace) unless cookbook_obj.resources.include?(namespace)
         end
       
-        name = statement.parameters.first.jump(:string_content, :ident).source
-        attrib_obj = AttributeObject.new(namespace, name) do |attrib|
-          attrib.source     = statement.source
-          attrib.scope      = :instance
-          attrib.docstring  = statement.comments
-          attrib.add_file(statement.file, statement.line)
-        end
-        log.info "Created [Attribute] #{attrib_obj.name} => #{attrib_obj.namespace}"
+        attrib_name = statement.parameters.first.jump(:string_content, :ident).source
+        attrib_obj = ChefObject.register(namespace, attrib_name, :attribute)
+        attrib_obj.source = statement.source
+        attrib_obj.scope = :instance
+        attrib_obj.docstring = statement.comments
+        attrib_obj.add_file(statement.file, statement.line)
       end
     end
   end

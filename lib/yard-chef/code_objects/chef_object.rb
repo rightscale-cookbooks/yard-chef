@@ -25,10 +25,39 @@ module YARD::CodeObjects
   module Chef
     class ChefObject < YARD::CodeObjects::ClassObject
       attr_accessor :readme_type
+      @@chef_elements = {}
 
+      # Creates a ChefObject instance and registers in YARD::Registry.
+      # @param [NamespaceObject] namespace namespace to which the object must belong.
+      # @param [String] name name of the ChefObject.
       def initialize(namespace, name)
         super(namespace, name)
         @readme_type = :markup
+      end
+
+      # Register a Chef element Object class.
+      # @param [Class] element Chef element object class.
+      def self.register_element(element)
+        @@chef_elements[element] = self
+      end
+
+      # Factory for creating Chef element Object instance and registering in YARD::Registry. New  Object instance created only it does not exist in YARD::Registry.
+      # @param [NamespaceObject] namespace namespace to which the object must belong.
+      # @param [String] name name of the Chef element Object.
+      # @param [Symbol] type type of the Chef element Object.
+      # @return [ChefObject] the Chef element Object instance.
+      def self.register(namespace, name, type)
+        element = @@chef_elements[type]
+        if element
+          element_obj = YARD::Registry.resolve(:root, "#{namespace}::#{name}")
+          if element_obj.nil?
+            element_obj = element.new(namespace, name)
+            log.info "Created [#{type.to_s.capitalize}] #{element_obj.name} => #{element_obj.namespace}"
+          end
+          element_obj
+        else
+          raise "Invalid chef element type #{type}"
+        end
       end
 
       def parse_readme(file_path)

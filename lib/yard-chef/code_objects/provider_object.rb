@@ -24,22 +24,12 @@ require 'yard'
 module YARD::CodeObjects
   module Chef
     class ProviderObject < ChefObject
+      register_element :provider
       attr_accessor :name, :resources
 
       def initialize(namespace, name)
         super(namespace, name)
         @resources = []
-      end
-
-      def self.register(provider_name)
-        provider = YARD::Registry.resolve(:root, "#{PROVIDER}::#{provider_name}")
-        if provider.nil?
-          provider_obj = self.new(PROVIDER, provider_name)
-          log.info "Created [Provider] #{provider_obj.name} => #{provider_obj.namespace}"
-        else
-          provider_obj = provider
-        end
-        provider_obj
       end
 
       def read_tag(file)
@@ -50,7 +40,7 @@ module YARD::CodeObjects
       end
     end
 
-    PROVIDER = ProviderObject.new(CHEF, 'provider')
-    log.info "Created [Provider] namespace => #{PROVIDER.namespace}"
+    #PROVIDER = ProviderObject.new(CHEF, 'provider')
+    PROVIDER = ChefObject.register(CHEF, 'provider', :provider)
   end
 end

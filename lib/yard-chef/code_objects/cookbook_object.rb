@@ -24,6 +24,7 @@ require 'yard'
 module YARD::CodeObjects
   module Chef
     class CookbookObject < ChefObject
+      register_element :cookbook
       attr_accessor :short_desc, :version, :resources, :libraries, :definitions, :readme_type
       def initialize(namespace, name)
         super(namespace, name)
@@ -49,16 +50,6 @@ module YARD::CodeObjects
         end
       end
 
-      def self.register(cookbook_name)
-        cookbook = YARD::Registry.resolve(:root, "#{CHEF}::#{cookbook_name}")
-        if cookbook.nil?
-          cookbook_obj = self.new(CHEF, cookbook_name)
-          log.info "Created [Cookbook] #{cookbook_obj.name} => #{cookbook_obj.namespace}"
-        else
-          cookbook_obj = cookbook
-        end
-        cookbook_obj
-      end
     end
   end
 end

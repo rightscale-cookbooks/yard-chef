@@ -54,59 +54,31 @@ module YARD::CodeObjects::Chef
 
         # Register cookbook
         cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
-        cookbook = CookbookObject.register(cookbook_name)
+        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
         cookbook.parse_readme(File.expand_path(file))
         cookbook.add_file(file)
-
-      elsif path_arr.include?('providers')
-        # Register provider
-        cookbook_name = path_arr[path_arr.index('providers') - 1]
-        provider_name = path_arr[path_arr.index('providers') + 1].to_s.sub('.rb','')
-        # Get the provider in LWRP name format. See http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29.
-        cookbook = CookbookObject.register(cookbook_name)
-        lwrp_name = LWRPObject.name(cookbook_name, provider_name)
-        provider = ProviderObject.register(lwrp_name)
-        provider.add_file(file)
-        log.info "Created [Provider] #{provider.name} => #{provider.namespace}"
-        cookbook.providers.push(provider)
-
-      elsif path_arr.include?('resources')
-        # Register resource
-        cookbook_name = path_arr[path_arr.index('resources') - 1]
-        resource_name = path_arr[path_arr.index('resources') + 1].to_s.sub('.rb','')
-        cookbook = CookbookObject.register(cookbook_name)
-        # Get the resource in LWRP name format. See http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29.
-        lwrp_name = LWRPObject.name(cookbook_name, resource_name)
-        resource = ResourceObject.register(lwrp_name)
-        resource.add_file(file)
-        log.info "Created [Resource] #{resource.name} => #{resource.namespace}"
-        cookbook.resources.push(resource)
 
       elsif path_arr.include?('recipes')
         # Register recipe
         cookbook_name = path_arr[path_arr.index('recipes') - 1]
+        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
         recipe_name = path_arr[path_arr.index('recipes') + 1].to_s.sub('.rb','')
-        cookbook = CookbookObject.register(cookbook_name)
-        recipe = RecipeObject.new(cookbook, recipe_name) do |recipe_obj|
-          recipe_obj.source = IO.read(file)
-          recipe_obj.add_file(file)
-        end
-        log.info "Created [Recipe] #{recipe.name} => #{recipe.namespace}"
+        recipe = ChefObject.register(cookbook, recipe_name, :recipe)
+        recipe.source = IO.read(file)
+        recipe.add_file(file)
 
       elsif path_arr.include?('definitions')
         # Register definition
         cookbook_name = path_arr[path_arr.index('definitions') - 1]
+        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
         definition_name = path_arr[path_arr.index('definitions') + 1].to_s.sub('.rb','')
-        cookbook = CookbookObject.register(cookbook_name)
-        definition = DefinitionObject.new(cookbook, definition_name) do |definition_obj|
-          definition_obj.add_file(file)
-        end
-        log.info "Created [Definition] #{definition.name} => #{definition.namespace}"
+        definition = ChefObject.register(cookbook, definition_name, :definition)
+        definition.add_file(file)
 
       elsif path_arr.include?('libraries')
         # Register library
         cookbook_name = path_arr[path_arr.index('libraries') - 1]
-        cookbook = CookbookObject.register(cookbook_name)
+        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
         cookbook.libraries.push(path_arr.join('/'))
       end
     end

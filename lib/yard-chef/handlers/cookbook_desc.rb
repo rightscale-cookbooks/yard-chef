@@ -32,7 +32,7 @@ module YARD::Handlers
         path_arr = parser.file.to_s.split('/')
         if path_arr.include?('metadata.rb')
           cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
-          cookbook_obj = CookbookObject.register(cookbook_name)
+          cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
           case statement[0].source
           when 'description'
             cookbook_obj.short_desc = statement.parameters.first.jump(:string_content).source

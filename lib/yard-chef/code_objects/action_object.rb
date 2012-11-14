@@ -24,6 +24,12 @@ require 'yard'
 module YARD::CodeObjects
   module Chef
     class ActionObject < ChefObject
+      register_element :action
+
+      def initialize(namespace, name)
+        super(namespace, name)
+      end
+
       #def path
         #@path = self.parent.path.to_s << '::' << @name.to_s
       #end
