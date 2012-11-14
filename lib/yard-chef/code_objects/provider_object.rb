@@ -21,18 +21,36 @@
 
 require 'yard'
 
-module YARD::Handlers
+module YARD::CodeObjects
   module Chef
-    class RecipeHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
-      handles method_call(:recipe)
+    class ProviderObject < ChefObject
+      attr_accessor :name, :resources
 
-      def process
-        name = statement.parameters.first.jump(:string_content).source
-        recipe_obj = YARD::Registry.resolve(:root, "#{CHEF}::#{name}")
-        log.info "Found Recipe #{recipe_obj.name} => #{recipe_obj.namespace}"
-        recipe_obj.docstring = statement.parameters[1]
+      def initialize(namespace, name)
+        super(namespace, name)
+        @resources = []
+      end
+
+      def self.register(provider_name)
+        provider = YARD::Registry.resolve(:root, "#{PROVIDER}::#{provider_name}")
+        if provider.nil?
+          provider_obj = self.new(PROVIDER, provider_name)
+          log.info "Created [Provider] #{provider_obj.name} => #{provider_obj.namespace}"
+        else
+          provider_obj = provider
+        end
+        provider_obj
+      end
+
+      def read_tag(file)
+        file_handle = File.open(File.expand_path(file), 'r')
+        file_handle.readlines.each do |line|
+          @resources.push(line.split(%r{@resource })[1]) if line =~ /@resource/
+        end
       end
     end
+
+    PROVIDER = ProviderObject.new(CHEF, 'provider')
+    log.info "Created [Provider] namespace => #{PROVIDER.namespace}"
   end
 end

@@ -21,25 +21,31 @@
 
 require 'yard'
 
-module YARD::Handlers
+module YARD::CodeObjects
   module Chef
-    class CookbookDescHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
-      handles method_call(:description)
-      handles method_call(:version)
-
-      def process
-        path_arr = parser.file.to_s.split('/')
-        if path_arr.include?('metadata.rb')
-          cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
-          cookbook_obj = CookbookObject.register(cookbook_name)
-          case statement[0].source
-          when 'description'
-            cookbook_obj.short_desc = statement.parameters.first.jump(:string_content).source
-          when 'version'
-            cookbook_obj.version = statement.parameters.first.jump(:string_content).source
-          end
+    class LWRPObject < ChefObject
+      def self.name(cookbook, lwrp_name)
+        if lwrp_name == 'default'
+          @name = self.construct_lwrp_name(cookbook)
+        else
+          @name = self.construct_lwrp_name(cookbook, lwrp_name)
         end
+      end
+
+      def self.construct_lwrp_name(cookbook_name, lwrp_name = '')
+        self.lwrp_format(cookbook_name) << self.lwrp_format(lwrp_name)
+      end
+
+      def self.lwrp_format(name)
+        formatted_name = ''
+        if name =~ /_/
+          name.split('_').each do |str|
+            formatted_name << str.to_s.capitalize
+          end
+        else
+          formatted_name = name.capitalize
+        end
+        formatted_name
       end
     end
   end

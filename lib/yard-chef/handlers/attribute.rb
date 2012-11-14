@@ -30,11 +30,13 @@ module YARD::Handlers
       def process
         path_arr = parser.file.to_s.split('/')
         if path_arr.include?('metadata.rb')
-          namespace = find_cookbook(path_arr[path_arr.index('metadata.rb') - 1])
+          cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
+          namespace = CookbookObject.register(cookbook_name)
         else
-          cookbook = find_cookbook(path_arr[path_arr.index('resources') - 1])
-          resource_name = cookbook.get_lwrp_name(path_arr[path_arr.size - 1])
-          namespace = YARD::Registry.resolve(:root, "#{RESOURCE}::#{resource_name}")
+          cookbook_name = path_arr[path_arr.index('resources') - 1]
+          resource_name = path_arr[path_arr.index('resources') + 1].to_s.sub('.rb','')
+          lwrp_name = LWRPObject.name(cookbook_name, resource_name)
+          namespace = ResourceObject.register(lwrp_name)
         end
       
         name = statement.parameters.first.jump(:string_content, :ident).source
@@ -44,42 +46,7 @@ module YARD::Handlers
           attrib.docstring  = statement.comments
           attrib.add_file(statement.file, statement.line)
         end
-        statement.source.split(%r{,\s*:}).each do |param|
-          insert_params(attrib_obj, param)
-        end
-        log.info "Creating [Attribute] #{attrib_obj.name} => #{attrib_obj.namespace}"
-      end
-    
-      def insert_params(attrib, param)
-        if param =~ /=>/
-          args = param.split(%r{\s*=>\s*})
-          case args[0]
-          when "default"
-            attrib.default = args[1]
-          when "kind_of"
-            attrib.kind_of = args[1]
-          when "required"
-            attrib.required = args[1]
-          when "regex"
-            attrib.regex = args[1]
-          when "equal_to"
-            attrib.equal_to = args[1]
-          when "name_attribute"
-            attrib.name_attribute = args[1]
-          when "callbacks"
-            attrib.callbacks = args[1]
-          when "respond_to"
-            attrib.respond_to = args[1]
-          when "display_name"
-            attrib.display_name = args[1]
-          when "description"
-            attrib.description = args[1]
-          when "recipes"
-            attrib.recipes = args[1]
-          when "choice"
-            attrib.choice = args[1]
-          end
-        end
+        log.info "Created [Attribute] #{attrib_obj.name} => #{attrib_obj.namespace}"
       end
     end
   end

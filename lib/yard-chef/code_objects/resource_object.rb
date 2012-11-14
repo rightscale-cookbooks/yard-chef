@@ -21,26 +21,40 @@
 
 require 'yard'
 
-module YARD::Handlers
+module YARD::CodeObjects
   module Chef
-    class CookbookDescHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
-      handles method_call(:description)
-      handles method_call(:version)
+    class ResourceObject < ChefObject
+      def initialize(namespace, name)
+        super(namespace, name)
+        @actions = []
+        @providers = []
+      end
 
-      def process
-        path_arr = parser.file.to_s.split('/')
-        if path_arr.include?('metadata.rb')
-          cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
-          cookbook_obj = CookbookObject.register(cookbook_name)
-          case statement[0].source
-          when 'description'
-            cookbook_obj.short_desc = statement.parameters.first.jump(:string_content).source
-          when 'version'
-            cookbook_obj.version = statement.parameters.first.jump(:string_content).source
+      def self.register(resource_name)
+        resource = YARD::Registry.resolve(:root, "#{RESOURCE}::#{resource_name}")
+        if resource.nil?
+          resource_obj = self.new(RESOURCE, resource_name)
+          log.info "Created [RESOURCE] #{resource_obj.name} => #{resource_obj.namespace}"
+        else
+          resource_obj = resource
+        end
+        resource_obj
+      end
+
+      def map_providers(providers_list)
+        providers_list.each do |provider|
+          if provider.resources.size > 0
+            provider.resources.each do |res|
+              if self.path.to_s == res.strip
+                self.providers.push(provider)
+                break
+              end
+            end
           end
         end
       end
     end
+    RESOURCE = ResourceObject.new(CHEF, 'resource')
+    log.info "Created [Resource] namespace => #{RESOURCE.namespace}"
   end
 end

@@ -21,26 +21,14 @@
 
 require 'yard'
 
-module YARD::Handlers
+module YARD::CodeObjects
   module Chef
-    class CookbookDescHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
-      handles method_call(:description)
-      handles method_call(:version)
-
-      def process
-        path_arr = parser.file.to_s.split('/')
-        if path_arr.include?('metadata.rb')
-          cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
-          cookbook_obj = CookbookObject.register(cookbook_name)
-          case statement[0].source
-          when 'description'
-            cookbook_obj.short_desc = statement.parameters.first.jump(:string_content).source
-          when 'version'
-            cookbook_obj.version = statement.parameters.first.jump(:string_content).source
-          end
-        end
+    class RecipeObject < ChefObject
+      def initialize(namespace, name)
+        super(namespace, name)
       end
     end
+    RECIPE = RecipeObject.new(CHEF, 'recipe')
+    log.info "Created [Recipe] namespace => #{RECIPE.namespace}"
   end
 end

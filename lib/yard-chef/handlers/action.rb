@@ -29,18 +29,18 @@ module YARD::Handlers
 
       def process
         path_arr = parser.file.to_s.split('/')
-        cookbook = find_cookbook(path_arr[path_arr.index('providers') - 1])
-        provider_name = cookbook.get_lwrp_name(path_arr[path_arr.size - 1])
-        provider = YARD::Registry.resolve(:root, "#{PROVIDER}::#{provider_name}")
+        cookbook_name = path_arr[path_arr.index('providers') - 1]
+        provider_name = path_arr[path_arr.index('providers') + 1].to_s.sub('.rb','')
+        lwrp_name = LWRPObject.name(cookbook_name, provider_name)
+        provider_obj = ProviderObject.register(lwrp_name)
 
         name = statement.parameters.first.jump(:string_content, :ident).source
-        action_obj = ActionObject.new(provider, name) do |action|
+        action_obj = ActionObject.new(provider_obj, name) do |action|
           action.source    = statement.source
           action.docstring = statement.comments
           action.add_file(statement.file, statement.line)
         end
-        log.info "Creating [Action] #{action_obj.name} => #{action_obj.namespace}"
-        parse_block(statement.last.last, :owner => action_obj)
+        log.info "Created [Action] #{action_obj.name} => #{action_obj.namespace}"
       end
     end
   end

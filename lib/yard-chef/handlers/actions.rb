@@ -26,19 +26,19 @@ module YARD::Handlers
     class ActionsHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:actions)
-      handles method_call(:add_action)
 
       def process
         path_arr = parser.file.to_s.split("/")
-        cookbook = find_cookbook(path_arr[path_arr.index('resources') - 1])
-        resource_name = cookbook.get_lwrp_name(path_arr[path_arr.size - 1])
+        cookbook_name = path_arr[path_arr.index('resources') - 1]
+        resource_name = path_arr[path_arr.index('resources') + 1].to_s.sub('.rb','')
+        lwrp_name = LWRPObject.name(cookbook_name, resource_name)
 
         # Find the resource which lists the actions
-        resource_obj = YARD::Registry.resolve(:root, "#{RESOURCE}::#{resource_name}")
+        resource_obj = ResourceObject.register(lwrp_name)
         # if multiple actions listed in same line, split the actions and add them to the list
         if statement.first_line =~ /,/
           statement.first_line.split(%r{,?\s*:}).each do |action|
-            resource_obj.actions.push(action) if action != 'actions'
+            resource_obj.actions.push(action)
           end
         else
           resource_obj.actions.push(statement.parameters.first.jump(:string_content, :ident).source)

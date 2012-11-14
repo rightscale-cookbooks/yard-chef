@@ -21,22 +21,45 @@
 
 require 'yard'
 
-module YARD::Handlers
+module YARD::CodeObjects
   module Chef
-    class DefinitionHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
-      handles method_call(:define)
-      
-      def process
-        path_arr = parser.file.to_s.split('/')
-        cookbook_name = path_arr[path_arr.index('definitions') - 1]
-        definition_name = path_arr[path_arr.index('definitions') + 1].to_s.sub('.rb','')
+    class CookbookObject < ChefObject
+      attr_accessor :short_desc, :version, :resources, :libraries, :definitions, :readme_type
+      def initialize(namespace, name)
+        super(namespace, name)
+        @resources = []
+        @providers = []
+        @libraries = []
+        @readme_type = :markup
+      end
+
+      def parse_readme(file_path)
+        path_arr = file_path.to_s.split('/')
+        base_path = path_arr.slice(0..path_arr.index('metadata.rb')-1).join('/')
+        readme_path = base_path + '/README.rdoc'
+        if File.exists?(readme_path)
+          @docstring = IO.read(readme_path)
+          @readme_type = :markup
+        else
+          readme_path = base_path + '/README.md'
+          if File.exists?(readme_path)
+            @docstring = IO.read(readme_path)
+            @readme_type = :markdown
+          end
+        end
+      end
+
+      def self.register(cookbook_name)
         cookbook = YARD::Registry.resolve(:root, "#{CHEF}::#{cookbook_name}")
-        define_obj = YARD::Registry.resolve(:root, "#{cookbook}::#{definition_name}")
-        define_obj.source = statement.source
-        define_obj.docstring = statement.comments
-        define_obj.add_file(statement.file, statement.line)
+        if cookbook.nil?
+          cookbook_obj = self.new(CHEF, cookbook_name)
+          log.info "Created [Cookbook] #{cookbook_obj.name} => #{cookbook_obj.namespace}"
+        else
+          cookbook_obj = cookbook
+        end
+        cookbook_obj
       end
     end
   end
 end
+
