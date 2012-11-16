@@ -25,10 +25,19 @@ module YARD::CodeObjects
   module Chef
     class ResourceObject < ChefObject
       register_element :resource
+
       def initialize(namespace, name)
         super(namespace, name)
         @actions = []
         @providers = []
+      end
+
+      def class_name
+        class_name = []
+        @path.split('::').each do |word|
+          class_name.push(word.capitalize)
+        end
+        class_name.join('::')
       end
 
       def map_providers(providers_list)

@@ -1,16 +1,17 @@
-<% actions = @object.children_by_type(:action) %>
-<div class="method_details_list">
-  <ul class="summary">
-    <% actions.each_with_index do |action, i| %>
-      <li class="public">
-        <div class="method_details first">
-          <span class="summary_signature">
-            <strong><%= action.name %> </strong>
-          </span>
-          <%= action.docstring %><br>
+<% if object.providers.size > 0 %>
+  <h2>Action Details</h2>
+  <% object.providers.each do |provider| %>
+    <% actions = provider.children_by_type(:action) %>
+    <% if actions.size > 0 %>
+      <% actions.each_with_index do |action, i| %>
+        <div class="method_details <%= 'first' if i == 0 %>">
+          <h3 class="signature"><a name="<%= action.name %>">
+            <strong><%= action.name %></strong>
+          </a></h3>
+          <%= htmlify action.docstring %>
           <%= yieldall :object => action, :owner => object, :index => i %>
         </div>
-      </li>
+      <% end %>
     <% end %>
-  </ul>
-</div>
+  <% end %>
+<% end %>

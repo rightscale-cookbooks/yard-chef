@@ -3,7 +3,7 @@ table {
 }
 
 th {
-  background-color: #003F87;
+  background-color: #BEBEBE;
   color: white;
   padding: 5px;
 }
@@ -12,5 +12,5 @@ td {
   padding: 10px;
 }
 
-tr.r1 { background: #FCFFF0; }
-tr.r2 { background: #FEE5AC; }
+tr.r1 { background: #FFFFFF; }
+tr.r2 { background: #EFEFEF; }

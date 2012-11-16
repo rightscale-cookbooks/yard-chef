@@ -1,6 +1,7 @@
 def init
   super
   @page_title = page_title
+  sections :layout, [:title, [T('chef')]] if object == '_index.html' || @file
 end
 
 # Add yard-chef specific menus

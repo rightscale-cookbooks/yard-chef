@@ -1,5 +1,14 @@
-<% definitions = object.definitions %>
+<% definitions = object.children_by_type(:definition) %>
 <% if definitions.size > 0 %>
-  <h1>Definitions</h1>
-  <%= yieldall :objects => definitions %>
+  <h2>Definitions Summary</h2>
+  <ul class="summary">
+    <% definitions.each do |definition| %>
+      <li>
+        <span class="summary_signature">
+          <strong><a href="#<%= definition.name %>"><%= definition.name %></a></strong>
+        </span>
+        <span class="summary_desc"><%= docstring_summary(definition) %>
+      </li>
+    <% end %>
+  </ul>
 <% end %>

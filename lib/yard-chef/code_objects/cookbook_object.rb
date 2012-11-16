@@ -31,7 +31,7 @@ module YARD::CodeObjects
         @resources = []
         @providers = []
         @libraries = []
-        @readme_type = :markup
+        @readme_type = :rdoc
       end
 
       def parse_readme(file_path)
@@ -40,7 +40,7 @@ module YARD::CodeObjects
         readme_path = base_path + '/README.rdoc'
         if File.exists?(readme_path)
           @docstring = IO.read(readme_path)
-          @readme_type = :markup
+          @readme_type = :rdoc
         else
           readme_path = base_path + '/README.md'
           if File.exists?(readme_path)

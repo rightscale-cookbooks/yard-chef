@@ -1,5 +1,14 @@
 <% recipes = object.children_by_type(:recipe) %>
 <% if recipes.size > 0 %>
-  <h1>Recipes</h1>
-  <%= yieldall :objects => recipes %>
+  <h2>Recipes Summary</h2>
+  <ul class="summary">
+    <% recipes.each do |recipe| %>
+      <li>
+        <span class="summary_signature">
+          <strong><a href="#<%= recipe.name %>"><%= recipe.name %></a></strong>
+        </span>
+        <span class="summary_desc"><%= recipe.docstring %></span>
+      </li>
+    <% end %>
+  </ul>
 <% end %>

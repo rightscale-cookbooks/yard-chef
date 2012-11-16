@@ -36,6 +36,7 @@ require 'yard-chef/handlers/attribute'
 require 'yard-chef/handlers/define'
 require 'yard-chef/handlers/actions'
 require 'yard-chef/handlers/cookbook_desc'
+require 'yard-chef/handlers/recipe'
 
 module YARD::CodeObjects::Chef
   # Before parsing each file inside the specified cookbooks directory, register Chef elements like

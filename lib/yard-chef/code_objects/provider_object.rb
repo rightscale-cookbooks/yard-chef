@@ -32,6 +32,14 @@ module YARD::CodeObjects
         @resources = []
       end
 
+      def class_name
+        class_name = []
+        @path.split('::').each do |word|
+          class_name.push(word.capitalize)
+        end
+        class_name.join('::')
+      end
+
       def read_tag(file)
         file_handle = File.open(File.expand_path(file), 'r')
         file_handle.readlines.each do |line|

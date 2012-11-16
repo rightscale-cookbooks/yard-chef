@@ -25,8 +25,13 @@ module YARD::CodeObjects
   module Chef
     class RecipeObject < ChefObject
       register_element :recipe
+      attr_accessor :name
       def initialize(namespace, name)
         super(namespace, name)
+      end
+
+      def name
+        self.parent.name.to_s << '::' << @name.to_s
       end
     end
 

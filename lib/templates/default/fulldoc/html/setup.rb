@@ -4,10 +4,7 @@ def init
 
   chef = object.child(:type => :chef)
   @@cookbooks = chef.children_by_type(:cookbook)
-
-  # Generate page for Chef
-  serialize(chef)
-
+=begin
   # Generate a page for Recipes
   recipe = chef.child(:type => :recipe)
   serialize(recipe)
@@ -23,13 +20,14 @@ def init
   # Generate a page for Definitions
   definition = chef.child(:type => :definition)
   serialize(definition)
-
+=end
   # Generate cookbook pages
   @@cookbooks.each do |cookbook|
     serialize(cookbook)
   end
 end
 
+=begin
 def get_items_by_type(object, type)
   items = Array.new()
   if not object.children.empty?
@@ -39,10 +37,11 @@ def get_items_by_type(object, type)
   end
   items.sort_by {|item| item.name.to_s}
 end
+=end
 
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_recipes_list
-  recipes = YARD::Registry.all(:recipe).uniq.sort_by {|recipe| recipe.Name.to_s}
+  recipes = YARD::Registry.all(:recipe).uniq.sort_by {|recipe| recipe.name.to_s}
   generate_full_list(recipes, 'Recipe', 'recipes')
 end
 

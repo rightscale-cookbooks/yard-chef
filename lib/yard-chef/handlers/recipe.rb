@@ -23,30 +23,17 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
-    class AttributeHandler < YARD::Handlers::Ruby::Base
+    class RecipeHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
-      handles method_call(:attribute)
-      
+      handles method_call(:recipe)
+
       def process
         path_arr = parser.file.to_s.split('/')
-        if path_arr.include?('metadata.rb')
-          cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
-          namespace = ChefObject.register(CHEF, cookbook_name, :cookbook)
-        else
-          cookbook_name = path_arr[path_arr.index('resources') - 1]
-          cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
-          resource_name = path_arr[path_arr.index('resources') + 1].to_s.sub('.rb','')
-          lwrp_name = LWRPObject.name(cookbook_name, resource_name)
-          namespace = ChefObject.register(RESOURCE, lwrp_name, :resource)
-          cookbook_obj.resources.push(namespace) unless cookbook_obj.resources.include?(namespace)
-        end
-      
-        attrib_name = statement.parameters.first.jump(:string_content, :ident).source
-        attrib_obj = ChefObject.register(namespace, attrib_name, :attribute)
-        attrib_obj.source = statement.source
-        attrib_obj.scope = :instance
-        attrib_obj.docstring = statement.comments
-        attrib_obj.add_file(statement.file, statement.line)
+        cookbook_name = path_arr[path_arr.index('metadata.rb') - 1] if path_arr.include?('metadata.rb')
+        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+        recipe_name = statement.parameters.first.jump(:string_content).source
+        recipe_obj = ChefObject.register(cookbook, recipe_name, :recipe)
+        recipe_obj.docstring = statement.parameters[1]
       end
     end
   end

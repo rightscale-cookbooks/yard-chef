@@ -1,22 +1,13 @@
-<% cookbooks = object.parent.children_by_type(:cookbook) %>
-<% cookbooks.each do |object| %>
-  <% recipes = object.children_by_type(:recipe) %>
-  <% if recipes.size > 0 %>
-    <div class="method_details_list">
-    <h3><%= object.name %></h3>
-    <ul class="summary">
-    <% recipes.each_with_index do |recipe, i| %>
-      <li class="public">
-        <div class="method_details first">
-          <span class="summary_signature">
-            <strong><a name="<%= recipe.Name %>"><%= recipe.Name %></a></strong>
-          </span><br>
-          <%= recipe.docstring %><br>
-          <%= yieldall :object => recipe, :owner => object, :index => i %>
-        </div>
-      </li>
-    <% end %>
-    </ul>
+<% recipes = object.children_by_type(:recipe) %>
+<% if recipes.size > 0 %>
+  <h2>Recipe Details</h2>
+  <% recipes.each_with_index do |recipe, i| %>
+    <div class="method_details <%= 'first' if i == 0 %>">
+      <h3 class="signature"><a name="<%= recipe.name %>">
+        <strong><%= recipe.name %></strong>
+      </a></h3>
+      <%= htmlify recipe.docstring %>
+      <%= yieldall :object => recipe, :owner => object, :index => i %>
     </div>
   <% end %>
 <% end %>
