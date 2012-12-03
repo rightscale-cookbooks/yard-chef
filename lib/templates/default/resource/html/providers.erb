@@ -1,15 +1,16 @@
 <% if object.providers.size > 0 %>
   <% providers = object.providers.uniq {|prov| prov.name.to_s} %>
-  <h3>Providers</h3>
+  <li><h4>Providers</h4>
   <ul class="summary compact">
     <% providers.each do |provider| %>
+      <% cookbook = get_cookbook(provider.file) %>
       <li>
         <span class="summary_signature">
-          <a href="../<%= url_for(provider.parent, provider.name.to_s, false) %>">
-            <%= provider.Path %>
+          <a href="<%= cookbook.namespace %>/<%= url_for(cookbook, provider.class_name) %>">
+            <%= provider.class_name %>
           </a>
         </span>
       </li>
     <% end %>
-  </ul>
+  </ul></li>
 <% end %>

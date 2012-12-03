@@ -34,9 +34,10 @@ module YARD::CodeObjects
 
       def class_name
         class_name = []
-        @path.split('::').each do |word|
+        @namespace.to_s.split('::').each do |word|
           class_name.push(word.capitalize)
         end
+        class_name.push(@name)
         class_name.join('::')
       end
 
@@ -44,7 +45,7 @@ module YARD::CodeObjects
         providers_list.each do |provider|
           if provider.resources.size > 0
             provider.resources.each do |res|
-              if self.path.to_s == res.strip
+              if self.name.to_s == res.strip.split('::')[2]
                 self.providers.push(provider)
                 break
               end
@@ -53,6 +54,7 @@ module YARD::CodeObjects
         end
       end
     end
+
     RESOURCE = ChefObject.register(CHEF, 'resource', :resource)
   end
 end

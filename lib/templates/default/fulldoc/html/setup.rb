@@ -4,40 +4,11 @@ def init
 
   chef = object.child(:type => :chef)
   @@cookbooks = chef.children_by_type(:cookbook)
-=begin
-  # Generate a page for Recipes
-  recipe = chef.child(:type => :recipe)
-  serialize(recipe)
-
-  # Generate a page for Resources
-  resource = chef.child(:type => :resource)
-  serialize(resource)
-
-  # Generate a page for Providers
-  provider = chef.child(:type => :provider)
-  serialize(provider)
-
-  # Generate a page for Definitions
-  definition = chef.child(:type => :definition)
-  serialize(definition)
-=end
   # Generate cookbook pages
   @@cookbooks.each do |cookbook|
     serialize(cookbook)
   end
 end
-
-=begin
-def get_items_by_type(object, type)
-  items = Array.new()
-  if not object.children.empty?
-    object.children.each do |child|
-      items.push(child) if child.type == type
-    end
-  end
-  items.sort_by {|item| item.name.to_s}
-end
-=end
 
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_recipes_list
@@ -47,8 +18,8 @@ end
 
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_resources_list
-  resources = YARD::Registry.all(:resource).uniq.sort_by {|resource| resource.name.to_s}
-  generate_full_list(resources, 'Resource', 'resources')
+  cookbooks = YARD::Registry.all(:cookbook).uniq.sort_by {|cookbook| cookbook.name.to_s}
+  generate_full_list(cookbooks, 'Resource', 'resources')
 end
 
 # Called by menu_lists in layout/html/setup.rb by default
@@ -66,29 +37,22 @@ end
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_libraries_list
   libraries = options.objects if options.objects
-  generate_full_list(libraries, 'Library', 'libraries')
+  generate_full_list(libraries, 'Library', 'class')
 end
 
 def generate_full_list(objects, title, type)
   @items = objects
   @list_title = "#{title} List"
   @list_type = "#{type}"
-  generate_list_contents
-end
-
-def generate_list_contents
   asset(url_for_list(@list_type), erb(:full_list))
 end
 
-def libraries_list(root = Registry.root)
+def class_list(root = YARD::Registry.root)
   out = ""
   children = run_verifier(root.children)
-  if root == Registry.root
-    children += @items.select {|o| o.namespace.is_a?(CodeObjects::Proxy) }
-  end
   children.reject {|c| c.nil? }.sort_by {|child| child.path }.map do |child|
     if child.is_a?(CodeObjects::ModuleObject)
-      name = child.namespace.is_a?(CodeObjects::Proxy) ? child.path : child.name
+      name = child.name
       has_children = child.children.any? {|o| o.is_a?(CodeObjects::ModuleObject) }
       out << "<li>"
       out << "<a class='toggle'></a> " if has_children
@@ -102,7 +66,7 @@ def libraries_list(root = Registry.root)
       end
       out << "</small>"
       out << "</li>"
-      out << "<ul>#{libraries_list(child)}</ul>" if has_children
+      out << "<ul>#{class_list(child)}</ul>" if has_children
     end
   end
   out

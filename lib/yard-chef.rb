@@ -40,10 +40,7 @@ require 'yard-chef/handlers/recipe'
 
 module YARD::CodeObjects::Chef
   # Before parsing each file inside the specified cookbooks directory, register Chef elements like
-  # "resources", "providers", "recipes" and "libraries" from file path names.
-  # For example,
-  # cookbooks/<cookbook_name>/resources/<resource_name>.rb - Register "resource_name" under "cookbook_name"
-  # cookbooks/<cookbook_name>/providers/<provider_name>.rb - Register "provider_name" under "cookbook_name"
+  # "cookbooks", "definitions", "recipes" and "libraries" from file path names.
   YARD::Parser::SourceParser.before_parse_list do |files, globals|
     files.each do |file|
       # File path will be in this format "<cookbook_folder>/<cookbook_name>/<cookbook_elements>"
@@ -57,7 +54,7 @@ module YARD::CodeObjects::Chef
         cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
         cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
         cookbook.parse_readme(File.expand_path(file))
-        cookbook.add_file(file)
+        cookbook.add_file(path_arr[0..path_arr.index('metadata.rb') - 1].join('/'))
 
       elsif path_arr.include?('recipes')
         # Register recipe
@@ -90,12 +87,9 @@ module YARD::CodeObjects::Chef
 
   # Map providers with resources
   YARD::Parser::SourceParser.after_parse_list do
-    #YARD::Registry.each do |obj|
-      #puts obj.inspect, obj.namespace
-    #end
-    #providers = PROVIDER.children_by_type(:provider)
-    #RESOURCE.children_by_type(:resource).each do |resource|
-        #resource.map_providers(providers)
-    #end
+    providers = PROVIDER.children_by_type(:provider)
+    RESOURCE.children_by_type(:resource).each do |resource|
+      resource.map_providers(providers)
+    end
   end
 end

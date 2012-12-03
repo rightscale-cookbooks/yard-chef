@@ -2,7 +2,7 @@
 <% if providers.size > 0 %>
   <h2>Providers Summary</h2>
   <% providers.each do |provider| %>
-    <h3><%= provider.class_name %></h3>
+    <h3><a name="<%= provider.class_name %>"><%= provider.class_name %></a></h3>
     <h4>Actions Summary</h4>
     <% actions = provider.children_by_type(:action) %>
     <% if actions.size > 0 %>

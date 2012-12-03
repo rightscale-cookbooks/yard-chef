@@ -1,13 +1,16 @@
 <% n = 1 %>
 <% @items.each do |item| %>
-  <li class="r<%= n %>">
-    <span class="object_link">
-      <a href="<%= url_for(item.parent, item.name, false) %>" 
-        title="<%= item.file %>">
-        <%= h(item.name) %>
-      </a>
-    </span>
-    <small><%= item.parent.path %></small>
-  </li>
-  <% n = n == 2 ? 1 : 2 %>
+  <% unless item.resources.empty? %>
+    <% item.resources.each do |resource| %>
+      <li class="r<%= n %>">
+        <span class="object_link">
+          <a href="<%= url_for(item, resource.class_name) %>" 
+      title="<%= resource.file %>">
+            <%= h(resource.name) %>
+          </a>
+        </span>
+      </li>
+      <% n = n == 2 ? 1 : 2 %>
+    <% end %>
+  <% end %>
 <% end %>

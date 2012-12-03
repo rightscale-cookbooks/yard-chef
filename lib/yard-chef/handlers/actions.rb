@@ -36,6 +36,7 @@ module YARD::Handlers
 
         # Find the resource which lists the actions
         resource_obj = ChefObject.register(RESOURCE, lwrp_name, :resource)
+        resource_obj.add_file(statement.file)
         cookbook_obj.resources.push(resource_obj) unless cookbook_obj.resources.include?(resource_obj)
         # if multiple actions listed in same line, split the actions and add them to the list
         if statement.first_line =~ /,/

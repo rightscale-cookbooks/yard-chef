@@ -14,3 +14,9 @@ td {
 
 tr.r1 { background: #FFFFFF; }
 tr.r2 { background: #EFEFEF; }
+
+.attributes_summary {
+  padding: 1px 10px;
+  background: #eaeaff; border: 1px solid #dfdfe5;
+  -moz-border-radius: 3px; -webkit-border-radius: 3px;
+}

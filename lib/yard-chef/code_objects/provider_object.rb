@@ -34,9 +34,10 @@ module YARD::CodeObjects
 
       def class_name
         class_name = []
-        @path.split('::').each do |word|
+        @namespace.to_s.split('::').each do |word|
           class_name.push(word.capitalize)
         end
+        class_name.push(@name)
         class_name.join('::')
       end
 
@@ -48,7 +49,6 @@ module YARD::CodeObjects
       end
     end
 
-    #PROVIDER = ProviderObject.new(CHEF, 'provider')
     PROVIDER = ChefObject.register(CHEF, 'provider', :provider)
   end
 end

@@ -66,13 +66,13 @@ module YARD::CodeObjects
 
         # Check for README.rdoc file. If it does not exist, then look for README.md
         readme_path = base_path + '/README.rdoc'
-        if File.exists?(File.expand_path(readme_path))
-          @docstring ||= IO.read(readme_path)
+        if File.exists?(readme_path)
+          @docstring = IO.read(readme_path) if @docstring == ""
           @readme_type = :rdoc
         else
           readme_path = base_path + '/README.md'
           if File.exists?(readme_path)
-            @docstring ||= IO.read(readme_path)
+            @docstring = IO.read(readme_path) if @docstring == ""
             @readme_type = :markdown
           end
         end

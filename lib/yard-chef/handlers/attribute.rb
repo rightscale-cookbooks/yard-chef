@@ -38,6 +38,7 @@ module YARD::Handlers
           resource_name = path_arr[path_arr.index('resources') + 1].to_s.sub('.rb','')
           lwrp_name = LWRPObject.name(cookbook_name, resource_name)
           namespace = ChefObject.register(RESOURCE, lwrp_name, :resource)
+          namespace.add_file(statement.file)
           cookbook_obj.resources.push(namespace) unless cookbook_obj.resources.include?(namespace)
         end
       

@@ -29,13 +29,19 @@ module YARD::Handlers
 
       def process
         path_arr = parser.file.to_s.split('/')
+
         cookbook_name = path_arr[path_arr.index('providers') - 1]
         cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
+
         provider_name = path_arr[path_arr.index('providers') + 1].to_s.sub('.rb','')
         # Get the provider in LWRP name format. See http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29.
         lwrp_name = LWRPObject.name(cookbook_name, provider_name)
         provider_obj = ChefObject.register(PROVIDER, lwrp_name, :provider)
+        provider_obj.read_tag(parser.file)
+        provider_obj.add_file(parser.file)
+
         cookbook_obj.providers.push(provider_obj) unless cookbook_obj.providers.include?(provider_obj)
+
         action_name = statement.parameters.first.jump(:string_content, :ident).source
         action_obj = ChefObject.register(provider_obj, action_name, :action)
         action_obj.source = statement.source

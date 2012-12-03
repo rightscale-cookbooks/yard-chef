@@ -1,5 +1,0 @@
-<% resources = object.children_by_type(:resource) %>
-<% resources.each do |resource| %>
-  <h2><a name="<%= resource.name.to_s %>"><%= resource.name.to_s %></a></h2>
-  <%= yieldall :object => resource %>
-<% end %>

@@ -1,7 +1,16 @@
 def init
   super
   @page_title = page_title
-  sections :layout, [:title, [T('chef')]] if object == '_index.html' || @file
+  if @file
+    if @file.attributes[:namespace]
+      @object = options.object = Registry.at(@file.attributes[:namespace]) || Registry.root
+    end
+    @breadcrumb_title = "File: " + @file.title
+    @page_title = @breadcrumb_title
+    sections :layout, [:title, [:diskfile, :cookbook_table]]
+  elsif object == '_index.html'
+    sections :layout, [:title, [T('chef')]]
+  end
 end
 
 # Add yard-chef specific menus
@@ -11,7 +20,7 @@ def menu_lists
   { :type => 'recipes', :title => 'Recipes', :search_title => 'Recipe List'},
   { :type => 'resources', :title => 'Resources', :search_title => 'Resource List'},
   { :type => 'definitions', :title => 'Definitions', :search_title => 'Definitions List' },
-  { :type => 'libraries', :title => 'Libraries', :search_title => 'Library List' } ]
+  { :type => 'class', :title => 'Libraries', :search_title => 'Library List' } ]
 end
 
 def page_title
