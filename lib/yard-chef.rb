@@ -51,32 +51,44 @@ module YARD::CodeObjects::Chef
         CHEF.parse_readme(File.expand_path(file))
 
         # Register cookbook
-        cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
+        metadata_index = path_arr.index('metadata.rb')
+
+        cookbook_name = path_arr[metadata_index - 1]
         cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+
         cookbook.parse_readme(File.expand_path(file))
-        cookbook.add_file(path_arr[0..path_arr.index('metadata.rb') - 1].join('/'))
+        cookbook.add_file(path_arr[0..metadata_index - 1].join('/'))
 
+      # Register recipe
       elsif path_arr.include?('recipes')
-        # Register recipe
-        cookbook_name = path_arr[path_arr.index('recipes') - 1]
+        recipe_index = path_arr.index('recipes')
+
+        cookbook_name = path_arr[recipe_index - 1]
         cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
-        recipe_name = path_arr[path_arr.index('recipes') + 1].to_s.sub('.rb','')
+
+        recipe_name = path_arr[recipe_index + 1].to_s.sub('.rb','')
         recipe = ChefObject.register(cookbook, recipe_name, :recipe)
+
         recipe.source = IO.read(file)
-        recipe.add_file(file)
+        recipe.add_file(file, 1)
 
+      # Register definition
       elsif path_arr.include?('definitions')
-        # Register definition
-        cookbook_name = path_arr[path_arr.index('definitions') - 1]
-        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
-        definition_name = path_arr[path_arr.index('definitions') + 1].to_s.sub('.rb','')
-        definition = ChefObject.register(cookbook, definition_name, :definition)
-        definition.add_file(file)
+        definition_index = path_arr.index('definitions')
 
+        cookbook_name = path_arr[definition_index - 1]
+        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+
+        definition_name = path_arr[definition_index + 1].to_s.sub('.rb','')
+        definition = ChefObject.register(cookbook, definition_name, :definition)
+
+        definition.add_file(file, 1)
+
+      # Register library
       elsif path_arr.include?('libraries')
-        # Register library
         cookbook_name = path_arr[path_arr.index('libraries') - 1]
         cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+
         cookbook.libraries.push(path_arr.join('/'))
       end
     end
