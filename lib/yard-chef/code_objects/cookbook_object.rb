@@ -31,22 +31,21 @@ module YARD::CodeObjects
         @resources = []
         @providers = []
         @libraries = []
-        @readme_type = :rdoc
+        @readme_type = :markdown
       end
 
       def parse_readme(file_path)
         path_arr = file_path.to_s.split('/')
+
         base_path = path_arr.slice(0..path_arr.index('metadata.rb')-1).join('/')
+
         readme_path = base_path + '/README.rdoc'
         if File.exists?(readme_path)
-          @docstring = IO.read(readme_path)
+          @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring
           @readme_type = :rdoc
         else
           readme_path = base_path + '/README.md'
-          if File.exists?(readme_path)
-            @docstring = IO.read(readme_path)
-            @readme_type = :markdown
-          end
+          @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring if File.exists?(readme_path)
         end
       end
 

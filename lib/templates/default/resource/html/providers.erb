@@ -6,8 +6,8 @@
       <% cookbook = get_cookbook(provider.file) %>
       <li>
         <span class="summary_signature">
-          <a href="<%= cookbook.namespace %>/<%= url_for(cookbook, provider.class_name) %>">
-            <%= provider.class_name %>
+          <a href="<%= cookbook.namespace %>/<%= url_for(cookbook, provider.long_name) %>">
+            <%= provider.long_name %>
           </a>
         </span>
       </li>

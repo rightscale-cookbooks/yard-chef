@@ -1,11 +1,13 @@
 <% attributes = object.children_by_type(:attribute) %>
 <% if attributes.size > 0 %>
-  <h2>Attributes Summary</h2>
+  <h2>Cookbook Attributes</h2>
   <ul class="summary">
     <% attributes.each do |attribute| %>
       <li>
-        <span class="attributes_summary"><%= attribute.name %></span>
-        <span class="summary_desc"><%= attribute.description %></span>
+        <span class="attributes_summary">
+          <strong><%= attribute.name %></strong>
+        </span>
+        <span class="summary_desc"><%= attribute.docstring %></span>
       </li>
     <% end %>
   </ul>

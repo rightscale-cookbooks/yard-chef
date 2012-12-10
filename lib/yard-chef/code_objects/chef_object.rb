@@ -32,7 +32,7 @@ module YARD::CodeObjects
       # @param [String] name name of the ChefObject.
       def initialize(namespace, name)
         super(namespace, name)
-        @readme_type = :rdoc
+        @readme_type = :markdown
       end
 
       # Register a Chef element Object class.
@@ -67,13 +67,12 @@ module YARD::CodeObjects
         # Check for README.rdoc file. If it does not exist, then look for README.md
         readme_path = base_path + '/README.rdoc'
         if File.exists?(readme_path)
-          @docstring = IO.read(readme_path) if @docstring == ""
+          @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring if @docstring == ""
           @readme_type = :rdoc
         else
           readme_path = base_path + '/README.md'
           if File.exists?(readme_path)
-            @docstring = IO.read(readme_path) if @docstring == ""
-            @readme_type = :markdown
+            @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring if @docstring == ""
           end
         end
       end

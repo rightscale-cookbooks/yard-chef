@@ -1,7 +1,7 @@
 <% attributes = object.children_by_type(:attribute) %>
 <% if attributes.size > 0 %>
   <li>
-    <h4>Attributes Summary</h4>
+    <h4>Resource Attributes</h4>
     <ul class="summary">
       <% attributes.each do |attribute| %>
         <li>
@@ -9,7 +9,7 @@
             <strong><%= attribute.name %></strong>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<%= attribute.source %>)
           </span>
-          <span class="summary_desc"><%= attribute.description %></span>
+          <span class="summary_desc"><%= attribute.docstring %></span>
         </li>
       <% end %>
     </ul>

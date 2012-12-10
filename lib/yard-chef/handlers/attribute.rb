@@ -29,16 +29,22 @@ module YARD::Handlers
       
       def process
         path_arr = parser.file.to_s.split('/')
+
         if path_arr.include?('metadata.rb')
           cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
           namespace = ChefObject.register(CHEF, cookbook_name, :cookbook)
         else
-          cookbook_name = path_arr[path_arr.index('resources') - 1]
-          cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
-          resource_name = path_arr[path_arr.index('resources') + 1].to_s.sub('.rb','')
-          lwrp_name = LWRPObject.name(cookbook_name, resource_name)
+          resource_idx = path_arr.index('resources')
+
+          cookbook_name = path_arr[resource_idx - 1]
+
+          resource_name = path_arr[resource_idx + 1].to_s.sub('.rb','')
+          lwrp_name = resource_name == 'default' ? cookbook_name : "#{cookbook_name}_#{resource_name}"
+
           namespace = ChefObject.register(RESOURCE, lwrp_name, :resource)
           namespace.add_file(statement.file)
+
+          cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
           cookbook_obj.resources.push(namespace) unless cookbook_obj.resources.include?(namespace)
         end
       

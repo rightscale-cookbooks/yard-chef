@@ -6,7 +6,7 @@ def init
       @object = options.object = Registry.at(@file.attributes[:namespace]) || Registry.root
     end
     @breadcrumb_title = "File: " + @file.title
-    @page_title = @breadcrumb_title
+    @page_title = "Cookbook Documentation"
     sections :layout, [:title, [:diskfile, :cookbook_table]]
   elsif object == '_index.html'
     sections :layout, [:title, [T('chef')]]
@@ -25,23 +25,13 @@ end
 
 def page_title
   if object == '_index.html'
-    @options.title
+    "Cookbook Documentation"
   elsif object.is_a? CodeObjects::Base
     case object.type
     when :cookbook
-      "Cookbook: #{object.path}"
-    when :recipe
-      "Cookbook Recipes"
-    when :resource
-      "Chef Resources"
-    when :provider
-      "Chef Providers"
-    when :definition
-      "Chef Definitions"
+      "Cookbook: #{object.name}"
     when :module, :class
       format_object_title(object)
-    when :chef
-      "Chef Home Page"
     end
   end
 end

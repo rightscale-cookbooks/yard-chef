@@ -29,7 +29,6 @@ require 'yard-chef/code_objects/recipe_object'
 require 'yard-chef/code_objects/definition_object'
 require 'yard-chef/code_objects/attribute_object'
 require 'yard-chef/code_objects/action_object'
-require 'yard-chef/code_objects/lwrp_object'
 
 require 'yard-chef/handlers/action'
 require 'yard-chef/handlers/attribute'
@@ -97,11 +96,4 @@ module YARD::CodeObjects::Chef
   YARD::Tags::Library.define_tag('Map Chef Providers with Chef Resources', :resource)
   YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
 
-  # Map providers with resources
-  YARD::Parser::SourceParser.after_parse_list do
-    providers = PROVIDER.children_by_type(:provider)
-    RESOURCE.children_by_type(:resource).each do |resource|
-      resource.map_providers(providers)
-    end
-  end
 end

@@ -25,30 +25,37 @@ module YARD::CodeObjects
   module Chef
     class ProviderObject < ChefObject
       register_element :provider
-      attr_accessor :name, :resources
+      attr_accessor :name, :resource
 
       def initialize(namespace, name)
         super(namespace, name)
-        @resources = []
       end
 
-      def class_name
-        class_name = []
-        @namespace.to_s.split('::').each do |word|
-          class_name.push(word.capitalize)
+      def long_name
+        name = ''
+        if @name.to_s =~ /_/
+          @name.to_s.split('_').each do |str|
+            name << str.to_s.capitalize
+          end
+        else
+          name = @name.to_s.capitalize
         end
-        class_name.push(@name)
-        class_name.join('::')
+        "#{@namespace}::#{name}"
       end
 
-      def read_tag(file)
+      def map_resource(file)
         file_handle = File.open(File.expand_path(file), 'r')
         file_handle.readlines.each do |line|
-          @resources.push(line.split(%r{@resource })[1]) if line =~ /@resource/
+          if line =~ /#\s@resource/
+            resource_name = line.split(%r{@resource })[1]
+            @resource = self.class.superclass.register(RESOURCE, resource_name, :resource)
+            @resource.providers.push(self)
+            break
+          end
         end
       end
     end
 
-    PROVIDER = ChefObject.register(CHEF, 'provider', :provider)
+    PROVIDER = ChefObject.register(CHEF, 'Provider', :provider)
   end
 end

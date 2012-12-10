@@ -1,4 +1,3 @@
-include T('default/chef/html')
 include T('default/module')
 
 def init

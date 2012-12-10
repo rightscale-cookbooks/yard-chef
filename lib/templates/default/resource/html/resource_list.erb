@@ -2,7 +2,7 @@
 <% if resources.size > 0 %>
   <h2>Resources Summary</h2>
   <% resources.each do |resource| %>
-    <h3><a name="<%= resource.class_name %>"><%= resource.class_name %></a></h3>
+    <h3><a name="<%= resource.long_name %>"><%= resource.long_name %></a></h3>
     <ul>
       <%= yieldall :object => resource %>
     </ul>

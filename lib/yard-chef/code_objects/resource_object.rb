@@ -32,29 +32,19 @@ module YARD::CodeObjects
         @providers = []
       end
 
-      def class_name
-        class_name = []
-        @namespace.to_s.split('::').each do |word|
-          class_name.push(word.capitalize)
-        end
-        class_name.push(@name)
-        class_name.join('::')
-      end
-
-      def map_providers(providers_list)
-        providers_list.each do |provider|
-          if provider.resources.size > 0
-            provider.resources.each do |res|
-              if self.name.to_s == res.strip.split('::')[2]
-                self.providers.push(provider)
-                break
-              end
-            end
+      def long_name
+        name = ''
+        if @name.to_s =~ /_/
+          @name.to_s.split('_').each do |str|
+            name << str.to_s.capitalize
           end
+        else
+          name = @name.to_s.capitalize
         end
+        "#{@namespace}::#{name}"
       end
     end
 
-    RESOURCE = ChefObject.register(CHEF, 'resource', :resource)
+    RESOURCE = ChefObject.register(CHEF, 'Resource', :resource)
   end
 end

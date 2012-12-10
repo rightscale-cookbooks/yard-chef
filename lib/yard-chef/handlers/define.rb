@@ -29,9 +29,12 @@ module YARD::Handlers
       
       def process
         path_arr = parser.file.to_s.split('/')
-        cookbook_name = path_arr[path_arr.index('definitions') - 1]
+        definition_idx = path_arr.index('definitions')
+
+        cookbook_name = path_arr[definition_idx - 1]
         cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
-        definition_name = path_arr[path_arr.index('definitions') + 1].to_s.sub('.rb','')
+
+        definition_name = path_arr[definition_idx + 1].to_s.sub('.rb','')
         define_obj = ChefObject.register(cookbook_obj, definition_name, :definition)
         define_obj.source = statement.source
         define_obj.docstring = statement.comments

@@ -29,8 +29,10 @@ module YARD::Handlers
 
       def process
         path_arr = parser.file.to_s.split('/')
+
         cookbook_name = path_arr[path_arr.index('metadata.rb') - 1] if path_arr.include?('metadata.rb')
         cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+
         recipe_name = statement.parameters.first.jump(:string_content).source
         recipe_obj = ChefObject.register(cookbook, recipe_name, :recipe)
         recipe_obj.docstring = statement.parameters[1]
