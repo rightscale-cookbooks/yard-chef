@@ -1,8 +1,8 @@
 <% providers = object.providers %>
 <% if providers.size > 0 %>
-  <h2>Providers Summary</h2>
+  <h2>Lightweight Providers</h2>
   <% providers.each do |provider| %>
-    <h3><a name="<%= provider.long_name %>"><%= provider.long_name %></a></h3>
+    <h3><a name="<%= provider.long_name %>"><%= provider.name %></a></h3>
     <h4>Actions Summary</h4>
     <% actions = provider.children_by_type(:action) %>
     <% if actions.size > 0 %>

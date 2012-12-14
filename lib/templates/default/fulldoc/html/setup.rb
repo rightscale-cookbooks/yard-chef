@@ -1,11 +1,13 @@
 def init
   super
+
+  # Register custom stylesheets
   asset('css/common.css', file('css/common.css', true))
 
-  chef = object.child(:type => :chef)
-  @@cookbooks = chef.children_by_type(:cookbook)
   # Generate cookbook pages
-  @@cookbooks.each do |cookbook|
+  chef = object.child(:type => :chef)
+  cookbooks = chef.children_by_type(:cookbook)
+  cookbooks.each do |cookbook|
     serialize(cookbook)
   end
 end

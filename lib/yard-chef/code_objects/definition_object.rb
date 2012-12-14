@@ -23,13 +23,16 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
+    # A DefinitionObject represents a definition in chef cookbook. See http://wiki.opscode.com/display/chef/Definitions
     class DefinitionObject < ChefObject
       register_element :definition
+
+      # Creates a new instance of DefinitionObject.
+      # @param [NamespaceObject] namespace namespace to which the definition must belong.
+      # @param [String] name name of the definition.
       def initialize(namespace, name)
         super(namespace, name)
       end
     end
-
-    DEFINITION = ChefObject.register(CHEF, 'definition', :definition)
   end
 end

@@ -23,14 +23,20 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
+    # A ProviderObject represents a lightweight provider in Chef. See http://docs.opscode.com/essentials_cookbook_lwrp.html
     class ProviderObject < ChefObject
       register_element :provider
-      attr_accessor :name, :resource
 
+      # Creates a new instance of ProviderObject.
+      # @param [NamespaceObject] namespace namespace to which the lightweight provider belongs.
+      # @param [String] name name of the lightweight provider.
+      # @return [ProviderObject] new instance of ProviderObject.
       def initialize(namespace, name)
         super(namespace, name)
       end
 
+      # Constructs long name (class name) for the lightweight provider.
+      # @return [String] generated class name for the lightweight provider.
       def long_name
         name = ''
         if @name.to_s =~ /_/
@@ -43,11 +49,13 @@ module YARD::CodeObjects
         "#{@namespace}::#{name}"
       end
 
+      # Maps lightweight provider with a lightweight resource.
+      # @param [String] path to the lightweight provider file.
       def map_resource(file)
         file_handle = File.open(File.expand_path(file), 'r')
         file_handle.readlines.each do |line|
           if line =~ /#\s@resource/
-            resource_name = line.split(%r{@resource })[1]
+            resource_name = line.split(%r{@resource })[1].strip
             @resource = self.class.superclass.register(RESOURCE, resource_name, :resource)
             @resource.providers.push(self)
             break

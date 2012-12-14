@@ -23,8 +23,13 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
+    # A ChefObject is the superclass of all chef elements (resources, providers, recipes, definitions, attributes and actions).
     class ChefObject < YARD::CodeObjects::ClassObject
-      attr_accessor :readme_type
+      # Formatting type of README files (:markdown, :rdoc, etc.)
+      # @return [Symbol] formatting type
+      attr_reader :readme_type
+
+      # Holds all implementations of Chef elements which is used by {self.register} factory method to create <chef_element>Object.
       @@chef_elements = {}
 
       # Creates a ChefObject instance and registers in YARD::Registry.
@@ -60,6 +65,8 @@ module YARD::CodeObjects
         end
       end
 
+      # Parse README files if they exist in root repository folder.
+      # @param [String] file_path path to the README file
       def parse_readme(file_path)
         path_arr = file_path.to_s.split('/')
         base_path = path_arr.slice(0..path_arr.index('metadata.rb')-3).join('/')
@@ -76,7 +83,10 @@ module YARD::CodeObjects
           end
         end
       end
-          
+      
+      # Returns children of ChefObject of a particular type.
+      # @param [Symbol] type type of ChefObject to be selected
+      # @return [Array<ChefObject>] list of ChefObjects
       def children_by_type(type)
         children = []
         unless self.children.empty?
@@ -89,7 +99,10 @@ module YARD::CodeObjects
     end
 
     # Register 'Chef' as the root namespace
+
+    # Root namespace
     CHEF = ChefObject.new(:root, 'Chef')
+
     log.info "Creating [Chef] as 'root' namespace"
   end
 end

@@ -23,9 +23,44 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
+    # A CookbookObject represents a Chef cookbook. See http://wiki.opscode.com/display/chef/Cookbooks for more information about cookbook.
     class CookbookObject < ChefObject
       register_element :cookbook
-      attr_accessor :short_desc, :version, :resources, :libraries, :definitions, :readme_type
+
+      # Short description for the cookbook.
+      # @param [String] short_desc text to be assigned as short description.
+      # @return [String] short description for the cookbook.
+      attr_accessor :short_desc
+
+      # Version of cookbook.
+      # @param [String] version text to be set as cookbook version.
+      # @return [String] cookbook version.
+      attr_accessor :version
+
+      # Cookbook lightweight resources.
+      # @return [Array<ResourceObject>] lightweight resources.
+      attr_reader :resources
+
+      # Cookbook lightweight providers.
+      # @return [Array<ProviderObject>] lightweight providers.
+      attr_reader :providers
+
+      # Cookbook libraries.
+      # @return [Array<NamespaceObject>] cookbook libraries.
+      attr_reader :libraries
+
+      # Cookbook definitions.
+      # @return [Array<DefinitionObject>] cookbook definitions.
+      attr_reader :definitions
+
+      # Type of README file (:rdoc, :markdown, etc.).
+      # @return [Symbol] README type.
+      attr_reader :readme_type
+
+      # Creates a new CookbookObject instance.
+      # @param [NamespaceObject] namespace namespace to which the cookbook belongs to.
+      # @param [String] name name of the cookbook.
+      # @return [CookbookObject] instance of CookbookObject.
       def initialize(namespace, name)
         super(namespace, name)
         @resources = []
@@ -34,11 +69,14 @@ module YARD::CodeObjects
         @readme_type = :markdown
       end
 
+      # Parses README file in the cookbooks/<name> directory.
+      # @param [String] path to README file.
       def parse_readme(file_path)
         path_arr = file_path.to_s.split('/')
 
         base_path = path_arr.slice(0..path_arr.index('metadata.rb')-1).join('/')
 
+        # Look for README.rdoc. If it doesn't exist then look for README.md.
         readme_path = base_path + '/README.rdoc'
         if File.exists?(readme_path)
           @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring
@@ -48,7 +86,6 @@ module YARD::CodeObjects
           @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring if File.exists?(readme_path)
         end
       end
-
     end
   end
 end

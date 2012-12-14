@@ -23,18 +23,22 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles definitions in a cookbook.
     class DefinitionHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:define)
       
       def process
+        # Get cookbook and definition name from file path
         path_arr = parser.file.to_s.split('/')
         definition_idx = path_arr.index('definitions')
-
         cookbook_name = path_arr[definition_idx - 1]
+        definition_name = path_arr[definition_idx + 1].to_s.sub('.rb','')
+
+        # Get cookbook to which the definition must belong
         cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
 
-        definition_name = path_arr[definition_idx + 1].to_s.sub('.rb','')
+        # Register definition if not already registered
         define_obj = ChefObject.register(cookbook_obj, definition_name, :definition)
         define_obj.source = statement.source
         define_obj.docstring = statement.comments

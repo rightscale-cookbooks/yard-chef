@@ -23,6 +23,7 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles "attributes" in cookbook metadata and lightweight resource.
     class AttributeHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:attribute)
@@ -30,28 +31,31 @@ module YARD::Handlers
       def process
         path_arr = parser.file.to_s.split('/')
 
+        # If file path includes metadata then handle cookbook attributes
+        # else handle resource attributes
         if path_arr.include?('metadata.rb')
           cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
           namespace = ChefObject.register(CHEF, cookbook_name, :cookbook)
         else
           resource_idx = path_arr.index('resources')
-
           cookbook_name = path_arr[resource_idx - 1]
-
           resource_name = path_arr[resource_idx + 1].to_s.sub('.rb','')
+
           lwrp_name = resource_name == 'default' ? cookbook_name : "#{cookbook_name}_#{resource_name}"
 
+          # Register lightweight resource if not already registered
           namespace = ChefObject.register(RESOURCE, lwrp_name, :resource)
           namespace.add_file(statement.file)
 
+          # Get cookbook to which the lightweight resource must belong
           cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
           cookbook_obj.resources.push(namespace) unless cookbook_obj.resources.include?(namespace)
         end
-      
+
+        # Register attribute if not already registered
         attrib_name = statement.parameters.first.jump(:string_content, :ident).source
         attrib_obj = ChefObject.register(namespace, attrib_name, :attribute)
         attrib_obj.source = statement.source
-        attrib_obj.scope = :instance
         attrib_obj.docstring = statement.comments
         attrib_obj.add_file(statement.file, statement.line)
       end

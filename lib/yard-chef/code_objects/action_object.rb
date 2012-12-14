@@ -23,16 +23,16 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
+    # An <ActionObject> represents an action in a lightweight provider. See http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29#LightweightResourcesandProviders%28LWRP%29-Keyword%3Aaction
     class ActionObject < ChefObject
       register_element :action
 
+      # Creates a new instance of ActionObject.
+      # @param [NamespaceObject] namespace namespace to which the action belongs.
+      # @param [String] name name of the action.
       def initialize(namespace, name)
         super(namespace, name)
       end
-
-      #def path
-        #@path = self.parent.path.to_s << '::' << @name.to_s
-      #end
     end
   end
 end

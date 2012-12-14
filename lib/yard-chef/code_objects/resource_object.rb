@@ -23,15 +23,21 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
+    # A <ResourceObject> represents a lightweight resource in chef. See http://docs.opscode.com/essentials_cookbook_lwrp.html
     class ResourceObject < ChefObject
       register_element :resource
 
+      # Creates a new instance of ResourceObject.
+      # @param [NamespaceObject] namespace namespace to which the Lightweight Resource belongs.
+      # @param [String] name name of the Lightweight Resource.
       def initialize(namespace, name)
         super(namespace, name)
         @actions = []
         @providers = []
       end
 
+      # Constructs long name (class path) for the lightweight resource.
+      # @return [String] generated class name for the lightweight resource.
       def long_name
         name = ''
         if @name.to_s =~ /_/

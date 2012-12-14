@@ -23,6 +23,7 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles specific cookbook information like description and version.
     class CookbookDescHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:description)

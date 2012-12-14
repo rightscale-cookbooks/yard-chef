@@ -1,5 +1,5 @@
 def init
-  sections.push :resource_list, [:providers, :actions, :attributes]
+  sections.push :resource_list, [:actions, :attributes, :providers]
 end
 
 def get_cookbook(file)

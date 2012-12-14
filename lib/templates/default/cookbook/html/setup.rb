@@ -1,10 +1,14 @@
 include T('default/module')
 
 def init
-  sections.push :cookbook_title, [:docstring,
-                :generated_docs, [:recipes, T('resource'), :providers,
-                :attributes, :definitions, :libraries,
-                :element_details, [T('recipe'), T('provider'), T('definition')]]]
+  sections.push :cookbook_title, [
+                  :docstring, :generated_docs, [
+                    :recipes, T('resource'), :providers, :attributes,
+                    :definitions, :libraries, :element_details, [
+                      T('recipe'), T('provider'), T('definition')
+                    ]
+                  ]
+                ]
   @libraries = YARD::Registry.all(:module)
 end
 

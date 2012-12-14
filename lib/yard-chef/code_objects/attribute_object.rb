@@ -23,17 +23,16 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
+    # An AttributeObject represents a cookbook or a resource attribute. See http://wiki.opscode.com/display/chef/Attributes
     class AttributeObject < ChefObject
       register_element :attribute
-      attr_accessor :default, :kind_of, :required, :regex, :equal_to, :name_attribute, :callbacks, :respond_to, :display_name, :description, :recipes, :choice
 
+      # Creates a new instance of AttributeObject.
+      # @param [NamespaceObject] namespace namespace to which the attribute must belong.
+      # @param [String] name name of the attribute.
       def initialize(namespace, name)
         super(namespace, name)
       end
-
-      #def path
-        #@path = @namespace.type == :cookbook ? @path : self.parent.Path << '::' << @name.to_s
-      #end
     end
   end
 end

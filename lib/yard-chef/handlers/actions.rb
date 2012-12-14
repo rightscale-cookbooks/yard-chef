@@ -23,23 +23,26 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles list of actions in a lightweight resource.
     class ActionsHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:actions)
 
       def process
+        # Get cookbook and lightweight resource name from file path
         path_arr = parser.file.to_s.split("/")
         resource_idx = path_arr.index('resources')
-
+        resource_name = path_arr[resource_idx + 1].to_s.sub('.rb','')
         cookbook_name = path_arr[resource_idx - 1]
 
-        resource_name = path_arr[resource_idx + 1].to_s.sub('.rb','')
+        # Construct lightweight resource name in lwrp format
         lwrp_name = resource_name == 'default' ? cookbook_name : "#{cookbook_name}_#{resource_name}" 
 
-        # Find the resource which lists the actions
+        # Register lightweight resource if not already registered
         resource_obj = ChefObject.register(RESOURCE, lwrp_name, :resource)
         resource_obj.add_file(statement.file)
 
+        # Get cookbook to which the lightweight resource must belong
         cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
         cookbook_obj.resources.push(resource_obj) unless cookbook_obj.resources.include?(resource_obj)
 
