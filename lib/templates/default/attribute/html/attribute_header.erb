@@ -1,0 +1,4 @@
+<% if @attributes.size > 0 %>
+  <%= object.type == :resource ? "<h4>Attributes</h4>" : "<h2>Cookbook Attributes</h2>"%>
+  <ul><%= yieldall %></ul>
+<% end %>

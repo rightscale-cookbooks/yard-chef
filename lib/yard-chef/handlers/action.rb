@@ -46,6 +46,7 @@ module YARD::Handlers
         # Add provider to the cookbook to which it belongs
         cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
         cookbook_obj.providers.push(provider_obj) unless cookbook_obj.providers.include?(provider_obj)
+        provider_obj.cookbook = cookbook_obj
 
         # Register action if not already registered
         action_name = statement.parameters.first.jump(:string_content, :ident).source

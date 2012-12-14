@@ -1,9 +1,8 @@
 <% if object.actions.size > 0 %>
-  <li><h4>Actions</h4>
-    <ul class="summary compact">
-      <% object.actions.each do |action| %>
-        <li><span class="attributes_summary"><%= action %></span></li>
-      <% end %>
-    </ul>
-  </li>
+  <h4>Actions</h4>
+  <ul class="summary compact">
+    <% object.actions.each do |action| %>
+      <li><span class="attributes_summary"><%= action %></span></li>
+    <% end %>
+  </ul>
 <% end %>

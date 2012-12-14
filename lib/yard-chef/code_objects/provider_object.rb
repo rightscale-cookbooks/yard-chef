@@ -27,6 +27,11 @@ module YARD::CodeObjects
     class ProviderObject < ChefObject
       register_element :provider
 
+      # Cookbook to which the lightweight provider belongs.
+      # @param [CookbookObject] cookbook cookbook to which the lightweight provider belongs.
+      # @return [CookbookObject] cookbook to which the lightweight provider belongs.
+      attr_accessor :cookbook
+
       # Creates a new instance of ProviderObject.
       # @param [NamespaceObject] namespace namespace to which the lightweight provider belongs.
       # @param [String] name name of the lightweight provider.
@@ -57,7 +62,7 @@ module YARD::CodeObjects
           if line =~ /#\s@resource/
             resource_name = line.split(%r{@resource })[1].strip
             @resource = self.class.superclass.register(RESOURCE, resource_name, :resource)
-            @resource.providers.push(self)
+            @resource.providers.push(self) unless @resource.providers.include?(self)
             break
           end
         end

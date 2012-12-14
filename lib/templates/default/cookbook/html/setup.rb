@@ -3,9 +3,9 @@ include T('default/module')
 def init
   sections.push :cookbook_title, [
                   :docstring, :generated_docs, [
-                    :recipes, T('resource'), :providers, :attributes,
+                    :recipes, T('resource'), T('provider'), T('attribute'),
                     :definitions, :libraries, :element_details, [
-                      T('recipe'), T('provider'), T('definition')
+                      T('recipe'), T('action'), T('definition')
                     ]
                   ]
                 ]
