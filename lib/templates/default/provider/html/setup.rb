@@ -1,10 +1,10 @@
 def init
-  sections.push :title, [:provider_list, [:action_list, [:source]]]
-end
+  @providers = object.providers
 
-def source
-  return if owner != object.namespace
-  return if Tags::OverloadTag === object
-  return if object.source.nil?
-  erb(:source)
+  case object.type
+  when :resource
+    sections.push :providers_list
+  when :cookbook
+    sections.push :providers_summary, [T('action')]
+  end
 end

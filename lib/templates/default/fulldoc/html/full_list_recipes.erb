@@ -1,14 +1,12 @@
 <% n = 1 %>
-<% recipe = object.child(:type => :chef).child(:type => :recipe) %>
 <% @items.each do |item| %>
-  <% if not item.namespace.parent.root? %>
+  <% unless item.namespace.parent.root? %>
     <li class="r<%= n %>">
       <span class="object_link">
-        <a href="<%= url_for(recipe, item.Name, false) %>" title="<%= item.Name %> (recipe)">
-          <%= h(item.Name) %>
+        <a href="<%= url_for(item.parent, item.name) %>" title="<%= item.file %>">
+          <%= h(item.name) %>
         </a>
       </span>
-      <small><%= item.namespace %></small>
     </li>
     <% n = n == 2 ? 1 : 2 %>
   <% end %>

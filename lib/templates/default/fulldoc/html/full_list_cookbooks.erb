@@ -1,8 +1,11 @@
 <% n = 1 %>
 <% @items.each do |item| %>
   <li class="r<%= n %>">
-    <%= linkify item, h(item.name(true)) %>
-    <small><%= item.namespace %></small>
+    <span class="object_link">
+      <a href="<%= url_for(item) %>" title="<%= item.file %>">
+        <%= h(item.name) %>
+      </a>
+    </span>
   </li>
   <% n = n == 2 ? 1 : 2 %>
 <% end %>

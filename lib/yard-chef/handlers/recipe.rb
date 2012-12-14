@@ -23,14 +23,20 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles "recipes" in a cookbook.
     class RecipeHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:recipe)
 
       def process
-        name = statement.parameters.first.jump(:string_content).source
-        recipe_obj = YARD::Registry.resolve(:root, "#{CHEF}::#{name}")
-        log.info "Found Recipe #{recipe_obj.name} => #{recipe_obj.namespace}"
+        path_arr = parser.file.to_s.split('/')
+
+        # Recipe descriptions are obtained from cookbook metadata
+        cookbook_name = path_arr[path_arr.index('metadata.rb') - 1] if path_arr.include?('metadata.rb')
+        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+
+        recipe_name = statement.parameters.first.jump(:string_content).source
+        recipe_obj = ChefObject.register(cookbook, recipe_name, :recipe)
         recipe_obj.docstring = statement.parameters[1]
       end
     end

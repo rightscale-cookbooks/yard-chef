@@ -1,0 +1,18 @@
+<% if @providers.size > 0 %>
+  <h2>Action Details</h2>
+  <% @providers.each do |provider| %>
+    <% actions = provider.children_by_type(:action) %>
+    <% if actions.size > 0 %>
+      <% actions.each_with_index do |action, i| %>
+        <div class="method_details <%= 'first' if i == 0 %>">
+          <h3 class="signature"><a name="<%= action.name %>">
+            <strong><%= action.name %></strong>
+            &nbsp;(<%= action.parent.long_name %>)
+          </a></h3>
+          <%= htmlify action.docstring %>
+          <%= yieldall :object => action, :owner => object, :index => i %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

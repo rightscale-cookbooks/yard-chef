@@ -23,24 +23,37 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles "action" in a provider.
     class ActionHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:action)
 
       def process
+        # Get cookbook and lightweight provider name from the file path
         path_arr = parser.file.to_s.split('/')
-        cookbook = find_cookbook(path_arr[path_arr.index('providers') - 1])
-        provider_name = cookbook.get_lwrp_name(path_arr[path_arr.size - 1])
-        provider = YARD::Registry.resolve(:root, "#{PROVIDER}::#{provider_name}")
+        provider_idx = path_arr.index('providers')
+        cookbook_name = path_arr[provider_idx - 1]
+        provider_name = path_arr[provider_idx + 1].to_s.sub('.rb','')
 
-        name = statement.parameters.first.jump(:string_content, :ident).source
-        action_obj = ActionObject.new(provider, name) do |action|
-          action.source    = statement.source
-          action.docstring = statement.comments
-          action.add_file(statement.file, statement.line)
-        end
-        log.info "Creating [Action] #{action_obj.name} => #{action_obj.namespace}"
-        parse_block(statement.last.last, :owner => action_obj)
+        # Construct lightweight provider name in lwrp format
+        lwrp_name = provider_name == 'default' ? cookbook_name : "#{cookbook_name}_#{provider_name}"
+
+        # Register lightweight provider if not already registered
+        provider_obj = ChefObject.register(PROVIDER, lwrp_name, :provider)
+        provider_obj.map_resource(parser.file)
+        provider_obj.add_file(parser.file)
+
+        # Add provider to the cookbook to which it belongs
+        cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
+        cookbook_obj.providers.push(provider_obj) unless cookbook_obj.providers.include?(provider_obj)
+        provider_obj.cookbook = cookbook_obj
+
+        # Register action if not already registered
+        action_name = statement.parameters.first.jump(:string_content, :ident).source
+        action_obj = ChefObject.register(provider_obj, action_name, :action)
+        action_obj.source = statement.source
+        action_obj.docstring = statement.comments
+        action_obj.add_file(statement.file, statement.line)
       end
     end
   end

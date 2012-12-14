@@ -1,15 +1,15 @@
 <% n = 1 %>
 <% @items.each do |item| %>
-  <% if not item.namespace.parent.root? %>
-    <li class="r<%= n %>">
-      <span class="object_link">
-        <a href="<%= url_for(item.parent, item.name, false) %>" 
-          title="<%= item.Path %> (Resource)">
-          <%= h(item.name) %>
-        </a>
+  <% unless item.resources.empty? %>
+    <% item.resources.each do |resource| %>
+      <li class="r<%= n %>">
+        <span class="object_link">
+          <a href="<%= url_for(item, resource.long_name) %>" title="<%= resource.file %>">
+            <%= h(resource.name) %>
+          </a>
         </span>
-        <small><%= item.parent.Path %></small>
-    </li>
-    <% n = n == 2 ? 1 : 2 %>
+      </li>
+      <% n = n == 2 ? 1 : 2 %>
+    <% end %>
   <% end %>
 <% end %>

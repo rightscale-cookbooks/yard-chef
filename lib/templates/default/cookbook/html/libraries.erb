@@ -1,5 +1,14 @@
 <% libraries = object.libraries %>
 <% if libraries.size > 0 %>
-  <h1>Libraries</h1>
-  <%= yieldall :objects => libraries %>
+  <h2>Libraries</h2>
+  <ul class="summary compact">
+    <% libraries.each do |library_file| %>
+      <% library_files = find_library(library_file) %>
+      <% library_files.each do |lib| %>
+        <li><span class="summary_signature">
+          <a href="../<%= url_for(lib, nil, false) %>"><%= lib %></a>
+        </li>
+      <% end %>
+    <% end %>
+  </ul>
 <% end %>

@@ -21,29 +21,36 @@
 
 require 'yard'
 
-module YARD::Handlers
+module YARD::CodeObjects
   module Chef
-    # Handles definitions in a cookbook.
-    class DefinitionHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
-      handles method_call(:define)
+    # A <ResourceObject> represents a lightweight resource in chef. See http://docs.opscode.com/essentials_cookbook_lwrp.html
+    class ResourceObject < ChefObject
+      register_element :resource
 
-      def process
-        # Get cookbook and definition name from file path
-        path_arr = parser.file.to_s.split('/')
-        definition_idx = path_arr.index('definitions')
-        cookbook_name = path_arr[definition_idx - 1]
-        definition_name = path_arr[definition_idx + 1].to_s.sub('.rb','')
+      # Creates a new instance of ResourceObject.
+      # @param [NamespaceObject] namespace namespace to which the Lightweight Resource belongs.
+      # @param [String] name name of the Lightweight Resource.
+      def initialize(namespace, name)
+        super(namespace, name)
+        @actions = []
+        @providers = []
+      end
 
-        # Get cookbook to which the definition must belong
-        cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
-
-        # Register definition if not already registered
-        define_obj = ChefObject.register(cookbook_obj, definition_name, :definition)
-        define_obj.source = statement.source
-        define_obj.docstring = statement.comments
-        define_obj.add_file(statement.file, statement.line)
+      # Constructs long name (class path) for the lightweight resource.
+      # @return [String] generated class name for the lightweight resource.
+      def long_name
+        name = ''
+        if @name.to_s =~ /_/
+          @name.to_s.split('_').each do |str|
+            name << str.to_s.capitalize
+          end
+        else
+          name = @name.to_s.capitalize
+        end
+        "#{@namespace}::#{name}"
       end
     end
+
+    RESOURCE = ChefObject.register(CHEF, 'Resource', :resource)
   end
 end

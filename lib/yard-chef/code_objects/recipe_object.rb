@@ -21,28 +21,28 @@
 
 require 'yard'
 
-module YARD::Handlers
+module YARD::CodeObjects
   module Chef
-    # Handles definitions in a cookbook.
-    class DefinitionHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
-      handles method_call(:define)
+    # A RecipeObject represents a recipe in a chef cookbook. See http://docs.opscode.com/essentials_cookbook_recipes.html
+    class RecipeObject < ChefObject
+      register_element :recipe
 
-      def process
-        # Get cookbook and definition name from file path
-        path_arr = parser.file.to_s.split('/')
-        definition_idx = path_arr.index('definitions')
-        cookbook_name = path_arr[definition_idx - 1]
-        definition_name = path_arr[definition_idx + 1].to_s.sub('.rb','')
+      # Name of the recipe
+      # @return [String] recipe name.
+      attr_reader :name
 
-        # Get cookbook to which the definition must belong
-        cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
+      # Creates a new instance of RecipeObject.
+      # @param [NamespaceObject] namespace namespace to which the recipe belongs.
+      # @param [String] name name of the recipe.
+      # @return [RecipeObject] new instance of RecipeObject.
+      def initialize(namespace, name)
+        super(namespace, name)
+      end
 
-        # Register definition if not already registered
-        define_obj = ChefObject.register(cookbook_obj, definition_name, :definition)
-        define_obj.source = statement.source
-        define_obj.docstring = statement.comments
-        define_obj.add_file(statement.file, statement.line)
+      # Prefixes recipe name with the name of the cookbook.
+      # @return [String] recipe name.
+      def name
+        self.parent.name.to_s << '::' << @name.to_s
       end
     end
   end

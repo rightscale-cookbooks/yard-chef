@@ -1,0 +1,15 @@
+<% if @providers.size > 0 %>
+  <h4>Providers</h4>
+  <ul class="summary compact">
+    <% @providers.each do |provider| %>
+      <% cookbook = provider.cookbook %>
+      <li>
+        <span class="summary_signature">
+          <a href="<%= cookbook.namespace %>/<%= url_for(cookbook, provider.long_name) %>">
+            <%= provider.long_name %>
+          </a>
+        </span>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

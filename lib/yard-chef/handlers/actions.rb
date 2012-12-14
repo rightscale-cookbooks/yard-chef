@@ -23,22 +23,33 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles list of actions in a lightweight resource.
     class ActionsHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:actions)
-      handles method_call(:add_action)
 
       def process
+        # Get cookbook and lightweight resource name from file path
         path_arr = parser.file.to_s.split("/")
-        cookbook = find_cookbook(path_arr[path_arr.index('resources') - 1])
-        resource_name = cookbook.get_lwrp_name(path_arr[path_arr.size - 1])
+        resource_idx = path_arr.index('resources')
+        resource_name = path_arr[resource_idx + 1].to_s.sub('.rb','')
+        cookbook_name = path_arr[resource_idx - 1]
 
-        # Find the resource which lists the actions
-        resource_obj = YARD::Registry.resolve(:root, "#{RESOURCE}::#{resource_name}")
+        # Construct lightweight resource name in lwrp format
+        lwrp_name = resource_name == 'default' ? cookbook_name : "#{cookbook_name}_#{resource_name}"
+
+        # Register lightweight resource if not already registered
+        resource_obj = ChefObject.register(RESOURCE, lwrp_name, :resource)
+        resource_obj.add_file(statement.file)
+
+        # Get cookbook to which the lightweight resource must belong
+        cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
+        cookbook_obj.resources.push(resource_obj) unless cookbook_obj.resources.include?(resource_obj)
+
         # if multiple actions listed in same line, split the actions and add them to the list
         if statement.first_line =~ /,/
           statement.first_line.split(%r{,?\s*:}).each do |action|
-            resource_obj.actions.push(action) if action != 'actions'
+            resource_obj.actions.push(action)
           end
         else
           resource_obj.actions.push(statement.parameters.first.jump(:string_content, :ident).source)
