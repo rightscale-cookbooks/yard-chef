@@ -4,13 +4,15 @@
 
 yard-chef is a [YARD](http://yardoc.org/) plugin for
 [Chef](http://www.opscode.com/chef/) that adds support for documenting Chef
-resources, providers, and definitions.
+recipes, lightweight resources and providers, libraries and definitions.
 
 ## Requirements
 
 * Ruby 1.8.7 or higher
 * [YARD](http://yardoc.org/)
 * [Ripper](https://github.com/lsegal/ripper18) if you are using Ruby 1.8.x
+* [Redcarpet](https://github.com/vmg/redcarpet) for parsing files with
+  markdown formatting.
 
 ## Installation
 
@@ -26,12 +28,18 @@ If you are using Ruby 1.8.x, you need to install Ripper as well:
 gem install ripper
 ```
 
+For documenting READMEs with markdown formatting, please install Redcarpet:
+
+```
+gem install redcarpet
+```
+
 ## Usage
 
 It can be used with yard as a plugin:
 
 ```
-yardoc --plugin chef
+yardoc --plugin chef cookbooks/**/*.rb
 ```
 
 It can be used in a Rakefile:
@@ -40,8 +48,26 @@ It can be used in a Rakefile:
 require 'yard'
 
 YARD::Config.load_plugins 'chef'
-YARD::Rake::YardocTask.new
+YARD::Rake::YardocTask.new do |t|
+  t.files = ['<path_to_cookbooks_repo>/**/*.rb']
+end
 ```
+
+## YARD output
+
+Run yard with the chef plugin as follows
+
+```
+yardoc --plugin chef cookbooks/**/*.rb
+```
+or
+
+```
+rake yard
+```
+
+YARD output will be present in a folder named "doc" which will be present in
+the same folder from where the command was run.
 
 ## License
 
