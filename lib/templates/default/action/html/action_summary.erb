@@ -1,0 +1,13 @@
+<% if @actions.size > 0 %>
+  <h4>Actions Summary</h4>
+  <ul class="summary">
+    <% @actions.each do |action| %>
+      <li>
+        <span class="summary_signature">
+          <strong><a href="#<%= action.name %>"><%= action.name %></a></strong>
+        </span>
+        <span class="summary_desc"><%= action.docstring %></span>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

@@ -23,63 +23,41 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles "attributes" in cookbook metadata and lightweight resource.
     class AttributeHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:attribute)
-      
+
       def process
         path_arr = parser.file.to_s.split('/')
+
+        # If file path includes metadata then handle cookbook attributes
+        # else handle resource attributes
         if path_arr.include?('metadata.rb')
-          namespace = find_cookbook(path_arr[path_arr.index('metadata.rb') - 1])
+          cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
+          namespace = ChefObject.register(CHEF, cookbook_name, :cookbook)
         else
-          cookbook = find_cookbook(path_arr[path_arr.index('resources') - 1])
-          resource_name = cookbook.get_lwrp_name(path_arr[path_arr.size - 1])
-          namespace = YARD::Registry.resolve(:root, "#{RESOURCE}::#{resource_name}")
+          resource_idx = path_arr.index('resources')
+          cookbook_name = path_arr[resource_idx - 1]
+          resource_name = path_arr[resource_idx + 1].to_s.sub('.rb','')
+
+          lwrp_name = resource_name == 'default' ? cookbook_name : "#{cookbook_name}_#{resource_name}"
+
+          # Register lightweight resource if not already registered
+          namespace = ChefObject.register(RESOURCE, lwrp_name, :resource)
+          namespace.add_file(statement.file)
+
+          # Get cookbook to which the lightweight resource must belong
+          cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
+          cookbook_obj.resources.push(namespace) unless cookbook_obj.resources.include?(namespace)
         end
-      
-        name = statement.parameters.first.jump(:string_content, :ident).source
-        attrib_obj = AttributeObject.new(namespace, name) do |attrib|
-          attrib.source     = statement.source
-          attrib.scope      = :instance
-          attrib.docstring  = statement.comments
-          attrib.add_file(statement.file, statement.line)
-        end
-        statement.source.split(%r{,\s*:}).each do |param|
-          insert_params(attrib_obj, param)
-        end
-        log.info "Creating [Attribute] #{attrib_obj.name} => #{attrib_obj.namespace}"
-      end
-    
-      def insert_params(attrib, param)
-        if param =~ /=>/
-          args = param.split(%r{\s*=>\s*})
-          case args[0]
-          when "default"
-            attrib.default = args[1]
-          when "kind_of"
-            attrib.kind_of = args[1]
-          when "required"
-            attrib.required = args[1]
-          when "regex"
-            attrib.regex = args[1]
-          when "equal_to"
-            attrib.equal_to = args[1]
-          when "name_attribute"
-            attrib.name_attribute = args[1]
-          when "callbacks"
-            attrib.callbacks = args[1]
-          when "respond_to"
-            attrib.respond_to = args[1]
-          when "display_name"
-            attrib.display_name = args[1]
-          when "description"
-            attrib.description = args[1]
-          when "recipes"
-            attrib.recipes = args[1]
-          when "choice"
-            attrib.choice = args[1]
-          end
-        end
+
+        # Register attribute if not already registered
+        attrib_name = statement.parameters.first.jump(:string_content, :ident).source
+        attrib_obj = ChefObject.register(namespace, attrib_name, :attribute)
+        attrib_obj.source = statement.source
+        attrib_obj.docstring = statement.comments
+        attrib_obj.add_file(statement.file, statement.line)
       end
     end
   end

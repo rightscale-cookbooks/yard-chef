@@ -1,0 +1,16 @@
+<% n = 1 %>
+<table>
+  <thead>
+    <th>Attribute</th>
+    <th>Description</th>
+  </thead>
+  <tbody>
+    <% @attributes.each do |attribute| %>
+      <tr class="r<%= n %>">
+        <td><strong><%= attribute.name %></strong></td>
+        <td><%= attribute.docstring %></td>
+      </tr>
+      <% n = n == 2 ? 1 : 2 %>
+    <% end %>
+  </tbody>
+</table>

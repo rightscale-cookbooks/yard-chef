@@ -21,28 +21,17 @@
 
 require 'yard'
 
-module YARD::Handlers
+module YARD::CodeObjects
   module Chef
-    # Handles definitions in a cookbook.
-    class DefinitionHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
-      handles method_call(:define)
+    # A DefinitionObject represents a definition in chef cookbook. See http://wiki.opscode.com/display/chef/Definitions
+    class DefinitionObject < ChefObject
+      register_element :definition
 
-      def process
-        # Get cookbook and definition name from file path
-        path_arr = parser.file.to_s.split('/')
-        definition_idx = path_arr.index('definitions')
-        cookbook_name = path_arr[definition_idx - 1]
-        definition_name = path_arr[definition_idx + 1].to_s.sub('.rb','')
-
-        # Get cookbook to which the definition must belong
-        cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
-
-        # Register definition if not already registered
-        define_obj = ChefObject.register(cookbook_obj, definition_name, :definition)
-        define_obj.source = statement.source
-        define_obj.docstring = statement.comments
-        define_obj.add_file(statement.file, statement.line)
+      # Creates a new instance of DefinitionObject.
+      # @param [NamespaceObject] namespace namespace to which the definition must belong.
+      # @param [String] name name of the definition.
+      def initialize(namespace, name)
+        super(namespace, name)
       end
     end
   end

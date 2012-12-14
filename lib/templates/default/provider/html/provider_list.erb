@@ -1,7 +1,0 @@
-<% providers = object.children_by_type(:provider) %>
-<% if providers.size > 0 %>
-  <% providers.each do |provider| %>
-    <h3><a name="<%= provider.name %>"><%= provider.name %></a></h3>
-    <%= yieldall :object => provider %>
-  <% end %>
-<% end %>

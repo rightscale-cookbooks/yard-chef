@@ -1,7 +1,0 @@
-<ul class="summary compact">
-  <% @objects.each do |resource| %>
-    <li><span class="summary_signature">
-      <a href="../<%= url_for(resource.parent, resource.Name, false) %>"><%= resource.Path %></a>
-    </span></li>
-  <% end %>
-</ul>

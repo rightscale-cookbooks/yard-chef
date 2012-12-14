@@ -1,0 +1,7 @@
+<% if @providers.size > 0 %>
+  <h2>Lightweight Providers</h2>
+  <% @providers.each do |provider| %>
+    <h3><a name="<%= provider.long_name %>"><%= provider.name %></a></h3>
+    <ul><%= yieldall :object => provider %></ul>
+  <% end %>
+<% end %>

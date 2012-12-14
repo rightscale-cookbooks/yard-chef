@@ -23,6 +23,7 @@ require 'yard'
 
 module YARD::Handlers
   module Chef
+    # Handles specific cookbook information like description and version.
     class CookbookDescHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:description)
@@ -31,12 +32,13 @@ module YARD::Handlers
       def process
         path_arr = parser.file.to_s.split('/')
         if path_arr.include?('metadata.rb')
-          cookbook = find_cookbook(path_arr[path_arr.index('metadata.rb') - 1])
+          cookbook_name = path_arr[path_arr.index('metadata.rb') - 1]
+          cookbook_obj = ChefObject.register(CHEF, cookbook_name, :cookbook)
           case statement[0].source
           when 'description'
-            cookbook.short_desc = statement.parameters.first.jump(:string_content).source
+            cookbook_obj.short_desc = statement.parameters.first.jump(:string_content).source
           when 'version'
-            cookbook.version = statement.parameters.first.jump(:string_content).source
+            cookbook_obj.version = statement.parameters.first.jump(:string_content).source
           end
         end
       end
