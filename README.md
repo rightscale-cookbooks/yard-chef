@@ -28,12 +28,6 @@ If you are using Ruby 1.8.x, you need to install Ripper as well:
 gem install ripper
 ```
 
-For documenting READMEs with markdown formatting, please install Redcarpet:
-
-```
-gem install redcarpet
-```
-
 ## Usage
 
 It can be used with yard as a plugin:
