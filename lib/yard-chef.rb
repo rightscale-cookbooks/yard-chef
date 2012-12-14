@@ -56,7 +56,7 @@ module YARD::CodeObjects::Chef
         cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
 
         cookbook.parse_readme(File.expand_path(file))
-        cookbook.add_file(path_arr[0..metadata_index - 1].join('/'))
+        cookbook.add_file(path_arr[0 .. metadata_index - 1].join('/'))
 
       # Register recipe
       elsif path_arr.include?('recipes')
@@ -95,5 +95,4 @@ module YARD::CodeObjects::Chef
 
   YARD::Tags::Library.define_tag('Map Chef Providers with Chef Resources', :resource)
   YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
-
 end

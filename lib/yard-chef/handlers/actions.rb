@@ -36,7 +36,7 @@ module YARD::Handlers
         cookbook_name = path_arr[resource_idx - 1]
 
         # Construct lightweight resource name in lwrp format
-        lwrp_name = resource_name == 'default' ? cookbook_name : "#{cookbook_name}_#{resource_name}" 
+        lwrp_name = resource_name == 'default' ? cookbook_name : "#{cookbook_name}_#{resource_name}"
 
         # Register lightweight resource if not already registered
         resource_obj = ChefObject.register(RESOURCE, lwrp_name, :resource)

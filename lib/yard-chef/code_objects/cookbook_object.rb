@@ -74,7 +74,7 @@ module YARD::CodeObjects
       def parse_readme(file_path)
         path_arr = file_path.to_s.split('/')
 
-        base_path = path_arr.slice(0..path_arr.index('metadata.rb')-1).join('/')
+        base_path = path_arr.slice(0 .. path_arr.index('metadata.rb') - 1).join('/')
 
         # Look for README.rdoc. If it doesn't exist then look for README.md.
         readme_path = base_path + '/README.rdoc'

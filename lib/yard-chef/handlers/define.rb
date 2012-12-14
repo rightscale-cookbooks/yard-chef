@@ -27,7 +27,7 @@ module YARD::Handlers
     class DefinitionHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:define)
-      
+
       def process
         # Get cookbook and definition name from file path
         path_arr = parser.file.to_s.split('/')

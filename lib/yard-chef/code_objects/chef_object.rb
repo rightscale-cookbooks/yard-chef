@@ -69,7 +69,7 @@ module YARD::CodeObjects
       # @param [String] file_path path to the README file
       def parse_readme(file_path)
         path_arr = file_path.to_s.split('/')
-        base_path = path_arr.slice(0..path_arr.index('metadata.rb')-3).join('/')
+        base_path = path_arr.slice(0 .. path_arr.index('metadata.rb') - 3).join('/')
 
         # Check for README.rdoc file. If it does not exist, then look for README.md
         readme_path = base_path + '/README.rdoc'
@@ -83,7 +83,7 @@ module YARD::CodeObjects
           end
         end
       end
-      
+
       # Returns children of ChefObject of a particular type.
       # @param [Symbol] type type of ChefObject to be selected
       # @return [Array<ChefObject>] list of ChefObjects

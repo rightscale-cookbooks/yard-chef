@@ -27,7 +27,7 @@ module YARD::Handlers
     class AttributeHandler < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
       handles method_call(:attribute)
-      
+
       def process
         path_arr = parser.file.to_s.split('/')
 
