@@ -26,73 +26,49 @@ require 'yard-chef/code_objects/cookbook_object'
 require 'yard-chef/code_objects/resource_object'
 require 'yard-chef/code_objects/provider_object'
 require 'yard-chef/code_objects/recipe_object'
-require 'yard-chef/code_objects/definition_object'
 require 'yard-chef/code_objects/attribute_object'
 require 'yard-chef/code_objects/action_object'
 
+require 'yard-chef/handlers/base'
 require 'yard-chef/handlers/action'
 require 'yard-chef/handlers/attribute'
 require 'yard-chef/handlers/define'
 require 'yard-chef/handlers/actions'
-require 'yard-chef/handlers/cookbook_desc'
+require 'yard-chef/handlers/cookbook'
 require 'yard-chef/handlers/recipe'
 
 module YARD::CodeObjects::Chef
-  # Before parsing each file inside the specified cookbooks directory, register Chef elements like
-  # "cookbooks", "definitions", "recipes" and "libraries" from file path names.
+  # Since 'recipe' files do not have a specific keyword that can be matched,
+  # iterate through the list of files to be parsed and register the recipes.
+  # Description for every recipe may be found in 'metadata.rb' which can
+  # be taken care of in the handler.
+  # TODO: Investigate if YARD handlers can be invoked if parser is in a
+  # specific directory.
   YARD::Parser::SourceParser.before_parse_list do |files, globals|
     files.each do |file|
-      # File path will be in this format "<cookbook_folder>/<cookbook_name>/<cookbook_elements>"
-      # For example, "cookbooks/db/metadata.rb" or "./apache2/recipes/default.rb"
       path_arr = file.to_s.split('/')
-      if path_arr.include?('metadata.rb')
-        # Read top level README file
-        CHEF.parse_readme(File.expand_path(file))
-
-        # Register cookbook
-        metadata_index = path_arr.index('metadata.rb')
-
-        cookbook_name = path_arr[metadata_index - 1]
+      unless (index = path_arr.index('recipes')).nil?
+        # Cookbook name can be derived from file path
+        # cookbook/<cookbook_name>/recipes/recipe_name.rb
+        cookbook_name = path_arr[index - 1]
         cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
 
-        cookbook.parse_readme(File.expand_path(file))
-        cookbook.add_file(path_arr[0 .. metadata_index - 1].join('/'))
-
-      # Register recipe
-      elsif path_arr.include?('recipes')
-        recipe_index = path_arr.index('recipes')
-
-        cookbook_name = path_arr[recipe_index - 1]
-        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
-
-        recipe_name = path_arr[recipe_index + 1].to_s.sub('.rb','')
+        recipe_name = path_arr.last.to_s.sub('.rb','')
         recipe = ChefObject.register(cookbook, recipe_name, :recipe)
 
         recipe.source = IO.read(file)
         recipe.add_file(file, 1)
-
-      # Register definition
-      elsif path_arr.include?('definitions')
-        definition_index = path_arr.index('definitions')
-
-        cookbook_name = path_arr[definition_index - 1]
-        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
-
-        definition_name = path_arr[definition_index + 1].to_s.sub('.rb','')
-        definition = ChefObject.register(cookbook, definition_name, :definition)
-
-        definition.add_file(file, 1)
-
-      # Register library
-      elsif path_arr.include?('libraries')
-        cookbook_name = path_arr[path_arr.index('libraries') - 1]
-        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
-
-        cookbook.libraries.push(path_arr.join('/'))
       end
     end
   end
 
-  YARD::Tags::Library.define_tag('Map Chef Providers with Chef Resources', :resource)
-  YARD::Templates::Engine.register_template_path(File.join(File.dirname(__FILE__), 'templates'))
+  # Register '@resource' tag for mapping providers with light-weight resources
+  YARD::Tags::Library.define_tag(
+    'Map Chef Providers with Chef Resources',
+    :resource
+  )
+
+  # Register template directory for the chef plugin
+  template_dir = File.expand_path('../templates', File.dirname(__FILE__))
+  YARD::Templates::Engine.register_template_path(template_dir.to_s)
 end

@@ -24,20 +24,40 @@ require 'yard'
 module YARD::Handlers
   module Chef
     # Handles "recipes" in a cookbook.
-    class RecipeHandler < YARD::Handlers::Ruby::Base
-      include YARD::CodeObjects::Chef
+    class RecipeHandler < Base
       handles method_call(:recipe)
 
       def process
-        path_arr = parser.file.to_s.split('/')
+        return unless statement.file.to_s =~ /metadata.rb/
 
-        # Recipe descriptions are obtained from cookbook metadata
-        cookbook_name = path_arr[path_arr.index('metadata.rb') - 1] if path_arr.include?('metadata.rb')
-        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+        recipe_obj = ChefObject.register(cookbook, name, :recipe)
+        recipe_obj.docstring = docstring
+      end
 
-        recipe_name = statement.parameters.first.jump(:string_content).source
-        recipe_obj = ChefObject.register(cookbook, recipe_name, :recipe)
-        recipe_obj.docstring = statement.parameters[1]
+      # Gets the recipe name from the metadata.rb.
+      #
+      # @return [String] the recipe name
+      #
+      def name
+        recipe = statement.parameters.first.jump(:string_content, :ident).source
+        recipe = recipe.split("::")[1] if recipe =~ /::/
+        recipe = 'default' if recipe == cookbook.name.to_s
+        recipe
+      end
+
+      # Gets the docstring for the recipe. The docstring is obtained from the
+      # description field in the recipe.
+      #
+      # @return [YARD::Docsting] the docstring
+      #
+      def docstring
+        description = ""
+        # YARD builds an abstract syntax tree (AST) which we need to traverse
+        # to obtain the complete docstring
+        statement.parameters[1].traverse do |child|
+          description << child.jump(:string_content).source if child.type == :string_content
+        end
+        YARD::DocstringParser.new.parse(description).to_docstring
       end
     end
   end

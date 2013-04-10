@@ -23,24 +23,27 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
-    # A RecipeObject represents a recipe in a chef cookbook. See http://docs.opscode.com/essentials_cookbook_recipes.html
+    # A RecipeObject represents a recipe in a chef cookbook.
+    # See http://docs.opscode.com/essentials_cookbook_recipes.html
+    #
     class RecipeObject < ChefObject
       register_element :recipe
 
-      # Name of the recipe
-      # @return [String] recipe name.
-      attr_reader :name
-
       # Creates a new instance of RecipeObject.
-      # @param [NamespaceObject] namespace namespace to which the recipe belongs.
-      # @param [String] name name of the recipe.
-      # @return [RecipeObject] new instance of RecipeObject.
+      #
+      # @param namespace [NamespaceObject] namespace to which the recipe belongs
+      # @param name [String] name of the recipe
+      #
+      # @return [RecipeObject] the newly created RecipeObject
+      #
       def initialize(namespace, name)
         super(namespace, name)
       end
 
       # Prefixes recipe name with the name of the cookbook.
-      # @return [String] recipe name.
+      #
+      # @return [String] recipe name
+      #
       def name
         self.parent.name.to_s << '::' << @name.to_s
       end
