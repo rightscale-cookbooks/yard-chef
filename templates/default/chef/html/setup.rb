@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 def init
-  @cookbooks = Registry.all(:cookbook)
+  @cookbooks = Registry.all(:cookbook).sort_by { |cookbook| cookbook.name.to_s }
 
   sections.push :docstring, :cookbook_table
 end
