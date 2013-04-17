@@ -46,7 +46,7 @@ module YARD::CodeObjects::Chef
   # specific directory.
   YARD::Parser::SourceParser.before_parse_list do |files, globals|
     files.each do |file|
-      path_arr = file.to_s.split('/')
+      path_arr = File.expand_path(file).to_s.split('/')
       unless (index = path_arr.index('recipes')).nil?
         # Cookbook name can be derived from file path
         # cookbook/<cookbook_name>/recipes/recipe_name.rb

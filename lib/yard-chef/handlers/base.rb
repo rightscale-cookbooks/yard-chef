@@ -40,7 +40,7 @@ module YARD::Handlers
       #
       def cookbook
         cookbook_name = ""
-        path_array = statement.file.to_s.split('/')
+        path_array = File.expand_path(statement.file).to_s.split('/')
         if path_array.include?('metadata.rb')
           cookbook_name = path_array[path_array.index('metadata.rb') - 1]
         else
@@ -56,7 +56,7 @@ module YARD::Handlers
       # provider
       #
       def lwrp
-        path_array = statement.file.to_s.split('/')
+        path_array = File.expand_path(statement.file).to_s.split('/')
         if path_array.include?("resources")
           type = RESOURCE
           type_sym = :resource
