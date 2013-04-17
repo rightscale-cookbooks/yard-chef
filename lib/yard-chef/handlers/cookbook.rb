@@ -55,6 +55,20 @@ module YARD::Handlers
         end
       end
 
+      # Get the name of the method being handled.
+      #
+      # @return [String] the method name
+      #
+      def name
+        string = ""
+        # YARD builds an abstract syntax tree (AST) which we need to traverse
+        # to obtain the complete docstring
+        statement.parameters.first.traverse do |child|
+          string << child.jump(:string_content).source if child.type == :string_content
+        end
+        string
+      end
+
       # Generates docstring from the README file.
       #
       # @return [YARD::Docstring] the docstring
