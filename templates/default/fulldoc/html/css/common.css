@@ -1,0 +1,15 @@
+table {
+  border: 0px;
+}
+
+th {
+  color: black;
+  padding: 5px;
+}
+
+td {
+  padding: 10px;
+}
+
+tr.r1 { background: #FFFFFF; }
+tr.r2 { background: #EFEFEF; }

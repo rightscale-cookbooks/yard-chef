@@ -19,27 +19,19 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require 'yard'
+def init
+  @resources = object.resources
 
-module YARD::CodeObjects
-  module Chef
-    # An AttributeObject represents a cookbook or a resource attribute.
-    # See http://wiki.opscode.com/display/chef/Attributes
-    #
-    class AttributeObject < ChefObject
-      register_element :attribute
+  sections :resource_list, [:actions, T('attribute'), :providers_list]
+end
 
-      # Creates a new instance of the AttributeObject.
-      #
-      # @param namespace [NamespaceObject] namespace to which the attribute
-      # belongs
-      # @param name [String] name of the attribute
-      #
-      # @return [AttributeObject] the newly created AttribteObject
-      #
-      def initialize(namespace, name)
-        super(namespace, name)
-      end
-    end
-  end
+# Gets the link to the provider. This is a workaround as 'url_for' method
+# returns "../cookbook_name.html#provider_name" while yard server returns
+# "cookbook_name.html#provider_name". So the links to provider do not work
+# when url_for is used directly.
+#
+def link_to_provider(provider)
+  url = url_for(provider.cookbook, provider.long_name)
+  url.slice!("../")
+  url
 end

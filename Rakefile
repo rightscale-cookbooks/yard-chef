@@ -24,9 +24,10 @@ EOS
   gem.homepage = 'https://github.com/rightscale/yard-chef'
   gem.authors = ['Douglas Thrift', 'Nick Stakanov', 'Nitin Mohan']
   gem.license = 'MIT'
-  gem.files.include(Dir.glob('lib/**/*.erb'))
+  gem.files.include(Dir.glob('templates/**/*.erb'))
+  gem.files.include(Dir.glob('templates/**/*.rb'))
+  gem.files.include(Dir.glob('templates/**/*.css'))
   gem.files.include(Dir.glob('lib/**/*.rb'))
-  gem.files.include(Dir.glob('lib/**/*.css'))
 end
 Jeweler::RubygemsDotOrgTasks.new
 
