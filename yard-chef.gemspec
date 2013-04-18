@@ -13,10 +13,10 @@ Gem::Specification.new do |gem|
   gem.add_runtime_dependency 'yard', '~> 0.8'
   gem.add_runtime_dependency 'redcarpet', '~> 2.1.1'
 
-  gem.files.include(Dir.glob('templates/**/*.erb'))
-  gem.files.include(Dir.glob('templates/**/*.rb'))
-  gem.files.include(Dir.glob('templates/**/*.css'))
-  gem.files.include(Dir.glob('lib/**/*.rb'))
+  gem.files = Dir.glob('templates/**/*.erb')
+  gem.files += Dir.glob('templates/**/*.rb')
+  gem.files += Dir.glob('templates/**/*.css')
+  gem.files += Dir.glob('lib/**/*.rb')
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files    = gem.files.grep(%r{^(test|spec|features)/})
   gem.require_path  = "lib"
