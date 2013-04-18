@@ -23,21 +23,29 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
-    # A <ResourceObject> represents a lightweight resource in chef. See http://docs.opscode.com/essentials_cookbook_lwrp.html
+    # A ResourceObject represents a lightweight resource in chef.
+    # See http://docs.opscode.com/essentials_cookbook_lwrp.html
+    #
     class ResourceObject < ChefObject
       register_element :resource
 
       # Creates a new instance of ResourceObject.
-      # @param [NamespaceObject] namespace namespace to which the Lightweight Resource belongs.
-      # @param [String] name name of the Lightweight Resource.
+      #
+      # @param namespace [NamespaceObject] namespace to which the lightweight
+      # resource belongs
+      # @param name [String] name of the lightweight resource
+      #
+      # @return [ResourceObject] the newly created ResourceObject
+      #
       def initialize(namespace, name)
         super(namespace, name)
-        @actions = []
         @providers = []
       end
 
-      # Constructs long name (class path) for the lightweight resource.
-      # @return [String] generated class name for the lightweight resource.
+      # Constructs class name for the lightweight resource.
+      #
+      # @return [String] class name for the lightweight resource
+      #
       def long_name
         name = ''
         if @name.to_s =~ /_/
@@ -47,10 +55,29 @@ module YARD::CodeObjects
         else
           name = @name.to_s.capitalize
         end
-        "#{@namespace}::#{name}"
+
+        namespace = @namespace.to_s.split('::').map { |str| str.capitalize }
+        "#{namespace.join('::')}::#{name}"
+      end
+
+      # Attributes defined in the lightweight resource.
+      #
+      # @return [Array<AttributeObject>] attributes in the lightweight resource
+      #
+      def attributes
+        children_by_type(:attribute)
+      end
+
+      # Actions supported by the lightweight resource.
+      #
+      # @return [Array<ActionObject>] actions in the lightweight resource
+      #
+      def actions
+        children_by_type(:action)
       end
     end
 
-    RESOURCE = ChefObject.register(CHEF, 'Resource', :resource)
+    # Register 'resource' as a child of 'chef' namespace
+    RESOURCE = ChefObject.register(CHEF, 'resource', :resource)
   end
 end

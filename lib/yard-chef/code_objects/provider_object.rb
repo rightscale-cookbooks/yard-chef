@@ -23,25 +23,28 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
-    # A ProviderObject represents a lightweight provider in Chef. See http://docs.opscode.com/essentials_cookbook_lwrp.html
+    # A ProviderObject represents a lightweight provider in Chef.
+    # See http://docs.opscode.com/essentials_cookbook_lwrp.html
+    #
     class ProviderObject < ChefObject
       register_element :provider
 
-      # Cookbook to which the lightweight provider belongs.
-      # @param [CookbookObject] cookbook cookbook to which the lightweight provider belongs.
-      # @return [CookbookObject] cookbook to which the lightweight provider belongs.
-      attr_accessor :cookbook
-
       # Creates a new instance of ProviderObject.
-      # @param [NamespaceObject] namespace namespace to which the lightweight provider belongs.
-      # @param [String] name name of the lightweight provider.
-      # @return [ProviderObject] new instance of ProviderObject.
+      #
+      # @param namespace [NamespaceObject] namespace to which the lightweight
+      # provider belongs
+      # @param name [String] name of the lightweight provider
+      #
+      # @return [ProviderObject] the newly created ProviderObject
+      #
       def initialize(namespace, name)
         super(namespace, name)
       end
 
-      # Constructs long name (class name) for the lightweight provider.
-      # @return [String] generated class name for the lightweight provider.
+      # Constructs class name for the lightweight provider.
+      #
+      # @return [String] the class name for the lightweight provider
+      #
       def long_name
         name = ''
         if @name.to_s =~ /_/
@@ -51,24 +54,36 @@ module YARD::CodeObjects
         else
           name = @name.to_s.capitalize
         end
-        "#{@namespace}::#{name}"
+        namespace = @namespace.to_s.split('::').map { |str| str.capitalize }
+        "#{namespace.join('::')}::#{name}"
       end
 
-      # Maps lightweight provider with a lightweight resource.
+      # Maps provider with a lightweight resource.
+      #
       # @param [String] path to the lightweight provider file.
+      #
       def map_resource(file)
         file_handle = File.open(File.expand_path(file), 'r')
         file_handle.readlines.each do |line|
           if line =~ /#\s@resource/
             resource_name = line.split(%r{@resource })[1].strip
-            @resource = self.class.superclass.register(RESOURCE, resource_name, :resource)
+            @resource = ChefObject.register(RESOURCE, resource_name, :resource)
             @resource.providers.push(self) unless @resource.providers.include?(self)
             break
           end
         end
       end
+
+      # Actions implemented in the lightweight provider.
+      #
+      # @return [Array<ActionObject>] actions in the provider
+      #
+      def actions
+        children_by_type(:action)
+      end
     end
 
-    PROVIDER = ChefObject.register(CHEF, 'Provider', :provider)
+    # Register 'provider' as a child of 'chef' namespace
+    PROVIDER = ChefObject.register(CHEF, 'provider', :provider)
   end
 end
