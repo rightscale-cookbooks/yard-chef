@@ -24,3 +24,14 @@ def init
 
   sections :resource_list, [:actions, T('attribute'), :providers_list]
 end
+
+# Gets the link to the provider. This is a workaround as 'url_for' method
+# returns "../cookbook_name.html#provider_name" while yard server returns
+# "cookbook_name.html#provider_name". So the links to provider do not work
+# when url_for is used directly.
+#
+def link_to_provider(provider)
+  url = url_for(provider.cookbook, provider.long_name)
+  url.slice!("../")
+  url
+end

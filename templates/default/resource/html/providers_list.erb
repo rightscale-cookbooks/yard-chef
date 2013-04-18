@@ -28,7 +28,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <% object.providers.each do |provider| %>
       <li>
         <span class="summary_signature">
-          <a href="<%= url_for(provider.cookbook, provider.long_name, false) %>">
+          <a href="<%= link_to_provider(provider) %>">
             <%= provider.long_name %>
           </a>
         </span>

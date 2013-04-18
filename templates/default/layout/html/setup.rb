@@ -41,7 +41,7 @@ def menu_lists
   { :type => 'recipes', :title => 'Recipes', :search_title => 'Recipe List'},
   { :type => 'resources', :title => 'Resources', :search_title => 'Resource List'},
   { :type => 'definitions', :title => 'Definitions', :search_title => 'Definitions List' },
-  { :type => 'class', :title => 'Libraries', :search_title => 'Library List' } ]
+  { :type => 'class', :title => 'Libraries', :search_title => 'Libraries List' } ]
 end
 
 def page_title
