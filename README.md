@@ -49,12 +49,12 @@ should be in a comment separated from other comments, for example:
     # Here is the first action
     ...
 
-### Standard YARD Tags
-Your definitions, libraries, ruby resource and ruby providers can benefit from
-adding YARD markup for each class and method.  You can learn from about it from
+### Standard YARD Tags and Comments
+Your definitions, libraries, resources and providers can benefit from
+adding YARD tags and comments for each class and method.  You can learn more about the tags from
 yardoc.org and the [list of available tags](http://rubydoc.info/docs/yard/file/docs/Tags.md#List_of_Available_Tags)
 
-Here is an example of adding standard YARD to a definition:
+Here is an example of adding standard YARD comments to a definition:
 
     # Does a database backup.
     #
@@ -64,6 +64,21 @@ Here is an example of adding standard YARD to a definition:
     define :db_do_backup, :backup_type => "primary" do
       ...
     end
+
+Here is an example of adding YARD comments to a light-weight resource:
+
+    # Install packages required for application server setup
+    #
+    actions :install
+
+      # Set of packages to be installed in addition to the base application
+      # packages
+      #
+      attribute :packages, :kind_of => Array
+
+The first comment will add a description for a resource action. The second
+comment adds a description for a resource attribute. You can also use comments
+to document your light-weight provider actions.
 
 ## Generating Cookbook Docs
 
@@ -85,10 +100,10 @@ Then just run
     rake yard
 
 ### Command-line
-You can run the ```yardoc``` command to generate documentation from the
-command-line.
+From the root of your cookbook repository, run the ```yardoc``` command to
+generate documentation using the following command
 
-    yardoc '<path_to_cookbooks_repo>/**/*.rb' --plugin chef
+    yardoc '**/*.rb' --plugin chef
 
 ## Viewing Cookbook Docs
 YARD output will be present in a folder named "doc" which will be located in
