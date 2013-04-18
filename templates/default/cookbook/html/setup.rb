@@ -19,27 +19,22 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-require 'yard'
+include T('default/module')
 
-module YARD::CodeObjects
-  module Chef
-    # An AttributeObject represents a cookbook or a resource attribute.
-    # See http://wiki.opscode.com/display/chef/Attributes
-    #
-    class AttributeObject < ChefObject
-      register_element :attribute
-
-      # Creates a new instance of the AttributeObject.
-      #
-      # @param namespace [NamespaceObject] namespace to which the attribute
-      # belongs
-      # @param name [String] name of the attribute
-      #
-      # @return [AttributeObject] the newly created AttribteObject
-      #
-      def initialize(namespace, name)
-        super(namespace, name)
-      end
-    end
-  end
+def init
+  sections :cookbook_title,
+            [
+              :docstring,
+              :generated_docs,
+                [
+                  :recipes,
+                  T('resource'),
+                  T('provider'),
+                  T('attribute'),
+                  :definitions,
+                  :libraries,
+                  :element_details,
+                  [T('recipe'), T('action'), T('definition')]
+                ]
+            ]
 end

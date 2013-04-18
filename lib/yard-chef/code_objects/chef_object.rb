@@ -23,41 +23,55 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
-    # A ChefObject is the superclass of all chef elements (resources, providers, recipes, definitions, attributes and actions).
+    # A ChefObject is an abstract implementation of all chef elements
+    # (cookbooks, resources, providers, recipes, attributes and actions).
+    #
     class ChefObject < YARD::CodeObjects::ClassObject
-      # Formatting type of README files (:markdown, :rdoc, etc.)
-      # @return [Symbol] formatting type
-      attr_reader :readme_type
+      # Returns the formatting type of docstring (Example: :markdown, :rdoc).
+      #
+      # @return [Symbol, String] formatting type
+      #
+      attr_reader :docstring_type
 
-      # Holds all implementations of Chef elements which is used by {self.register} factory method to create <chef_element>Object.
-      @@chef_elements = {}
-
-      # Creates a ChefObject instance and registers in YARD::Registry.
-      # @param [NamespaceObject] namespace namespace to which the object must belong.
-      # @param [String] name name of the ChefObject.
+      # Creates a new ChefObject object.
+      #
+      # @param namespace [NamespaceObject] namespace to which the object belongs
+      # @param name [String] name of the ChefObject
+      #
+      # @return [ChefObject] the newly created ChefObject
+      #
       def initialize(namespace, name)
         super(namespace, name)
-        @readme_type = :markdown
+        @docstring_type = :markdown
       end
 
-      # Register a Chef element Object class.
-      # @param [Class] element Chef element object class.
+      # Register a chef element class.
+      #
+      # @param element [Class] chef element class
+      #
       def self.register_element(element)
+        @@chef_elements ||= {}
         @@chef_elements[element] = self
       end
 
-      # Factory for creating Chef element Object instance and registering in YARD::Registry. New  Object instance created only it does not exist in YARD::Registry.
-      # @param [NamespaceObject] namespace namespace to which the object must belong.
-      # @param [String] name name of the Chef element Object.
-      # @param [Symbol] type type of the Chef element Object.
-      # @return [ChefObject] the Chef element Object instance.
+      # Factory for creating and registering chef element object in
+      # YARD::Registry.
+      #
+      # @param namespace [NamespaceObject] namespace to which the object must
+      # belong
+      # @param name [String] name of the chef element
+      # @param type [Symbol, String] type of the chef element
+      #
+      # @return [<type>Object] the element object
+      #
       def self.register(namespace, name, type)
         element = @@chef_elements[type]
         if element
           element_obj = YARD::Registry.resolve(:root, "#{namespace}::#{name}")
           if element_obj.nil?
             element_obj = element.new(namespace, name)
-            log.info "Created [#{type.to_s.capitalize}] #{element_obj.name} => #{element_obj.namespace}"
+            log.info "Created [#{type.to_s.capitalize}]" +
+              " #{element_obj.name} => #{element_obj.namespace}"
           end
           element_obj
         else
@@ -65,43 +79,28 @@ module YARD::CodeObjects
         end
       end
 
-      # Parse README files if they exist in root repository folder.
-      # @param [String] file_path path to the README file
-      def parse_readme(file_path)
-        path_arr = file_path.to_s.split('/')
-        base_path = path_arr.slice(0 .. path_arr.index('metadata.rb') - 3).join('/')
-
-        # Check for README.rdoc file. If it does not exist, then look for README.md
-        readme_path = base_path + '/README.rdoc'
-        if File.exists?(readme_path)
-          @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring if @docstring == ""
-          @readme_type = :rdoc
-        else
-          readme_path = base_path + '/README.md'
-          if File.exists?(readme_path)
-            @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring if @docstring == ""
-          end
-        end
+      # Returns children of an object of a particular type.
+      #
+      # @param type [Symbol] type of ChefObject to be selected
+      #
+      # @return [Array<ChefObject>] list of ChefObjects
+      #
+      def children_by_type(type)
+        children = YARD::Registry.all(type)
+        children.reject { |child| child.parent != self }
       end
 
-      # Returns children of ChefObject of a particular type.
-      # @param [Symbol] type type of ChefObject to be selected
-      # @return [Array<ChefObject>] list of ChefObjects
-      def children_by_type(type)
-        children = []
-        unless self.children.empty?
-          self.children.each do |child|
-            children.push(child) if child.type == type
-          end
-        end
-        children.sort_by {|item| item.name.to_s}
+      # Gets all Chef cookbooks.
+      #
+      # @return [Array<CookbookObject>] list of cookbooks.
+      #
+      def cookbooks
+        children_by_type(:cookbook)
       end
     end
 
     # Register 'Chef' as the root namespace
-
-    # Root namespace
-    CHEF = ChefObject.new(:root, 'Chef')
+    CHEF = ChefObject.new(:root, 'chef')
 
     log.info "Creating [Chef] as 'root' namespace"
   end

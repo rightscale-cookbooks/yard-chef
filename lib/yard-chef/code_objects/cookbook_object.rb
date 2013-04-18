@@ -23,70 +23,87 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
-    # A CookbookObject represents a Chef cookbook. See http://wiki.opscode.com/display/chef/Cookbooks for more information about cookbook.
+    # A CookbookObject represents a Chef cookbook.
+    # See http://wiki.opscode.com/display/chef/Cookbooks for more information
+    # about cookbook.
+    #
     class CookbookObject < ChefObject
       register_element :cookbook
 
       # Short description for the cookbook.
-      # @param [String] short_desc text to be assigned as short description.
-      # @return [String] short description for the cookbook.
+      #
+      # @param short_desc [String] short description for the cookbook
+      #
+      # @return [String] short description for the cookbook
+      #
       attr_accessor :short_desc
 
-      # Version of cookbook.
-      # @param [String] version text to be set as cookbook version.
-      # @return [String] cookbook version.
+      # Version of the cookbook.
+      #
+      # @param version [String] version for the cookbook
+      #
+      # @return [String] version for the cookbook
+      #
       attr_accessor :version
 
-      # Cookbook lightweight resources.
-      # @return [Array<ResourceObject>] lightweight resources.
+      # Lightweight resources implemented in the cookbook.
+      #
+      # @return [Array<ResourceObject>] lightweight resources in the cookbook
+      #
       attr_reader :resources
 
-      # Cookbook lightweight providers.
-      # @return [Array<ProviderObject>] lightweight providers.
+      # Lightweight providers implemented in the cookbook.
+      #
+      # @return [Array<ProviderObject>] lightweight providers in the cookbook
+      #
       attr_reader :providers
 
-      # Cookbook libraries.
-      # @return [Array<NamespaceObject>] cookbook libraries.
-      attr_reader :libraries
-
-      # Cookbook definitions.
-      # @return [Array<DefinitionObject>] cookbook definitions.
-      attr_reader :definitions
-
-      # Type of README file (:rdoc, :markdown, etc.).
-      # @return [Symbol] README type.
-      attr_reader :readme_type
-
       # Creates a new CookbookObject instance.
-      # @param [NamespaceObject] namespace namespace to which the cookbook belongs to.
-      # @param [String] name name of the cookbook.
-      # @return [CookbookObject] instance of CookbookObject.
+      # @param namespace [NamespaceObject] namespace to which the cookbook
+      # belongs
+      # @param name [String] name of the cookbook
+      #
+      # @return [CookbookObject] the newly created CookbookObject
+      #
       def initialize(namespace, name)
         super(namespace, name)
         @resources = []
         @providers = []
         @libraries = []
-        @readme_type = :markdown
       end
 
-      # Parses README file in the cookbooks/<name> directory.
-      # @param [String] path to README file.
-      def parse_readme(file_path)
-        path_arr = file_path.to_s.split('/')
+      # Recipes implemented in the cookbook.
+      #
+      # @return [Array<RecipeObject>] recipes in the cookbook
+      #
+      def recipes
+        children_by_type(:recipe)
+      end
 
-        base_path = path_arr.slice(0 .. path_arr.index('metadata.rb') - 1).join('/')
+      # Attributes implemented in the cookbook.
+      #
+      # @return [Array<AttributeObject>] attributes in the cookbook
+      #
+      def attributes
+        children_by_type(:attribute)
+      end
 
-        # Look for README.rdoc. If it doesn't exist then look for README.md.
-        readme_path = base_path + '/README.rdoc'
-        if File.exists?(readme_path)
-          @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring
-          @readme_type = :rdoc
-        else
-          readme_path = base_path + '/README.md'
-          @docstring = YARD::DocstringParser.new.parse(IO.read(readme_path)).to_docstring if File.exists?(readme_path)
-        end
+      # Definitions implemented in the cookbook.
+      #
+      # @return [Array<MethodObject>] definitions in the cookbook
+      #
+      def definitions
+        children_by_type(:method)
+      end
+
+      # Libraries defined in the cookbook.
+      #
+      # @return [Array<ModuleObject>] libraries in the cookbook
+      #
+      def libraries
+        modules = YARD::Registry.all(:module)
+        modules.select { |lib| !lib.parent.root? && lib.file =~ /#{@name}/ }
       end
     end
   end
 end
-
