@@ -85,26 +85,10 @@ Then just run
     rake yard
 
 ### Command-line
-You can run from the command-line, but YARD seems to be a bit fickle about the
-directory regex that you pass to it. Here are some common use case regex formats:
+You can run the ```yardoc``` command to generate documentation from the
+command-line.
 
-If you have a single cookbook repository, from root of the repo run.
-For example, for the bluepill cookbook:
-
-    yardoc 'bluepill/**/*.rb' --plugin chef
-
-If you have your cookbooks in a monolithic-cookbook repository, from the root of
-the repo run:
-
-    yardoc --plugin chef '**/**/*.rb'
-
-If you have your cookbooks in a single chef-repo repository, from root of the
-repo run:
-
-    yardoc --plugin chef 'cookbooks/**/*.rb'
-
-NOTE: If you are missing libraries, resources and/or definitions, try messing
-with the directory regex a bit.
+    yardoc '<path_to_cookbooks_repo>/**/*.rb' --plugin chef
 
 ## Viewing Cookbook Docs
 YARD output will be present in a folder named "doc" which will be located in
