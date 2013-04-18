@@ -27,7 +27,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   <%# unless item.namespace.parent.root? %>
     <li class="r<%= n %>">
       <span class="object_link">
-        <a href="<%= url_for(item, item.name, false) %>" title="<%= item.file %>">
+        <a href="<%= url_for(item.parent, item.name, false) %>" title="<%= item.file %>">
           <%= h(item.name) %>
         </a>
       </span>
