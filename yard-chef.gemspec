@@ -3,7 +3,7 @@ Gem::Specification.new do |gem|
   gem.name        = "yard-chef"
   gem.version     = IO.read(File.join(File.dirname(__FILE__), "VERSION")).chomp
   gem.platform    = Gem::Platform::RUBY
-  gem.authors     = ['Douglas Thrift', 'Nick Stakanov', 'Nitin Mohan']
+  gem.authors     = ['Douglas Thrift', 'Nitin Mohan']
   gem.email       = ["douglas@rightscale.com", "nitin@rightscale.com"]
   gem.homepage    = "https://github.com/rightscale/yard-chef"
   gem.summary     = %q{YARD plugin for Chef}
@@ -12,6 +12,7 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'yard', '~> 0.8'
   gem.add_runtime_dependency 'redcarpet', '~> 2.1.1'
+  gem.add_runtime_dependency 'ripper', '~> 1.0.5' if RUBY_VERSION =~ /1.8/
 
   gem.files = Dir.glob('templates/**/*.erb')
   gem.files += Dir.glob('templates/**/*.rb')
