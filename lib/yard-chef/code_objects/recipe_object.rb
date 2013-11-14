@@ -29,6 +29,8 @@ module YARD::CodeObjects
     class RecipeObject < ChefObject
       register_element :recipe
 
+      attr_accessor :long_desc
+
       # Creates a new instance of RecipeObject.
       #
       # @param namespace [NamespaceObject] namespace to which the recipe belongs
@@ -38,6 +40,7 @@ module YARD::CodeObjects
       #
       def initialize(namespace, name)
         super(namespace, name)
+        @long_desc = ""
       end
 
       # Prefixes recipe name with the name of the cookbook.
@@ -46,6 +49,28 @@ module YARD::CodeObjects
       #
       def name
         self.parent.name.to_s << '::' << @name.to_s
+      end
+
+      # Parses detailed recipe description within the recipe file mentioned by
+      # '@recipe' tag.
+      #
+      # @param recipe_file [String] the recipe file
+      #
+      def add_long_desc(recipe_file)
+        file = File.open(recipe_file, 'r')
+        heredoc = nil
+        file.readlines.each do |line|
+          if line =~ /#\s@recipe\s<<-?\s?(\w+)/
+            heredoc = $1
+            next
+          end
+
+          if heredoc
+            line = line.sub(/^\s*#\s*/,'')
+            break if line =~ /#{heredoc}/
+            @long_desc << line
+          end
+        end
       end
     end
   end

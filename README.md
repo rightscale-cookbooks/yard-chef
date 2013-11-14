@@ -27,7 +27,7 @@ If you are using Ruby 1.8.x, you need to install Ripper as well:
 ### Cookbook README
 The cookbook README file included in your cookbooks will be the landing page for
 each cookbook.  Under this verbatim inclusion of your README will be a
-```Cookbook Documentation``` section that contains the auto-generated information
+`Cookbook Documentation` section that contains the auto-generated information
 
 ### Cookbook Metadata
 This plugin grabs most of it's information from the cookbook metadata.rb file.
@@ -38,7 +38,7 @@ The rest of the stuff is parsed from cookbook code itself.
 
 ### YARD-Chef Tags
 We also need a way to link your providers to their resources.  To do so add a
-``` @resource <resource_name>``` tag in each of your provider code.  This tag
+` @resource <resource_name>` tag in each of your provider code.  This tag
 should be in a comment separated from other comments, for example:
 
     # This is my super_cool provider
@@ -48,6 +48,19 @@ should be in a comment separated from other comments, for example:
 
     # Here is the first action
     ...
+
+We can add more description to a recipe (besides `metadata.rb`) in the recipe file
+using `@recipe` tag as follows
+
+    # This is my recipe
+    #
+    # @recipe <<-EOF
+    # This is a detailed description for my recipe.
+    # This does a lot of things.
+    # EOF
+    #
+    ...
+
 
 ### Standard YARD Tags and Comments
 Your definitions, libraries, resources and providers can benefit from
@@ -100,7 +113,7 @@ Then just run
     rake yard
 
 ### Command-line
-From the root of your cookbook repository, run the ```yardoc``` command to
+From the root of your cookbook repository, run the `yardoc` command to
 generate documentation using the following command
 
     yardoc '**/*.rb' --plugin chef
@@ -115,7 +128,7 @@ generated ./doc directory.  Once there run:
 
     yard server --reload -B localhost -p 8000 --plugin yard-chef
 
-Add a ```-d``` option flag to run the server in daemon mode.  For more
+Add a `-d` option flag to run the server in daemon mode.  For more
 information about YARD server see [http://yardoc.org/](http://rubydoc.info/docs/yard/file/docs/GettingStarted.md#yard_Executable)
 
 ## License

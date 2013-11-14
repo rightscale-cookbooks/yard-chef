@@ -58,15 +58,14 @@ module YARD::CodeObjects::Chef
 
         recipe.source = IO.read(file)
         recipe.add_file(file, 1)
+
+        recipe.add_long_desc(file)
       end
     end
   end
 
-  # Register '@resource' tag for mapping providers with light-weight resources
-  YARD::Tags::Library.define_tag(
-    'Map Chef Providers with Chef Resources',
-    :resource
-  )
+  YARD::Tags::Library.define_tag('Map Chef Providers with Chef Resources', :resource)
+  YARD::Tags::Library.define_tag('Detailed description for recipes', :recipe)
 
   # Register template directory for the chef plugin
   template_dir = File.expand_path('../templates', File.dirname(__FILE__))
