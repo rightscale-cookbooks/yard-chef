@@ -28,10 +28,11 @@ module YARD::Handlers
       handles method_call(:recipe)
 
       def process
-        return unless statement.file.to_s =~ /metadata.rb/
+        return unless is_metadata?(file)
 
-        recipe_obj = ChefObject.register(cookbook, name, :recipe)
-        recipe_obj.docstring = docstring
+        cookbook_obj = CookbookObject.register(COOKBOOK, get_cookbook_name(file))
+        recipe_obj = RecipeObject.register(cookbook_obj, name)
+        recipe_obj.docstring = docstring if recipe_obj.docstring.empty?
       end
 
       # Gets the recipe name from the metadata.rb.
@@ -39,24 +40,19 @@ module YARD::Handlers
       # @return [String] the recipe name
       #
       def name
-        recipe = statement.parameters.first.jump(:string_content, :ident).source
+        recipe = super
         recipe = recipe.split("::")[1] if recipe =~ /::/
-        recipe = 'default' if recipe == cookbook.name.to_s
+        recipe = 'default' if recipe == get_cookbook_name(file)
         recipe
       end
 
-      # Gets the docstring for the recipe. The docstring is obtained from the
-      # description field in the recipe.
+      # Gets the docstring for the recipe from the description field in the
+      # 'recipe' keyword in the metadata.rb.
       #
       # @return [YARD::Docsting] the docstring
       #
       def docstring
-        description = ""
-        # YARD builds an abstract syntax tree (AST) which we need to traverse
-        # to obtain the complete docstring
-        statement.parameters[1].traverse do |child|
-          description << child.jump(:string_content).source if child.type == :string_content
-        end
+        description = traverse(statement.parameters[1])
         YARD::DocstringParser.new.parse(description).to_docstring
       end
     end

@@ -28,7 +28,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <% item.resources.each do |resource| %>
       <li class="r<%= n %>">
         <span class="object_link">
-          <a href="<%= url_for(item, resource.long_name) %>" title="<%= resource.file %>">
+          <a href="<%= url_for(item, resource.class_name) %>" title="<%= resource.file %>">
             <%= h(resource.name) %>
           </a>
         </span>

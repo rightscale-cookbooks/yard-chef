@@ -22,7 +22,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<% recipes = object.children_by_type(:recipe) %>
+<% recipes = object.elements(:recipe) %>
 <% if recipes.size > 0 %>
   <h2>Recipes Summary</h2>
   <ul class="summary">

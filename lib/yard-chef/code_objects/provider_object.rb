@@ -27,8 +27,6 @@ module YARD::CodeObjects
     # See http://docs.opscode.com/essentials_cookbook_lwrp.html
     #
     class ProviderObject < ChefObject
-      register_element :provider
-
       # Creates a new instance of ProviderObject.
       #
       # @param namespace [NamespaceObject] namespace to which the lightweight
@@ -41,49 +39,36 @@ module YARD::CodeObjects
         super(namespace, name)
       end
 
-      # Constructs class name for the lightweight provider.
+      # Constructs class name for the provider.
       #
       # @return [String] the class name for the lightweight provider
       #
-      def long_name
-        name = ''
-        if @name.to_s =~ /_/
-          @name.to_s.split('_').each do |str|
-            name << str.to_s.capitalize
-          end
-        else
-          name = @name.to_s.capitalize
-        end
-        namespace = @namespace.to_s.split('::').map { |str| str.capitalize }
-        "#{namespace.join('::')}::#{name}"
+      def class_name
+        "Chef::Provider::#{convert_underscores_to_snake_case(@name)}"
       end
 
-      # Maps provider with a lightweight resource.
-      #
-      # @param [String] path to the lightweight provider file.
-      #
       def map_resource(file)
         file_handle = File.open(File.expand_path(file), 'r')
         file_handle.readlines.each do |line|
           if line =~ /#\s@resource/
             resource_name = line.split(%r{@resource })[1].strip
-            @resource = ChefObject.register(RESOURCE, resource_name, :resource)
-            @resource.providers.push(self) unless @resource.providers.include?(self)
+            resource_obj = ResourceObject.new(RESOURCE, resource_name)
+
+            resource_obj.providers |= [self]
             break
           end
         end
       end
 
-      # Actions implemented in the lightweight provider.
+      # Actions implemented in the provider.
       #
       # @return [Array<ActionObject>] actions in the provider
       #
       def actions
-        children_by_type(:action)
+        elements(:action)
       end
     end
 
-    # Register 'provider' as a child of 'chef' namespace
-    PROVIDER = ChefObject.register(CHEF, 'provider', :provider)
+    PROVIDER = ProviderObject.register(CHEF, 'providers')
   end
 end

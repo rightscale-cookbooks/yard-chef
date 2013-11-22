@@ -21,6 +21,7 @@
 
 def init
   super
+  @cookbooks = YARD::Registry.all(:chef).first.cookbooks
   @page_title = page_title
   if @file
     if @file.attributes[:namespace]

@@ -27,6 +27,8 @@ module YARD::CodeObjects
     # (cookbooks, resources, providers, recipes, attributes and actions).
     #
     class ChefObject < YARD::CodeObjects::ClassObject
+      include YARD::CodeObjects::Chef::Helper
+
       # Returns the formatting type of docstring (Example: :markdown, :rdoc).
       #
       # @return [Symbol, String] formatting type
@@ -45,38 +47,13 @@ module YARD::CodeObjects
         @docstring_type = :markdown
       end
 
-      # Register a chef element class.
-      #
-      # @param element [Class] chef element class
-      #
-      def self.register_element(element)
-        @@chef_elements ||= {}
-        @@chef_elements[element] = self
-      end
-
-      # Factory for creating and registering chef element object in
-      # YARD::Registry.
-      #
-      # @param namespace [NamespaceObject] namespace to which the object must
-      # belong
-      # @param name [String] name of the chef element
-      # @param type [Symbol, String] type of the chef element
-      #
-      # @return [<type>Object] the element object
-      #
-      def self.register(namespace, name, type)
-        element = @@chef_elements[type]
-        if element
-          element_obj = YARD::Registry.resolve(:root, "#{namespace}::#{name}")
-          if element_obj.nil?
-            element_obj = element.new(namespace, name)
-            log.info "Created [#{type.to_s.capitalize}]" +
-              " #{element_obj.name} => #{element_obj.namespace}"
-          end
-          element_obj
-        else
-          raise "Invalid chef element type #{type}"
+      def self.register(namespace, name)
+        object = YARD::Registry.resolve(:root, "#{namespace}::#{name}")
+        if object.nil?
+          object = self.new(namespace, name) if object.nil?
+          log.info "Registered #{name} => #{namespace}"
         end
+        object
       end
 
       # Returns children of an object of a particular type.
@@ -85,23 +62,17 @@ module YARD::CodeObjects
       #
       # @return [Array<ChefObject>] list of ChefObjects
       #
-      def children_by_type(type)
-        children = YARD::Registry.all(type)
-        children.reject { |child| child.parent != self }
+      def elements(type)
+        self.children.select { |child| child.type == type }
       end
 
-      # Gets all Chef cookbooks.
-      #
-      # @return [Array<CookbookObject>] list of cookbooks.
-      #
       def cookbooks
-        children_by_type(:cookbook)
+        cookbook_namespace = elements(:cookbook).first
+        cookbook_namespace.elements(:cookbook)
       end
     end
 
     # Register 'Chef' as the root namespace
-    CHEF = ChefObject.new(:root, 'chef')
-
-    log.info "Creating [Chef] as 'root' namespace"
+    CHEF = ChefObject.register(:root, 'chef')
   end
 end

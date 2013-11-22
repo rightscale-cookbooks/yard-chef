@@ -27,9 +27,7 @@ module YARD::CodeObjects
     # See http://docs.opscode.com/essentials_cookbook_recipes.html
     #
     class RecipeObject < ChefObject
-      register_element :recipe
-
-      attr_accessor :long_desc
+      attr_accessor :short_desc
 
       # Creates a new instance of RecipeObject.
       #
@@ -40,7 +38,7 @@ module YARD::CodeObjects
       #
       def initialize(namespace, name)
         super(namespace, name)
-        @long_desc = ""
+        @short_desc = ""
       end
 
       # Prefixes recipe name with the name of the cookbook.
@@ -51,26 +49,27 @@ module YARD::CodeObjects
         self.parent.name.to_s << '::' << @name.to_s
       end
 
-      # Parses detailed recipe description within the recipe file mentioned by
-      # '@recipe' tag.
-      #
-      # @param recipe_file [String] the recipe file
-      #
-      def add_long_desc(recipe_file)
-        file = File.open(recipe_file, 'r')
-        heredoc = nil
-        file.readlines.each do |line|
-          if line =~ /#\s@recipe\s<<-?\s?(\w+)/
-            heredoc = $1
-            next
-          end
+      def docstring=(comments)
+        docstring = ''
+        if comments.is_a?(Array)
+          heredoc = nil
 
-          if heredoc
-            line = line.sub(/^\s*#\s*/,'')
-            break if line =~ /#{heredoc}/
-            @long_desc << line
+          comments.each do |line|
+            if line =~ /#\s@recipe\s<<-?\s?(\w+)/
+              heredoc = $1
+              next
+            end
+
+            if heredoc
+              line = line.sub(/^\s*#\s*/,'')
+              break if line =~ /#{heredoc}/
+              docstring << line
+            end
           end
+        else
+          docstring = comments
         end
+        @docstring = YARD::DocstringParser.new.parse(docstring).to_docstring
       end
     end
   end

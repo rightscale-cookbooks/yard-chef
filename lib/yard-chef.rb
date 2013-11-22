@@ -21,6 +21,8 @@
 
 require 'yard'
 
+require 'yard-chef/code_objects/helpers/chef_helper'
+
 require 'yard-chef/code_objects/chef_object'
 require 'yard-chef/code_objects/cookbook_object'
 require 'yard-chef/code_objects/resource_object'
@@ -38,6 +40,14 @@ require 'yard-chef/handlers/cookbook'
 require 'yard-chef/handlers/recipe'
 
 module YARD::CodeObjects::Chef
+  extend Helper
+
+  YARD::Tags::Library.define_tag('Map Chef Providers with Chef Resources', :resource)
+  YARD::Tags::Library.define_tag('Detailed description for recipes', :recipe)
+  YARD::Tags::Library.define_tag('Documenting Chef Resources', :chef_resource)
+  YARD::Tags::Library.define_tag('Documenting Chef Resource Attributes', :chef_resource_attribute)
+  YARD::Tags::Library.define_tag('Supported Actions', :action)
+
   # Since 'recipe' files do not have a specific keyword that can be matched,
   # iterate through the list of files to be parsed and register the recipes.
   # Description for every recipe may be found in 'metadata.rb' which can
@@ -46,26 +56,41 @@ module YARD::CodeObjects::Chef
   # specific directory.
   YARD::Parser::SourceParser.before_parse_list do |files, globals|
     files.each do |file|
-      path_arr = File.expand_path(file).to_s.split('/')
-      unless (index = path_arr.index('recipes')).nil?
-        # Cookbook name can be derived from file path
-        # cookbook/<cookbook_name>/recipes/recipe_name.rb
-        cookbook_name = path_arr[index - 1]
-        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+      if File.expand_path(file).to_s.split('/').include?('recipe')
+        cookbook = CookbookObject.register(COOKBOOK, get_cookbook_name(file))
 
-        recipe_name = path_arr.last.to_s.sub('.rb','')
-        recipe = ChefObject.register(cookbook, recipe_name, :recipe)
-
+        recipe = RecipeObject.register(cookbook, get_object_name(file))
         recipe.source = IO.read(file)
         recipe.add_file(file, 1)
-
-        recipe.add_long_desc(file)
+        recipe.docstring = IO.readlines(file)
       end
     end
   end
 
-  YARD::Tags::Library.define_tag('Map Chef Providers with Chef Resources', :resource)
-  YARD::Tags::Library.define_tag('Detailed description for recipes', :recipe)
+  YARD::Parser::SourceParser.after_parse_list do
+    #YARD::Registry.all.each { |o| puts o.inspect }
+    YARD::Registry.all(:class).each do |object|
+      if object.tag(:chef_resource)
+        resource = register_resource(object.tag(:chef_resource).text, object.file)
+        resource.docstring = object.docstring
+
+        object.tags(:action).each do |action_tag|
+          #ActionObject.register(resource, action_tag.text)
+          puts action_tag.text
+        end
+
+        object.meths.each do |method|
+          if method.tag(:chef_resource_attribute)
+            attribute_obj = AttributeObject.register(resource, method.name)
+            attribute_obj.docstring = method.docstring
+            attribute_obj.default_value = method.tag(:default).text if method.tag(:default)
+            attribute_obj.actions = method.tag(:used_in_actions).text.split(%r{,\s*}) if method.tag(:used_in_actions)
+          end
+        end
+      end
+    end
+    #YARD::Registry.all.each { |o| puts o.inspect }
+  end
 
   # Register template directory for the chef plugin
   template_dir = File.expand_path('../templates', File.dirname(__FILE__))

@@ -33,23 +33,21 @@ module YARD::Handlers
       def process
         # If file path includes metadata then handle cookbook attributes
         # else handle resource attributes
-        if parser.file =~ /metadata\.rb/
-          namespace = cookbook
+        cookbook_obj = CookbookObject.register(COOKBOOK, get_cookbook_name(file))
+        if is_metadata?(file)
+          namespace = cookbook_obj
         else
-          namespace = lwrp
+          namespace = ResourceObject.register(RESOURCE, lwrp_name(file))
           namespace.add_file(statement.file)
 
-          cookbook_obj = cookbook
-          unless cookbook_obj.resources.include?(namespace)
-            cookbook_obj.resources.push(namespace)
-          end
+          cookbook_obj.resources |= [namespace]
         end
 
         # Register attribute if not already registered
-        attrib_obj = ChefObject.register(namespace, name, :attribute)
-        attrib_obj.source = statement.source
+        attrib_obj = AttributeObject.register(namespace, name)
+        attrib_obj.source = source
         attrib_obj.docstring = docstring
-        attrib_obj.add_file(statement.file, statement.line)
+        attrib_obj.add_file(file, line_number)
       end
 
       # Get the docstring related to the attributes. The docstring is obtained
@@ -59,17 +57,9 @@ module YARD::Handlers
       #
       def docstring
         description = ""
-        path_array = parser.file.to_s.split('/')
-        if path_array.include?('metadata.rb')
-          # Suppose :description string have concatenation operator '+' then
-          # YARD builds an abstract syntax tree (AST). We need to traverse the
-          # tree to get the whole description string
+        if is_metadata?(file)
           statement.parameters[1].children.each do |ast_node|
-            if ast_node.jump(:ident).source == "description"
-              ast_node.traverse do |child|
-                description << child.jump(:string_content).source if child.type == :string_content
-              end
-            end
+            description << traverse(ast_node) if ast_node.jump(:ident).source == "description"
           end
         else
           description = statement.comments

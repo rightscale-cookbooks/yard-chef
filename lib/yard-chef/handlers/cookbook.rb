@@ -30,11 +30,11 @@ module YARD::Handlers
       handles method_call(:version)
 
       def process
-        return unless statement.file.to_s =~ /metadata.rb/
+        return unless is_metadata?(file)
 
         # Register the cookbook
-        cookbook_obj = cookbook
-        cookbook_obj.add_file(statement.file)
+        cookbook_obj = CookbookObject.register(COOKBOOK, get_cookbook_name(file))
+        cookbook_obj.add_file(file)
         case statement.first.source
         when 'description'
           cookbook_obj.short_desc = name
@@ -60,13 +60,7 @@ module YARD::Handlers
       # @return [String] the method name
       #
       def name
-        string = ""
-        # YARD builds an abstract syntax tree (AST) which we need to traverse
-        # to obtain the complete docstring
-        statement.parameters.first.traverse do |child|
-          string << child.jump(:string_content).source if child.type == :string_content
-        end
-        string
+        traverse(statement.parameters.first)
       end
 
       # Generates docstring from the README file.

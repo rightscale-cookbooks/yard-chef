@@ -27,8 +27,6 @@ module YARD::CodeObjects
     # See http://wiki.opscode.com/display/chef/Lightweight+Resources+and+Providers+%28LWRP%29#LightweightResourcesandProviders%28LWRP%29-Keyword%3Aaction
     #
     class ActionObject < ChefObject
-      register_element :action
-
       # Creates a new instance of the ActionObject
       #
       # @param namespace [NamespaceObject] namespace to which the action belongs

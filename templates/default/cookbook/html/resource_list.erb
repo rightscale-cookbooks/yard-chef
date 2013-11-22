@@ -22,24 +22,13 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<h1>Cookbooks List</h1>
-<table>
-  <thead>
-    <tr>
-      <th>Cookbook</th>
-      <th>Description</th>
-      <th>Version</th>
-    </tr>
-  </thead>
-  <tbody>
-  <% n = 1 %>
-  <% @cookbooks.each do |cookbook| %>
-    <tr class="r<%= n %>">
-      <td><a href="<%= url_for(cookbook) %>"><%= cookbook.name %></a></td>
-      <td><%= cookbook.short_desc %></td>
-      <td><%= cookbook.version %></td>
-    </tr>
-    <% n = n == 2 ? 1 : 2 %>
-  <% end %>
-  </tbody>
-</table>
+<% if object.resources.size > 0 %>
+  <h2>Resources</h2>
+  <ul class="summary compact">
+    <% object.resources.each do |resource| %>
+      <li><span class="summary_signature">
+        <a name="<%= resource.class_name %>" href="<%= url_for(resource, nil) %>"><%= resource.name %></a>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

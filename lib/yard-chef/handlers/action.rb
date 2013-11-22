@@ -30,22 +30,20 @@ module YARD::Handlers
 
       def process
         # Register the provider object
-        provider_obj = lwrp
-        provider_obj.map_resource(statement.file)
-        provider_obj.add_file(statement.file)
+        provider_obj = ProviderObject.register(PROVIDER, lwrp_name(file))
+        provider_obj.add_file(file)
+        provider_obj.map_resource(file)
 
         # Add provider to the cookbook to which it belongs
-        cookbook_obj = cookbook
-        unless cookbook_obj.providers.include?(provider_obj)
-          cookbook_obj.providers.push(provider_obj)
-        end
+        cookbook_obj = CookbookObject.register(COOKBOOK, get_cookbook_name(file))
+        cookbook_obj.providers |= provider_obj
         provider_obj.cookbook = cookbook_obj
 
         # Register the action in the provider
-        action_obj = ChefObject.register(provider_obj, name, :action)
-        action_obj.source = statement.source
-        action_obj.docstring = statement.docstring
-        action_obj.add_file(statement.file, statement.line)
+        action_obj = ActionObject.register(provider_obj, name)
+        action_obj.source = source
+        action_obj.docstring = docstring
+        action_obj.add_file(file, line)
       end
     end
   end

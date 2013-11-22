@@ -22,10 +22,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<% if @resources.size > 0 %>
-  <h2>Lightweight Resources</h2>
-  <% @resources.each do |resource| %>
-    <h3><a name="<%= resource.long_name %>"><%= resource.name %></a></h3>
-    <ul><%= yieldall :object => resource %></ul>
-  <% end %>
-<% end %>
+<div id="filecontents">
+  <h1>Resource : <%= object.name.to_s %></h1>
+  <%= yieldall %>
+</div>

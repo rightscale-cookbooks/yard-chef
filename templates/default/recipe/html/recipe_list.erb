@@ -22,7 +22,7 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<% recipes = object.children_by_type(:recipe) %>
+<% recipes = object.elements(:recipe) %>
 <% if recipes.size > 0 %>
   <h2>Recipe Details</h2>
   <% recipes.each_with_index do |recipe, i| %>
@@ -30,11 +30,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       <h3 class="signature"><a name="<%= recipe.name %>">
         <strong><%= recipe.name %></strong>
       </a></h3>
-      <% if recipe.long_desc.empty? %>
-        <%= htmlify recipe.docstring %>
-      <% else %>
-        <%= htmlify recipe.long_desc %>
-      <% end %>
+      <%= htmlify recipe.docstring %>
       <%= yieldall :object => recipe, :owner => object, :index => i %>
     </div>
   <% end %>

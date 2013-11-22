@@ -28,8 +28,6 @@ module YARD::CodeObjects
     # about cookbook.
     #
     class CookbookObject < ChefObject
-      register_element :cookbook
-
       # Short description for the cookbook.
       #
       # @param short_desc [String] short description for the cookbook
@@ -69,7 +67,6 @@ module YARD::CodeObjects
         super(namespace, name)
         @resources = []
         @providers = []
-        @libraries = []
       end
 
       # Recipes implemented in the cookbook.
@@ -77,7 +74,7 @@ module YARD::CodeObjects
       # @return [Array<RecipeObject>] recipes in the cookbook
       #
       def recipes
-        children_by_type(:recipe)
+        elements(:recipe)
       end
 
       # Attributes implemented in the cookbook.
@@ -85,7 +82,7 @@ module YARD::CodeObjects
       # @return [Array<AttributeObject>] attributes in the cookbook
       #
       def attributes
-        children_by_type(:attribute)
+        elements(:attribute)
       end
 
       # Definitions implemented in the cookbook.
@@ -93,7 +90,7 @@ module YARD::CodeObjects
       # @return [Array<MethodObject>] definitions in the cookbook
       #
       def definitions
-        children_by_type(:method)
+        elements(:method)
       end
 
       # Libraries defined in the cookbook.
@@ -105,5 +102,7 @@ module YARD::CodeObjects
         modules.select { |lib| !lib.parent.root? && lib.file =~ /#{@name}/ }
       end
     end
+
+    COOKBOOK = CookbookObject.register(CHEF, 'cookbooks')
   end
 end

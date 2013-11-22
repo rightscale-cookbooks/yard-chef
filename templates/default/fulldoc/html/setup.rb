@@ -25,10 +25,12 @@ def init
   # Register custom stylesheets
   asset('css/common.css', file('css/common.css', true))
 
-  # Generate cookbook pages
-  chef = YARD::Registry.all(:chef).first
-  chef.cookbooks.each do |cookbook|
+  # Generate cookbook and resource pages
+  YARD::Registry.all(:chef).first.cookbooks.each do |cookbook|
     serialize(cookbook)
+    cookbook.resources.each do |resource|
+      serialize(resource)
+    end
   end
 end
 

@@ -27,54 +27,34 @@ module YARD::Handlers
     #
     class Base < YARD::Handlers::Ruby::Base
       include YARD::CodeObjects::Chef
+      include YARD::CodeObjects::Chef::Helper
 
-      # Gets the name of the handled object.
-      #
       def name
         statement.parameters.first.jump(:string_content, :ident).source
       end
 
-      # Registers the cookbook in {YARD::Registry} and returns the same.
-      #
-      # @return [CookbookObject] the CookbookObject
-      #
-      def cookbook
-        cookbook_name = ""
-        path_array = File.expand_path(statement.file).to_s.split('/')
-        if path_array.include?('metadata.rb')
-          cookbook_name = path_array[path_array.index('metadata.rb') - 1]
-        else
-          cookbook_name = path_array[path_array.length - 3]
-        end
-        ChefObject.register(CHEF, cookbook_name, :cookbook)
+      def source
+        statement.source
       end
 
-      # Registers the lightweight resource and provider in YARD::Registry and
-      # returns the same.
-      #
-      # @return [ResourceObject or ProviderObject] the lightweight resource or
-      # provider
-      #
-      def lwrp
-        path_array = File.expand_path(statement.file).to_s.split('/')
-        if path_array.include?("resources")
-          type = RESOURCE
-          type_sym = :resource
-        elsif path_array.include?("providers")
-          type = PROVIDER
-          type_sym = :provider
-        else
-          raise "Invalid LWRP type #{@path_array.join(',')}"
-        end
-        file_name = path_array.last.to_s.sub('.rb','')
+      def docstring
+        statement.docstring
+      end
 
-        cookbook_obj = cookbook
-        if file_name == "default"
-          lwrp_name = cookbook_obj.name
-        else
-          lwrp_name = "#{cookbook_obj.name}_#{file_name}"
+      def file
+        statement.file
+      end
+
+      def line_number
+        statement.line
+      end
+
+      def traverse(ast_node)
+        string = ''
+        ast_node.traverse do |child|
+          string << child.jump(:string_content).source if child.type == :string_content
         end
-        ChefObject.register(type, lwrp_name, type_sym)
+        string
       end
     end
   end

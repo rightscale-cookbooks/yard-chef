@@ -27,8 +27,6 @@ module YARD::CodeObjects
     # See http://wiki.opscode.com/display/chef/Attributes
     #
     class AttributeObject < ChefObject
-      register_element :attribute
-
       # Creates a new instance of the AttributeObject.
       #
       # @param namespace [NamespaceObject] namespace to which the attribute

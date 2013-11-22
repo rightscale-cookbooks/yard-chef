@@ -25,7 +25,7 @@ def init
     @providers = object.providers
     sections.push :action_list, [:source]
   when :provider
-    @actions = object.children_by_type(:action)
+    @actions = object.elements(:action)
     sections.push :action_summary
   end
 end

@@ -20,9 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 def init
-  @resources = object.resources
-
-  sections :resource_list, [:actions, T('attribute'), :providers_list]
+  sections :resource_title, [:actions, T('attribute'), :providers_list]
 end
 
 # Gets the link to the provider. This is a workaround as 'url_for' method
@@ -31,7 +29,7 @@ end
 # when url_for is used directly.
 #
 def link_to_provider(provider)
-  url = url_for(provider.cookbook, provider.long_name)
+  url = url_for(provider.cookbook, provider.class_name)
   url.slice!("../")
   url
 end

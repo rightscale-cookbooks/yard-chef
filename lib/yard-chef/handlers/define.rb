@@ -30,10 +30,12 @@ module YARD::Handlers
 
       def process
         # Register definition if not already registered
-        define_obj = MethodObject.new(cookbook, name)
-        define_obj.source = statement.source
-        define_obj.docstring = statement.docstring
-        define_obj.add_file(statement.file, statement.line)
+        cookbook_obj = CookObject.register(COOKBOOK, get_cookbook_name(file))
+
+        define_obj = MethodObject.new(cookbook_obj, name)
+        define_obj.source = source
+        define_obj.docstring = docstring
+        define_obj.add_file(file, line_number)
       end
     end
   end

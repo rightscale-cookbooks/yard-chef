@@ -28,7 +28,7 @@ def init
               :generated_docs,
                 [
                   :recipes,
-                  T('resource'),
+                  :resource_list,
                   T('provider'),
                   T('attribute'),
                   :definitions,

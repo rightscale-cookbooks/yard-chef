@@ -30,27 +30,18 @@ module YARD::Handlers
 
       def process
         # Register the lightweight resource
-        resource_obj = lwrp
-        resource_obj.add_file(statement.file)
-
-        # Add the lightweight resource to the cookbook in which it is defined
-        cookbook_obj = cookbook
-        unless cookbook_obj.resources.include?(resource_obj)
-          cookbook_obj.resources.push(resource_obj)
-        end
+        register_resource(lwrp_name(file), file)
 
         # if multiple actions listed in same line, split the actions and
         # register them
         if statement.first_line =~ /,/
           statement.first_line.split(%r{,?\s*:}).each do |action|
-            action = ChefObject.register(resource_obj, name, :action)
+            ActionObject.register(resource_obj, name)
           end
         else
-          action = ChefObject.register(resource_obj, name, :action)
-          action.docstring = statement.docstring
+          action = ActionObject.register(resource_obj, name)
+          action.docstring = docstring
         end
-
-        log.info "Found [Actions] in #{parser.file.to_s}"
       end
     end
   end

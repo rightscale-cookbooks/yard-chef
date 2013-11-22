@@ -33,10 +33,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   </thead>
   <tbody>
   <% n = 1 %>
-  <% cookbooks = Registry.all(:cookbook).uniq.sort_by {|cookbook| cookbook.name.to_s} %>
-  <% cookbooks.each do |cookbook| %>
+  <% @cookbooks.each do |cookbook| %>
     <tr class="r<%= n %>">
-      <td><%= linkify cookbook %></td>
+      <td><a href="<%= url_for(cookbook) %>"><%= cookbook.name %></a></td>
       <td><%= cookbook.short_desc %></td>
       <td><%= cookbook.version %></td>
     </tr>

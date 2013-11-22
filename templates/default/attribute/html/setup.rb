@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 def init
-  @attributes = object.children_by_type(:attribute)
+  @attributes = object.elements(:attribute)
 
   sections.push :attribute_header, [:table]
 end

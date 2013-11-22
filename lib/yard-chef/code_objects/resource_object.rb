@@ -27,8 +27,6 @@ module YARD::CodeObjects
     # See http://docs.opscode.com/essentials_cookbook_lwrp.html
     #
     class ResourceObject < ChefObject
-      register_element :resource
-
       # Creates a new instance of ResourceObject.
       #
       # @param namespace [NamespaceObject] namespace to which the lightweight
@@ -46,18 +44,8 @@ module YARD::CodeObjects
       #
       # @return [String] class name for the lightweight resource
       #
-      def long_name
-        name = ''
-        if @name.to_s =~ /_/
-          @name.to_s.split('_').each do |str|
-            name << str.to_s.capitalize
-          end
-        else
-          name = @name.to_s.capitalize
-        end
-
-        namespace = @namespace.to_s.split('::').map { |str| str.capitalize }
-        "#{namespace.join('::')}::#{name}"
+      def class_name
+        "Chef::Resource::#{convert_underscores_to_snake_case(@name)}"
       end
 
       # Attributes defined in the lightweight resource.
@@ -65,7 +53,7 @@ module YARD::CodeObjects
       # @return [Array<AttributeObject>] attributes in the lightweight resource
       #
       def attributes
-        children_by_type(:attribute)
+        elements(:attribute)
       end
 
       # Actions supported by the lightweight resource.
@@ -73,11 +61,10 @@ module YARD::CodeObjects
       # @return [Array<ActionObject>] actions in the lightweight resource
       #
       def actions
-        children_by_type(:action)
+        elements(:action)
       end
     end
 
-    # Register 'resource' as a child of 'chef' namespace
-    RESOURCE = ChefObject.register(CHEF, 'resource', :resource)
+    RESOURCE = ResourceObject.register(CHEF, 'resources')
   end
 end
