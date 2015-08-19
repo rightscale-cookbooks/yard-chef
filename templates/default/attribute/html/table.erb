@@ -32,7 +32,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     <% @attributes.each do |attribute| %>
       <tr class="r<%= n %>">
         <td><strong><%= attribute.name %></strong></td>
-        <td><%= attribute.docstring %></td>
+        <td><%= htmlify attribute.docstring %></td>
       </tr>
       <% n = n == 2 ? 1 : 2 %>
     <% end %>
