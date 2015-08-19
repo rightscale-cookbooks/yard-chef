@@ -73,7 +73,7 @@ module YARD::Handlers
         statement.parameters.each do |n|
           if (n.kind_of? YARD::Parser::Ruby::AstNode) && (n.source =~ /(default|kind_of)/)
             n.each do |node|
-              if node.source =~ /default\s/
+              if node.source =~ /default/
                 m =  node.source.match(/\W+?\s(.*)/)
                 _default = m[1] if m
               end
