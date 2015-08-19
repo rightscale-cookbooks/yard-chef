@@ -30,7 +30,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       <h3 class="signature"><a name="<%= recipe.name %>">
         <strong><%= recipe.name %></strong>
       </a></h3>
-      <%= htmlify recipe.docstring %>
+      <%= htmlify(recipe.docstring ? recipe.docstring : recipe.short_desc) %>
       <%= yieldall :object => recipe, :owner => object, :index => i %>
     </div>
   <% end %>

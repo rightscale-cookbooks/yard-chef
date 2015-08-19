@@ -39,6 +39,8 @@ module YARD::CodeObjects
       #
       def initialize(namespace, name)
         super(namespace, name)
+        @kind_of = ""
+        @default = ""
       end
     end
   end

@@ -31,7 +31,15 @@ module YARD::Handlers
         return unless statement.file.to_s =~ /metadata.rb/
 
         recipe_obj = ChefObject.register(cookbook, name, :recipe)
-        recipe_obj.docstring = docstring
+        description = ""
+        # YARD builds an abstract syntax tree (AST) which we need to traverse
+        # to obtain the complete docstring
+        statement.parameters[1].traverse do |child|
+          description << child.jump(:string_content).source if child.type == :string_content
+        end
+
+        recipe_obj.short_desc = YARD::DocstringParser.new.parse(description).to_docstring
+        recipe_obj.docstring = statement.docstring
       end
 
       # Gets the recipe name from the metadata.rb.
@@ -50,14 +58,7 @@ module YARD::Handlers
       #
       # @return [YARD::Docsting] the docstring
       #
-      def docstring
-        description = ""
-        # YARD builds an abstract syntax tree (AST) which we need to traverse
-        # to obtain the complete docstring
-        statement.parameters[1].traverse do |child|
-          description << child.jump(:string_content).source if child.type == :string_content
-        end
-        YARD::DocstringParser.new.parse(description).to_docstring
+      def parse_docs
       end
     end
   end

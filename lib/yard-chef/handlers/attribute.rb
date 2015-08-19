@@ -48,16 +48,9 @@ module YARD::Handlers
         # Register attribute if not already registered
         attrib_obj = ChefObject.register(namespace, name, :attribute)
         attrib_obj.source = statement.source
-        attrib_obj.docstring = docstring
         attrib_obj.add_file(statement.file, statement.line)
-      end
 
-      # Get the docstring related to the attributes. The docstring is obtained
-      # from the ":description" field in the attribute.
-      #
-      # @return [YARD::Docstring] docstring for the attribute
-      #
-      def docstring
+        # Parse docstring
         description = ""
         path_array = parser.file.to_s.split('/')
         if path_array.include?('metadata.rb')
@@ -74,7 +67,25 @@ module YARD::Handlers
         else
           description = statement.comments
         end
-        YARD::DocstringParser.new.parse(description).to_docstring
+        attrib_obj.docstring = YARD::DocstringParser.new.parse(description).to_docstring
+        _kind_of = ""
+        _default = ""
+        statement.parameters.each do |n|
+          if (n.kind_of? YARD::Parser::Ruby::AstNode) && (n.source =~ /(default|kind_of)/)
+            n.each do |node|
+              if node.source =~ /default\s/
+                m =  node.source.match(/\W+?\s(.*)/)
+                _default = m[1] if m
+              end
+              if node.source =~ /kind_of/
+                m = node.source.match(/\W+?\s(.*)/)
+                _kind_of = m[1] if m
+              end
+            end
+          end
+        end
+        attrib_obj.kind_of = _kind_of
+        attrib_obj.default = _default
       end
     end
   end
