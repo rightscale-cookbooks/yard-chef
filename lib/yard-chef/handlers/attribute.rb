@@ -81,6 +81,9 @@ module YARD::Handlers
         _kind_of = ''
         _default = ''
         if path_array.include? 'attributes'
+          statement.source =~ MATCH
+          _default = $3
+        else
           statement.parameters.each do |n|
             if (n.kind_of? YARD::Parser::Ruby::AstNode) && (n.source =~ /(default|kind_of)/)
               n.each do |node|
@@ -95,9 +98,6 @@ module YARD::Handlers
               end
             end
           end
-        else
-          statement.source =~ MATCH
-          _default = $3
         end
         attrib_obj.kind_of = _kind_of
         attrib_obj.default = _default
