@@ -26,8 +26,9 @@ module YARD::Handlers
     # Handles "attributes" in cookbook metadata and lightweight resource.
     #
     class AttributeHandler < Base
+      MATCH = /default(\[.+\])/
       handles method_call(:attribute)
-      handles method_call(:default)
+      handles MATCH
 
       # Process "attribute" keyword.
       #
@@ -50,6 +51,9 @@ module YARD::Handlers
         attrib_obj = ChefObject.register(namespace, name, :attribute)
         attrib_obj.source = statement.source
         attrib_obj.add_file(statement.file, statement.line)
+
+        ############
+        puts "############### KARAMBA!: #{statement.source}"
 
         # Parse docstring
         description = ""
