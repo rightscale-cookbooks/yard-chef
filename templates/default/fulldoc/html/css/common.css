@@ -1,5 +1,7 @@
 body {
   color: #3f5364;
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 table {
@@ -66,3 +68,10 @@ pre {
   border: 0.0px solid #d8dde3;
   background-color: #ebecf1;
   overflow-x: scroll; }
+
+#filecontents pre.code, .docstring pre.code, .tags pre.example {
+  padding: 5px 12px;
+  margin-top: 4px;
+  border: 1px solid #d8dde3;
+  background: #ebecf1;
+}
