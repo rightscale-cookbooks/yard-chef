@@ -100,7 +100,7 @@ module YARD::Handlers
           end
         end
         attrib_obj.kind_of = _kind_of
-        attrib_obj.default = _default
+        attrib_obj.default = "    #{_default}"
       end
     end
   end
