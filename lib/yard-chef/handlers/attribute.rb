@@ -26,7 +26,7 @@ module YARD::Handlers
     # Handles "attributes" in cookbook metadata and lightweight resource.
     #
     class AttributeHandler < Base
-      MATCH = /^\s*default(\[.+\])\s*=/
+      MATCH = /^\s*(default|normal)(\[.+\])\s*=\s*(.+)/
       handles method_call(:attribute)
       handles MATCH
 
@@ -51,7 +51,7 @@ module YARD::Handlers
         # Register attribute if not already registered
         if path_array.include? 'attributes'
           statement.source =~ MATCH
-          attrib_obj = ChefObject.register(namespace, $1, :attribute)
+          attrib_obj = ChefObject.register(namespace, "node.#{$2}", :attribute)
         else
           attrib_obj = ChefObject.register(namespace, name, :attribute)
         end
@@ -78,21 +78,26 @@ module YARD::Handlers
           description = statement.comments
         end
         attrib_obj.docstring = YARD::DocstringParser.new.parse(description).to_docstring
-        _kind_of = ""
-        _default = ""
-        statement.parameters.each do |n|
-          if (n.kind_of? YARD::Parser::Ruby::AstNode) && (n.source =~ /(default|kind_of)/)
-            n.each do |node|
-              if node.source =~ /default/
-                m =  node.source.match(/\W+?\s(.*)/)
-                _default = m[1] if m
-              end
-              if node.source =~ /kind_of/
-                m = node.source.match(/\W+?\s(.*)/)
-                _kind_of = m[1] if m
+        _kind_of = ''
+        _default = ''
+        if path_array.include? 'attributes'
+          statement.parameters.each do |n|
+            if (n.kind_of? YARD::Parser::Ruby::AstNode) && (n.source =~ /(default|kind_of)/)
+              n.each do |node|
+                if node.source =~ /default/
+                  m =  node.source.match(/\W+?\s(.*)/)
+                  _default = m[1] if m
+                end
+                if node.source =~ /kind_of/
+                  m = node.source.match(/\W+?\s(.*)/)
+                  _kind_of = m[1] if m
+                end
               end
             end
           end
+        else
+          statement.source =~ MATCH
+          _default = $3
         end
         attrib_obj.kind_of = _kind_of
         attrib_obj.default = _default
