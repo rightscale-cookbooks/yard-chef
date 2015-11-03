@@ -75,3 +75,7 @@ pre {
   border: 1px solid #d8dde3;
   background: #ebecf1;
 }
+
+table {
+  width: 100%;
+}
