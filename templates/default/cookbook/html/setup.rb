@@ -27,10 +27,10 @@ def init
               :docstring,
               :generated_docs,
                 [
+                  T('attribute'),
                   :recipes,
                   T('resource'),
                   T('provider'),
-                  T('attribute'),
                   :definitions,
                   :libraries,
                   :element_details,
