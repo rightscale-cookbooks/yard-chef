@@ -27,7 +27,7 @@ module YARD::Handlers
     #
     class AttributeHandler < Base
       MATCH = /default(\[.+\])/
-      handles method_call(:attribute)
+      # handles method_call(:attribute)
       handles MATCH
 
       # Process "attribute" keyword.
