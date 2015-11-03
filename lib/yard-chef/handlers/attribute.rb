@@ -27,6 +27,7 @@ module YARD::Handlers
     #
     class AttributeHandler < Base
       handles method_call(:attribute)
+      handles method_call(:default)
 
       # Process "attribute" keyword.
       #
