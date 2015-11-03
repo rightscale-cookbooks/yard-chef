@@ -51,7 +51,7 @@ module YARD::Handlers
         # Register attribute if not already registered
         if path_array.include? 'attributes'
           statement.source =~ MATCH
-          attrib_obj = ChefObject.register(namespace, "node.#{$2}", :attribute)
+          attrib_obj = ChefObject.register(namespace, "#{$1}#{$2}", :attribute)
         else
           attrib_obj = ChefObject.register(namespace, name, :attribute)
         end
