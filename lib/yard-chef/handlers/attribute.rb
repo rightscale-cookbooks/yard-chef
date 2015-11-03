@@ -26,7 +26,7 @@ module YARD::Handlers
     # Handles "attributes" in cookbook metadata and lightweight resource.
     #
     class AttributeHandler < Base
-      MATCH = /default(\[.+\])\s*=/
+      MATCH = /^\s*default(\[.+\])\s*=/
       handles method_call(:attribute)
       handles MATCH
 
