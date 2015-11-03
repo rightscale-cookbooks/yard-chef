@@ -49,7 +49,12 @@ module YARD::Handlers
         end
 
         # Register attribute if not already registered
-        attrib_obj = ChefObject.register(namespace, name, :attribute)
+        if path_array.include? 'attributes'
+          attrib_obj = ChefObject.register(namespace, name, :attribute)
+        else
+          statement.source =~ MATCH
+          attrib_obj = ChefObject.register(namespace, $1, :attribute)
+        end
         attrib_obj.source = statement.source
         attrib_obj.add_file(statement.file, statement.line)
 
