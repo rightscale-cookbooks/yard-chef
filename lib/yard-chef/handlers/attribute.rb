@@ -33,9 +33,10 @@ module YARD::Handlers
       # Process "attribute" keyword.
       #
       def process
+        path_array = parser.file.to_s.split('/')
         # If file path includes metadata then handle cookbook attributes
         # else handle resource attributes
-        if parser.file =~ /metadata\.rb/
+        if path_array.include?('metadata.rb') || path_array.include?('attributes')
           namespace = cookbook
         else
           namespace = lwrp
@@ -57,7 +58,6 @@ module YARD::Handlers
 
         # Parse docstring
         description = ""
-        path_array = parser.file.to_s.split('/')
         if path_array.include?('metadata.rb')
           # Suppose :description string have concatenation operator '+' then
           # YARD builds an abstract syntax tree (AST). We need to traverse the
