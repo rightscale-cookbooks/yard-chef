@@ -100,7 +100,7 @@ module YARD::Handlers
           end
         end
         attrib_obj.kind_of = _kind_of
-        attrib_obj.default = _default.length > 50 ? 'Default value too long, please check source code' : _default.split("\n").map {|s| "    #{s}"}.join("\n")
+        attrib_obj.default = _default.split("\n").map {|s| "    #{s}"}.join("\n")
       end
     end
   end
