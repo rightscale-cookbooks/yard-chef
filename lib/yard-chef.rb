@@ -28,6 +28,7 @@ require 'yard-chef/code_objects/provider_object'
 require 'yard-chef/code_objects/recipe_object'
 require 'yard-chef/code_objects/attribute_object'
 require 'yard-chef/code_objects/action_object'
+require 'yard-chef/code_objects/dependency_object'
 
 require 'yard-chef/handlers/base'
 require 'yard-chef/handlers/action'
@@ -36,6 +37,7 @@ require 'yard-chef/handlers/define'
 require 'yard-chef/handlers/actions'
 require 'yard-chef/handlers/cookbook'
 require 'yard-chef/handlers/recipe'
+require 'yard-chef/handlers/dependency'
 
 module YARD::CodeObjects::Chef
   # Since 'recipe' files do not have a specific keyword that can be matched,

@@ -1,4 +1,4 @@
-# Copyright (c) 2012 RightScale, Inc.
+# Copyright (c) 2015 Aleksey Hariton
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,23 +19,38 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-include T('default/module')
+require 'yard'
 
-def init
-  sections :cookbook_title,
-            [
-              :docstring,
-              :generated_docs,
-                [
-                  :dependencies,
-                  T('attribute'),
-                  :recipes,
-                  T('resource'),
-                  T('provider'),
-                  :definitions,
-                  :libraries,
-                  :element_details,
-                  [T('recipe'), T('action'), T('definition')]
-                ]
-            ]
+module YARD::Handlers
+  module Chef
+    # Handles "recipes" in a cookbook.
+    class DependencyHandler < Base
+      handles method_call(:depends)
+
+      def process
+        path_array = statement.file.to_s.split('/')
+        return unless path_array.include?('metadata.rb')
+
+        # Recipe declaration in metadata.rb
+        dependency_obj = ChefObject.register(cookbook, name, :dependency)
+        dependency_obj.docstring = statement.docstring
+      end
+
+      # Gets the recipe name from the metadata.rb.
+      #
+      # @return [String] the recipe name
+      #
+      def name
+        statement.parameters.first.jump(:string_content, :ident).source
+      end
+
+      # Gets the docstring for the recipe. The docstring is obtained from the
+      # description field in the recipe.
+      #
+      # @return [YARD::Docsting] the docstring
+      #
+      def parse_docs
+      end
+    end
+  end
 end

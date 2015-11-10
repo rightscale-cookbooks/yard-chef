@@ -33,7 +33,6 @@ module YARD::Handlers
 
         # Recipe declaration in metadata.rb
         if path_array.include?('metadata.rb') && (statement.jump(:ident).source == 'recipe')
-          puts "############################### WTF?!\n" + statement.jump(:ident).source
           description = ''
           recipe_obj = ChefObject.register(cookbook, name, :recipe)
           # YARD builds an abstract syntax tree (AST) which we need to traverse
