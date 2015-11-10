@@ -32,7 +32,7 @@ module YARD::Handlers
         path_array = statement.file.to_s.split('/')
 
         # Recipe declaration in metadata.rb
-        if path_array.include? 'metadata.rb'
+        if path_array.include? 'metadata.rb' && statement.jump(:ident) == 'recipe'
           puts "KARAMBA!:\n" + statement.pretty_inspect
           description = ''
           recipe_obj = ChefObject.register(cookbook, name, :recipe)
