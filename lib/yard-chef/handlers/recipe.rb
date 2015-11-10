@@ -33,7 +33,7 @@ module YARD::Handlers
 
         # Recipe declaration in metadata.rb
         if path_array.include? 'metadata.rb'
-          puts "WTF?!\n" + statement.methods.to_s
+          puts "############################### WTF?!\n" + statement.method_name
           description = ''
           recipe_obj = ChefObject.register(cookbook, name, :recipe)
           # YARD builds an abstract syntax tree (AST) which we need to traverse
