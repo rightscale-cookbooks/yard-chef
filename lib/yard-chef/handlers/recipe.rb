@@ -29,7 +29,7 @@ module YARD::Handlers
       handles :comment, :void_stmt
 
       def process
-        path_array = parser.file.to_s.split('/')
+        path_array = statement.file.to_s.split('/')
 
         # Recipe declaration in the head of recipe, leading comment block
         if path_array.includes? 'recipes'
