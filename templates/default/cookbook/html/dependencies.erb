@@ -31,7 +31,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <span class="summary_signature">
           <strong><a href="#<%= dependency.name %>"><%= dependency.name %></a></strong>
         </span>
-        <span class="summary_desc"><%= htmlify(dependency.short_desc ? dependency.short_desc : dependency.docstring) %></span>
+        <span class="summary_desc"><%= htmlify(dependency.docstring) %></span>
       </li>
     <% end %>
   </ul>

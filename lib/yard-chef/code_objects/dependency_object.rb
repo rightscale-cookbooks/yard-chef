@@ -23,30 +23,29 @@ require 'yard'
 
 module YARD::CodeObjects
   module Chef
-    # A RecipeObject represents a recipe in a chef cookbook.
-    # See http://docs.opscode.com/essentials_cookbook_recipes.html
+    # A DependencyObject represents a dependencies of a chef cookbook.
     #
     class DependencyObject < ChefObject
       register_element :dependency
 
-      # Creates a new instance of RecipeObject.
+      # Creates a new instance of DependencyObject.
       #
       # @param namespace [NamespaceObject] namespace to which the recipe belongs
       # @param name [String] name of the recipe
       #
-      # @return [RecipeObject] the newly created RecipeObject
+      # @return [DependencyObject] the newly created DependencyObject
       #
       def initialize(namespace, name)
         super(namespace, name)
-        @short_desc = ""
+        @docstring = ''
       end
 
-      # Prefixes recipe name with the name of the cookbook.
+      # Prefixes dependency name with the name of the cookbook.
       #
       # @return [String] recipe name
       #
       def name
-        self.parent.name.to_s << '::' << @name.to_s
+        @name.to_s
       end
     end
   end
