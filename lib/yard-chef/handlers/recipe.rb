@@ -47,6 +47,9 @@ module YARD::Handlers
         # Recipe declaration in the head of recipe, leading comment block
         if path_array.include? 'recipes'
           recipe_obj = ChefObject.register(cookbook, ::File.basename(statement.file.to_s, '.rb'), :recipe)
+          if path_array.include? 'ebet_cluster'
+            puts "###################### WAZAAAP:\n" + statement.docstring
+          end
           if statement.docstring =~ /[\s\t]*\*?Description[:]?\*?/
             recipe_obj.docstring = statement.docstring
           end
