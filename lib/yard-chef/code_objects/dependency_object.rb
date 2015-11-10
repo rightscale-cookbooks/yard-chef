@@ -27,7 +27,7 @@ module YARD::CodeObjects
     # See http://docs.opscode.com/essentials_cookbook_recipes.html
     #
     class DependencyObject < ChefObject
-      register_element :depends
+      register_element :dependency
 
       # Creates a new instance of RecipeObject.
       #
