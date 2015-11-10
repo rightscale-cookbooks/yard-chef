@@ -32,7 +32,7 @@ module YARD::Handlers
         path_array = statement.file.to_s.split('/')
 
         # Recipe declaration in metadata.rb
-        if path_array.include? 'metadata.rb' && statement.jump(:ident).source.match(/recipe/)
+        if path_array.include? 'metadata.rb'
           puts "WTF?!\n" + statement.jump(:ident).source
           puts "YAHOOO!!!\n" + statement.source
           description = ''
