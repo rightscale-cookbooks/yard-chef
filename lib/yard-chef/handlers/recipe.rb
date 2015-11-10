@@ -32,12 +32,12 @@ module YARD::Handlers
         path_array = statement.file.to_s.split('/')
 
         # Recipe declaration in the head of recipe, leading comment block
-        if path_array.includes? 'recipes'
+        if path_array.include? 'recipes'
           puts "########################### WOOOHOOO " + statement.docstring
         end
 
         # Recipe declaration in metadata.rb
-        return if !(path_array.include? 'metadata.rb') || !(path_array.include? 'recipe')
+        return unless path_array.include? 'metadata.rb'
 
         recipe_obj = ChefObject.register(cookbook, name, :recipe)
         description = ''
