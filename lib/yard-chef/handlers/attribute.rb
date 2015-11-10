@@ -58,9 +58,6 @@ module YARD::Handlers
         attrib_obj.source = statement.source
         attrib_obj.add_file(statement.file, statement.line)
 
-        ############
-        puts "############### KARAMBA!: #{statement.source}"
-
         # Parse docstring
         description = ""
         if path_array.include?('metadata.rb')

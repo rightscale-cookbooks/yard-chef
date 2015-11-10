@@ -26,12 +26,21 @@ module YARD::Handlers
     # Handles "recipes" in a cookbook.
     class RecipeHandler < Base
       handles method_call(:recipe)
+      handles :comment, :void_stmt
 
       def process
-        return unless statement.file.to_s =~ /metadata.rb/
+        path_array = parser.file.to_s.split('/')
+
+        # Recipe declaration in the head of recipe, leading comment block
+        if path_array.includes? 'recipes'
+          puts "########################### WOOOHOOO " + statement.docstring
+        end
+
+        # Recipe declaration in metadata.rb
+        return if !(path_array.include? 'metadata.rb') || !(path_array.include? 'recipe')
 
         recipe_obj = ChefObject.register(cookbook, name, :recipe)
-        description = ""
+        description = ''
         # YARD builds an abstract syntax tree (AST) which we need to traverse
         # to obtain the complete docstring
         statement.parameters[1].traverse do |child|
