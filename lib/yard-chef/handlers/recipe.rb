@@ -51,6 +51,7 @@ module YARD::Handlers
             recipe_obj.docstring = statement.docstring
           end
         end
+        recipe_obj
       end
 
       # Gets the recipe name from the metadata.rb.
