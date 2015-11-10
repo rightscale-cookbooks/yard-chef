@@ -31,24 +31,29 @@ module YARD::Handlers
       def process
         path_array = statement.file.to_s.split('/')
 
-        # Recipe declaration in the head of recipe, leading comment block
-        if path_array.include? 'recipes'
-          puts "########################### WOOOHOOO " + statement.docstring
-        end
+
+        return if !(path_array.include? 'metadata.rb') || !(path_array.include? 'recipes')
 
         # Recipe declaration in metadata.rb
-        return unless path_array.include? 'metadata.rb'
-
-        recipe_obj = ChefObject.register(cookbook, name, :recipe)
-        description = ''
-        # YARD builds an abstract syntax tree (AST) which we need to traverse
-        # to obtain the complete docstring
-        statement.parameters[1].traverse do |child|
-          description << child.jump(:string_content).source if child.type == :string_content
+        if path_array.include? 'metadata.rb'
+          description = ''
+          recipe_obj = ChefObject.register(cookbook, name, :recipe)
+          # YARD builds an abstract syntax tree (AST) which we need to traverse
+          # to obtain the complete docstring
+          statement.parameters[1].traverse do |child|
+            description << child.jump(:string_content).source if child.type == :string_content
+          end
+          recipe_obj.short_desc = YARD::DocstringParser.new.parse(description).to_docstring
+          recipe_obj.docstring = statement.docstring
         end
 
-        recipe_obj.short_desc = YARD::DocstringParser.new.parse(description).to_docstring
-        recipe_obj.docstring = statement.docstring
+        # Recipe declaration in the head of recipe, leading comment block
+        if path_array.include? 'metadata.rb'
+          recipe_obj = ChefObject.register(cookbook, ::File.basename(statement.file.to_s, '.rb'), :recipe)
+          if statement.docstring =~ /[\s\t]*\*?Description[:]?\*?/
+            recipe_obj.docstring = statement.docstring
+          end
+        end
       end
 
       # Gets the recipe name from the metadata.rb.
