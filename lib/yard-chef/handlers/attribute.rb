@@ -26,7 +26,7 @@ module YARD::Handlers
     # Handles "attributes" in cookbook metadata and lightweight resource.
     #
     class AttributeHandler < Base
-      MATCH = /^\s*(default|normal)(\[.+?\])\s*=\s*(.+)/m
+      MATCH = /^\s*(default|force_default|normal|override|force_override)(\[.+?\])\s*=\s*(.+)/m
       handles method_call(:attribute)
       handles MATCH
 
@@ -65,7 +65,7 @@ module YARD::Handlers
           # YARD builds an abstract syntax tree (AST). We need to traverse the
           # tree to get the whole description string
           statement.parameters[1].children.each do |ast_node|
-            if ast_node.jump(:ident).source == "description"
+            if ast_node.jump(:ident).source == 'description'
               ast_node.traverse do |child|
                 description << child.jump(:string_content).source if child.type == :string_content
               end
