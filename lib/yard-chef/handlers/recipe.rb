@@ -33,6 +33,7 @@ module YARD::Handlers
 
         # Recipe declaration in metadata.rb
         if path_array.include? 'metadata.rb'
+          puts "KARAMBA!:\n" + statement.pretty_inspect
           description = ''
           recipe_obj = ChefObject.register(cookbook, name, :recipe)
           # YARD builds an abstract syntax tree (AST) which we need to traverse
@@ -47,10 +48,7 @@ module YARD::Handlers
         # Recipe declaration in the head of recipe, leading comment block
         if path_array.include? 'recipes'
           recipe_obj = ChefObject.register(cookbook, ::File.basename(statement.file.to_s, '.rb'), :recipe)
-          if path_array.include? 'ebet_cluster'
-            puts "###################### WAZAAAP:\n" + statement.docstring
-          end
-          if statement.docstring =~ /[\s\t]*\*?Description[:]?\*?/
+          if statement.docstring =~ /[\s\t]*\*?Description[:]?\*?/i
             recipe_obj.docstring = statement.docstring
           end
         end
