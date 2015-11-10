@@ -34,7 +34,7 @@ module YARD::Handlers
         # Recipe declaration in metadata.rb
         if path_array.include? 'metadata.rb'
 
-          puts "WTF?!\n'#{statement.jump(:ident).source}' and check '#{(statement.jump(:ident).source.to_s =~ /recipe/).nil?}'"
+          puts "WTF?!\n'#{statement.jump(:ident).source}' and check '#{(statement.jump(:ident).source.to_s == 'recipe')}'"
           puts "YAHOOO!!!\n" + statement.source
           description = ''
           recipe_obj = ChefObject.register(cookbook, name, :recipe)
