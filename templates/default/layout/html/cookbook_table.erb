@@ -44,3 +44,9 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   <% end %>
   </tbody>
 </table>
+
+
+<% cookbooks = Registry.all(:cookbook).uniq.sort_by {|cookbook| cookbook.name.to_s} %>
+<% cookbooks.each do |cookbook| %>
+    <%= cookbook.name %>
+<% end %>
