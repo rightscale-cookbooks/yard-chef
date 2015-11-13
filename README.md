@@ -184,8 +184,8 @@ have its own comment.
 Short cookbook description and version will be received from keyworks `description` and `version` in `metadata.rb` file:
 
 ```ruby
-    description      'Installs/Configures Elastic Search cluster'
-    version          '3.2.0'
+description      'Installs/Configures Elastic Search cluster'
+version          '3.2.0'
 ```
 
 This fields will be used in cookbooks list on the index page of your cookbooks documentation.
@@ -283,6 +283,7 @@ information about YARD server see [http://yardoc.org/](http://rubydoc.info/docs/
 ## License
 
 Copyright (c) 2012 RightScale, Inc.
+
 Copyright (c) 2015 Aleksey Hariton (aleksey.hariton@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
