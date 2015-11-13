@@ -1,5 +1,25 @@
 # YARD-Chef
 
+  * [YARD-Chef](#yard-chef)
+    * [Description](#description)
+    * [Requirements](#requirements)
+    * [Installation](#installation)
+    * [Documenting Your Cookbooks](#documenting-your-cookbooks)
+      * [README.md](#readmemd)
+      * [Resources](#resources)
+      * [Providers](#providers)
+      * [Attributes](#attributes)
+      * [Recipes](#recipes)
+      * [Cookbooks (metadata.rb)](#cookbooks-metadatarb)
+        * [Cookbook Dependencies](#cookbook-dependencies)
+      * [Libraries](#libraries)
+      * [Standard YARD Tags and Comments](#standard-yard-tags-and-comments)
+    * [Generating Cookbook Docs](#generating-cookbook-docs)
+      * [Rake Task](#rake-task)
+      * [Command-line](#command-line)
+    * [Viewing Cookbook Docs](#viewing-cookbook-docs)
+    * [License](#license)
+
 ## Description
 
 yard-chef is a [YARD](http://yardoc.org/) plugin for
@@ -19,31 +39,11 @@ It is available from RubyGems:
 
 ## Documenting Your Cookbooks
 
-### Cookbook README.md
+### README.md
 
 The cookbook `README.md` file included in your cookbooks will be the landing page for
 each cookbook.  Under this verbatim inclusion of your `README.md` will be a
 ```Cookbook Documentation``` section that contains the auto-generated information
-
-### Standard YARD Tags and Comments
-
-Your definitions, libraries, resources and providers can benefit from
-adding YARD tags and comments for each class and method.  You can learn more about the tags from
-yardoc.org and the [list of available tags](http://rubydoc.info/docs/yard/file/docs/Tags.md#List_of_Available_Tags)
-
-Here is an example of adding standard YARD comments to a definition:
-
-```ruby
-# Does a database backup.
-#
-# @param [String] backup_type If 'primary' will do a primary backup using volumes. If 'secondary' will do a backup S3.
-#
-# @raise [RuntimeError] If database is not 'initialized'
-# @return [Boolean] status if backup done or not
-define :db_do_backup, :backup_type => "primary" do
-  ...
-end
-```
 
 ### Resources
 
@@ -215,6 +215,26 @@ Comment your libraries as regular Ruby code, for more information please read [l
 # @return [Fog::Image] image object
 def find_image(name_or_id)
    ...
+end
+```
+
+### Standard YARD Tags and Comments
+
+Your definitions, libraries, resources and providers can benefit from
+adding YARD tags and comments for each class and method.  You can learn more about the tags from
+yardoc.org and the [list of available tags](http://rubydoc.info/docs/yard/file/docs/Tags.md#List_of_Available_Tags)
+
+Here is an example of adding standard YARD comments to a definition:
+
+```ruby
+# Does a database backup.
+#
+# @param [String] backup_type If 'primary' will do a primary backup using volumes. If 'secondary' will do a backup S3.
+#
+# @raise [RuntimeError] If database is not 'initialized'
+# @return [Boolean] status if backup done or not
+define :db_do_backup, :backup_type => "primary" do
+  ...
 end
 ```
 
