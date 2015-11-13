@@ -96,6 +96,14 @@ module YARD::CodeObjects
         children_by_type(:method)
       end
 
+      # Dependencies of the cookbook.
+      #
+      # @return [Array<MethodObject>] dependencies of the cookbook
+      #
+      def dependencies
+        children_by_type(:dependency)
+      end
+
       # Libraries defined in the cookbook.
       #
       # @return [Array<ModuleObject>] libraries in the cookbook

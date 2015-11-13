@@ -42,6 +42,47 @@ module YARD::CodeObjects
         @kind_of = ''
         @default = ''
       end
+
+      # Returns JSON representation of attribute name
+      #
+      # @return [String] JSON string
+      def to_json
+        json_string = "    {\n"
+        # default[:cluster][:config][:openstack][:volume_default_type]
+        if name =~ /(.+?)(\[.+\])/
+          # "default"
+          attribute_type = $1
+          # [:cluster][:config][:openstack][:volume_default_type]
+          json_string += "      \"#{attribute_type}_attributes\": {\n      ...\n"
+          deepness = 2
+          attrs_tree = $2.split('[')
+          while (attr = attrs_tree.shift)do
+            next if attr.empty?
+            attr = attr.gsub(/[:"'](.+?)["']?\]/,'\\1')
+            # Indent
+            json_string += (' ' * (deepness + 2) * 2)
+            # Attr name
+            json_string += "\"#{attr}\""
+            if attrs_tree.empty?
+              json_string += ": \"VALUE\"\n"
+            else
+              # New branch
+              json_string += ": {\n" if attrs_tree.size > 0
+              deepness += 1
+            end
+          end
+
+          # Closing brackets
+          deepness -= 1
+          deepness.times do |d|
+            # Indent
+            json_string += (' ' * (deepness - d + 2) * 2)
+            # Attr name
+            json_string += "}\n"
+          end
+        end
+        json_string + "      ...\n    }\n"
+      end
     end
   end
 end

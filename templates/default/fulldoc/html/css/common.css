@@ -22,7 +22,6 @@ tr.r2 { background: #EFEFEF; }
 
 tt, code {
   background-color: #ebecf1;
-  border-bottom: 1px solid #d8dde3;
   color: #2F3F4C;
 }
 
@@ -33,7 +32,8 @@ h1 {
   font-size: 1.75em;
   font-weight: bold;
   color: #2F3F4C;
-  border-bottom: solid 4px #f18b21; }
+  border-bottom: solid 4px #f18b21;
+}
 
 h2 {
   margin: 0.5em 0 0.2em 0;
@@ -41,7 +41,8 @@ h2 {
   font-weight: bold;
   color: #2F3F4C;
   padding: 0.7em 0 0.3em 0;
-  border-bottom: solid 2px #7d868c; }
+  border-bottom: solid 2px #7d868c;
+}
 
 h3 {
   margin: 0.5em 0 -0.3em 0;
@@ -57,7 +58,8 @@ h4 {
   font-size: 1.35em;
   color: #2F3F4C;
   padding: 0.7em 0 0.3em 0;
-  border-bottom: solid 0px #7d868c; }
+  border-bottom: solid 0px #7d868c;
+}
 
 pre {
   font-family: 'Consolas', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
@@ -67,7 +69,13 @@ pre {
   padding: 0.5em;
   border: 0.0px solid #d8dde3;
   background-color: #ebecf1;
-  overflow-x: scroll; }
+  overflow-x: auto;
+}
+
+/* .label used in bootstrap, so we need to override it */
+.label{
+  display: inline;
+}
 
 #filecontents pre.code, .docstring pre.code, .tags pre.example {
   padding: 5px 12px;
@@ -78,4 +86,28 @@ pre {
 
 table {
   width: 100%;
+}
+
+
+/* Graphs CSS styles */
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+  opacity: 0.4;
+}
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+  cursor: pointer;
+  cursor: hand;
+}
+
+.node text {
+  font: 15px sans-serif;
+  pointer-events: none;
+  cursor: pointer;
+  cursor: hand;
 }

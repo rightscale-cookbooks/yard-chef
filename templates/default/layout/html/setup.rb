@@ -28,10 +28,20 @@ def init
     end
     @breadcrumb_title = "File: " + @file.title
     @page_title = "Cookbook Documentation"
-    sections :layout, [:title, [:diskfile, :cookbook_table]]
+    sections :layout, [:title, [T('chef')]]
   elsif object == '_index.html'
     sections :layout, [:title, [T('chef')]]
   end
+end
+
+def javascripts
+  # Load the existing javascripts while appending the custom one
+  super + %w(js/d3.js js/bootstrap.min.js)
+end
+
+def stylesheets
+  # Load the existing stylesheets while appending the custom one
+  super + %w(css/bootstrap.min.css)
 end
 
 # Add yard-chef specific menus

@@ -25,12 +25,26 @@ def init
   # Register custom stylesheets
   asset('css/common.css', file('css/common.css', true))
 
+  # JS for dependencies graphs visualization
+  asset('js/d3.js', file('js/d3.js', true))
+
+  # jQuery (needed for Bootstrap)
+  asset('js/jquery.js', file('js/jquery.js', true))
+
+  # CSS for Bootstrap
+  asset('css/bootstrap.min.css', file('css/bootstrap.min.css', true))
+
+  # JS for Bootstrap
+  asset('js/bootstrap.min.js', file('js/bootstrap.min.js', true))
+
   # Generate cookbook pages
   chef = YARD::Registry.all(:chef).first
   chef.cookbooks.each do |cookbook|
     serialize(cookbook)
   end
 end
+
+
 
 # Generates searchable recipe list in the output.
 #
