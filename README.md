@@ -33,34 +33,38 @@ yardoc.org and the [list of available tags](http://rubydoc.info/docs/yard/file/d
 
 Here is an example of adding standard YARD comments to a definition:
 
-    # Does a database backup.
-    #
-    # @param [String] backup_type If 'primary' will do a primary backup using volumes. If 'secondary' will do a backup S3.
-    #
-    # @raise [RuntimeError] If database is not 'initialized'
-    # @return [Boolean] status if backup done or not
-    define :db_do_backup, :backup_type => "primary" do
-      ...
-    end
+```ruby
+# Does a database backup.
+#
+# @param [String] backup_type If 'primary' will do a primary backup using volumes. If 'secondary' will do a backup S3.
+#
+# @raise [RuntimeError] If database is not 'initialized'
+# @return [Boolean] status if backup done or not
+define :db_do_backup, :backup_type => "primary" do
+  ...
+end
+```
 
 ### Resources
 
 Resource example:
 
-    # Volume ID
-    attribute :device, :kind_of => String
-    # Filesystem type
-    attribute :fstype, :kind_of => String, :default => 'ext4'
-    # Volume mount point
-    attribute :mount, :kind_of => String
-    ...    
-    # Disable volume in fstab and do umount
-    actions :disable
-    # Format volume if not formatted, mount and add entry to fstab
-    actions :enable
-    # Do volume format via mkfs
-    # Will do nothing if any filesystem already exists on volume
-    actions :mkfs
+```ruby
+# Volume ID
+attribute :device, :kind_of => String
+# Filesystem type
+attribute :fstype, :kind_of => String, :default => 'ext4'
+# Volume mount point
+attribute :mount, :kind_of => String
+...    
+# Disable volume in fstab and do umount
+actions :disable
+# Format volume if not formatted, mount and add entry to fstab
+actions :enable
+# Do volume format via mkfs
+# Will do nothing if any filesystem already exists on volume
+actions :mkfs
+```
 
 Comment above the `attribute` will be used as description for resource attributes in resource attributes table in documentation.
 Keyword `:kind_of` will be used as for type column and `:default` as default value column.
@@ -74,54 +78,60 @@ In providers will be described only actions, there you can place more detailed d
 
 Example:
 
-    # Create filesystem on specified device
-    #
-    # Example:
-    #
-    #    sys_volume 'HOME' do
-    #      device '/dev/vdc'
-    #      device 'ext4'
-    #      action :enable
-    #    end
-    action :mkfs do
-    ...
-    end
+```ruby
+# Create filesystem on specified device
+#
+# Example:
+#
+#    sys_volume 'HOME' do
+#      device '/dev/vdc'
+#      device 'ext4'
+#      action :enable
+#    end
+action :mkfs do
+...
+end
+```
 
 ### Attributes
 
 To document your attributes exists two ways, first describe it in cookbooks `metadata.rb` as described in [OpsCode documentation](https://docs.chef.io/config_rb_metadata.html)
 
-    attribute "repo/default/revision",
-      :display_name => "Repository Branch/Tag/Commit",
-      :description =>
-        "The specific branch, tag, or commit (SHA) of the specified" +
-        " Git/Subversion repository that the application code will" +
-        " be retrieved from. For Git repositories, use 'master'" +
-        " to retrieve the master branch from the repository." +
-        " For SVN repositories, use 'HEAD' to retrieve the latest changes" +
-        " from the repository. Example: mybranch",
+```ruby
+attribute "repo/default/revision",
+  :display_name => "Repository Branch/Tag/Commit",
+  :description =>
+    "The specific branch, tag, or commit (SHA) of the specified" +
+    " Git/Subversion repository that the application code will" +
+    " be retrieved from. For Git repositories, use 'master'" +
+    " to retrieve the master branch from the repository." +
+    " For SVN repositories, use 'HEAD' to retrieve the latest changes" +
+    " from the repository. Example: mybranch",
+```
 
 Attribute description will be received from `:description` section.
 But this method requires too many efforts to keep it up-to-date, always actual attributes will be placed in `cookbook/attributes/*.rb` file, so better to comment attributes there:
 
-    #
-    # Default Yum repos
-    #
-    # String "http://192.168.1.100/mrepo/..." should be last element in `:baseurl` array, to be first
-    # RPMs mirror for `yum`
-    default[:sys][:yum_repos] = {
-        'epel_local' => {
-            :description => 'Extra Packages for Enterprise Linux [LOCAL]',
-            :baseurl  => %w(
-              http://mirror.euserv.net/linux/fedora-epel/$releasever/$basearch/
-              http://dl.fedoraproject.org/pub/epel/$releasever/$basearch/
-              http://192.168.1.100/mrepo/EPEL$releasever-$basearch/RPMS.os/
-            ),
-            :gpgcheck => false,
-            :enabled => true
-        },
-        ...
-    }
+```ruby
+#
+# Default Yum repos
+#
+# String "http://192.168.1.100/mrepo/..." should be last element in `:baseurl` array, to be first
+# RPMs mirror for `yum`
+default[:sys][:yum_repos] = {
+    'epel_local' => {
+        :description => 'Extra Packages for Enterprise Linux [LOCAL]',
+        :baseurl  => %w(
+          http://mirror.euserv.net/linux/fedora-epel/$releasever/$basearch/
+          http://dl.fedoraproject.org/pub/epel/$releasever/$basearch/
+          http://192.168.1.100/mrepo/EPEL$releasever-$basearch/RPMS.os/
+        ),
+        :gpgcheck => false,
+        :enabled => true
+    },
+    ...
+}
+```
 
 Attribute `default[:sys][:yum_repos]` will be added in **Cookbook attributes** table, comment above as description and `'epel_local' => ...` will be added as default value for this attribute.
 
@@ -131,34 +141,38 @@ Recipes can be documented also in two ways, with keyword `recipe` in `metadata.r
 
 Example:
 
-    recipe 'cluster::converge',
-           'Create instance and run converge'
+```ruby
+recipe 'cluster::converge',
+       'Create instance and run converge'
+```
 
 First argument will be recipe name, second recipe short description, this data will be used in **Recipes summary** section of cookbook documentation.
 
 To add long description of recipe, please add in the begining of your recipe comment section with leading string `*Description:*`, like in example below:
 
-    #
-    # Cookbook Name:: cluster
-    # Recipe:: create
-    #
-    # Copyright 2015, YOUR_COPYRIGHT
-    #
-    # All rights reserved - Do Not Redistribute
-    #
-    
-    # *Description*
-    #
-    # to create and provision one node set NODENAME ENV variable like: `NODENAME="..."`
-    #
-    # usage:
-    #
-    #     NODENAME="risk01" chef-client -E "env" -c ~/.chef/knife.rb --runlist "recipe[cluster::converge]"
-    #
-    # ...
-    
-    # cluster name
-    cluster_name = ENV['OPSCODE_ORGNAME']
+```ruby
+#
+# Cookbook Name:: cluster
+# Recipe:: create
+#
+# Copyright 2015, YOUR_COPYRIGHT
+#
+# All rights reserved - Do Not Redistribute
+#
+
+# *Description*
+#
+# to create and provision one node set NODENAME ENV variable like: `NODENAME="..."`
+#
+# usage:
+#
+#     NODENAME="risk01" chef-client -E "env" -c ~/.chef/knife.rb --runlist "recipe[cluster::converge]"
+#
+# ...
+
+# cluster name
+cluster_name = ENV['OPSCODE_ORGNAME']
+```
 
 Comment section beggining from `*Description*` till `...` will be used as detailed description of recipe in 
 **Recipe details** section of cookbook documentation.
@@ -169,20 +183,24 @@ have its own comment.
 
 Short cookbook description and version will be received from keyworks `description` and `version` in `metadata.rb` file:
 
+```ruby
     description      'Installs/Configures Elastic Search cluster'
     version          '3.2.0'
+```
 
 This fields will be used in cookbooks list on the index page of your cookbooks documentation.
 
-#### Cookbook dependencies
+#### Cookbook Dependencies
 
 Please describe each dependency of your cookbook with `depends` keyword in `metadata.rb` and place proper comment, why 
 this dependency needed.
 
-    # Subversion provider for `repo` resource
-    depends "svn"
-    # Git provider for `repo` resource
-    depends "git"
+```ruby
+# Subversion provider for `repo` resource
+depends "svn"
+# Git provider for `repo` resource
+depends "git"
+```
 
 This information will be used in **Cookbook dependencies** section of documentation for your cookbook.
 
@@ -190,28 +208,32 @@ This information will be used in **Cookbook dependencies** section of documentat
 
 Comment your libraries as regular Ruby code, for more information please read [list of available tags](http://rubydoc.info/docs/yard/file/docs/Tags.md#List_of_Available_Tags)
 
-    # Search of image by name or by id
-    # @param name_or_id [String] image name or ID, search by name works as regexp
-    #   image.name =~ /#{name_or_id}/
-    # @return [Fog::Image] image object
-    def find_image(name_or_id)
-       ...
-    end
+```ruby
+# Search of image by name or by id
+# @param name_or_id [String] image name or ID, search by name works as regexp
+#   image.name =~ /#{name_or_id}/
+# @return [Fog::Image] image object
+def find_image(name_or_id)
+   ...
+end
+```
 
 ## Generating Cookbook Docs
 
 ### Rake Task
 For generating documentation it is recommended to create a rake task:
 
-    require "rubygems"
-    require "chef"
-    require "yard"
+```ruby
+require "rubygems"
+require "chef"
+require "yard"
 
-    YARD::Config.load_plugin 'chef'
-    YARD::Rake::YardocTask.new do |t|
-      t.files = ['<path_to_cookbooks_repo>/**/*.rb']
-      #t.options = ['--debug']
-    end
+YARD::Config.load_plugin 'chef'
+YARD::Rake::YardocTask.new do |t|
+  t.files = ['<path_to_cookbooks_repo>/**/*.rb']
+  #t.options = ['--debug']
+end
+```
 
 Then just run
 
