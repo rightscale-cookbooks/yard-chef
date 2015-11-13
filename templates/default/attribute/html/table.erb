@@ -38,7 +38,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <td>
           <strong><%= attribute.name %></strong>
           <% if object.type == :cookbook %>
-          <br /><span>[<a href="#" onclick="return false;" class="toggleSource">View source</a>]</span><br /><span class="source_code"><%= htmlify attribute.to_json %></span>
+          <br /><span>[<a href="#" onclick="return false;" class="toggleSource">View JSON</a>]</span><br /><span class="source_code"><%= htmlify attribute.to_json %></span>
           <% end %>
         </td>
         <td><%= htmlify attribute.docstring %></td>

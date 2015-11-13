@@ -3,7 +3,7 @@ Gem::Specification.new do |gem|
   gem.name        = "yard-chef"
   gem.version     = IO.read(File.join(File.dirname(__FILE__), "VERSION")).chomp
   gem.platform    = Gem::Platform::RUBY
-  gem.authors     = ['Douglas Thrift', 'Nick Stakanov', 'Nitin Mohan']
+  gem.authors     = ['Douglas Thrift', 'Nick Stakanov', 'Nitin Mohan', 'Aleksey Hariton']
   gem.email       = ["douglas@rightscale.com", "nitin@rightscale.com"]
   gem.homepage    = "https://github.com/rightscale/yard-chef"
   gem.summary     = %q{YARD plugin for Chef}
