@@ -44,7 +44,7 @@ module YARD::Handlers
           recipe_obj.docstring = statement.docstring
         end
 
-        # Recipe declaration in the head of recipe, leading comment block
+        # Recipe description in the head of recipe, leading comment block
         if path_array.include? 'recipes'
           recipe_obj = ChefObject.register(cookbook, ::File.basename(statement.file.to_s, '.rb'), :recipe)
           if statement.docstring =~ /[\s\t]*\*?Description[:]?\*?/i

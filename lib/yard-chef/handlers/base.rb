@@ -39,7 +39,7 @@ module YARD::Handlers
       # @return [CookbookObject] the CookbookObject
       #
       def cookbook
-        cookbook_name = ""
+        cookbook_name = ''
         path_array = File.expand_path(statement.file).to_s.split('/')
         if path_array.include?('metadata.rb')
           cookbook_name = path_array[path_array.index('metadata.rb') - 1]
@@ -57,10 +57,10 @@ module YARD::Handlers
       #
       def lwrp
         path_array = File.expand_path(statement.file).to_s.split('/')
-        if path_array.include?("resources")
+        if path_array.include?('resources')
           type = RESOURCE
           type_sym = :resource
-        elsif path_array.include?("providers")
+        elsif path_array.include?('providers')
           type = PROVIDER
           type_sym = :provider
         else
@@ -69,7 +69,7 @@ module YARD::Handlers
         file_name = path_array.last.to_s.sub('.rb','')
 
         cookbook_obj = cookbook
-        if file_name == "default"
+        if file_name == 'default'
           lwrp_name = cookbook_obj.name
         else
           lwrp_name = "#{cookbook_obj.name}_#{file_name}"

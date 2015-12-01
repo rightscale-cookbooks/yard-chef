@@ -39,6 +39,7 @@ module YARD::CodeObjects
       #
       def initialize(namespace, name)
         super(namespace, name)
+        @description = ''
       end
 
       # Constructs class name for the lightweight provider.

@@ -20,7 +20,8 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 def init
-  @providers = object.providers
+  super
 
+  @providers = object.providers
   sections.push :providers_summary, [T('action')]
 end

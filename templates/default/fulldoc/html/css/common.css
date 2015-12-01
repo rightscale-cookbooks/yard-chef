@@ -111,3 +111,23 @@ table {
   cursor: pointer;
   cursor: hand;
 }
+
+ul.summary {
+    list-style: none;
+    font-size: 1em;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.5em;
+}
+
+.tags .examples pre {
+    margin-left: 15px;
+}
+
+.notes {
+    margin-left: 15px;
+}
+
+ul.summary li.action{
+    border-top: 1px dotted #aaa;
+    padding-top: 8px;
+}

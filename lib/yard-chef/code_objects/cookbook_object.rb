@@ -110,7 +110,7 @@ module YARD::CodeObjects
       #
       def libraries
         modules = YARD::Registry.all(:module)
-        modules.select { |lib| !lib.parent.root? && lib.file =~ /#{@name}/ }
+        modules.select {|lib| lib.file.split('/').include?("#{@name}") }
       end
     end
   end

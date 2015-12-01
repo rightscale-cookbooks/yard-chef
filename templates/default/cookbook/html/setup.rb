@@ -35,7 +35,10 @@ def init
                   :definitions,
                   :libraries,
                   :element_details,
-                  [T('recipe'), T('action'), T('definition')]
+                  [
+                      T('recipe'),
+                      T('definition')
+                  ]
                 ]
             ]
 end
