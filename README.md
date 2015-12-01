@@ -72,6 +72,8 @@ Keyword `:kind_of` will be used as for type column and `:default` as default val
 To have better documentation of our resources, please describe each action separately with keyword `actions` and comment above it.
 Actions will be also described in providers, so use this description as short summary for action.
 
+If you want to see list of providers for your resource, please use YARD tag `@resource` in your providers (check **Providers** section)
+
 ### Providers
 
 In providers will be described only actions, there you can place more detailed description of action and example of usage.
@@ -79,19 +81,29 @@ In providers will be described only actions, there you can place more detailed d
 Example:
 
 ```ruby
+# @resource sys_volume
+
+#
 # Create filesystem on specified device
 #
-# Example:
-#
+# @example Create EXT4 partition on `/dev/vdc`
 #    sys_volume 'HOME' do
 #      device '/dev/vdc'
 #      device 'ext4'
 #      action :enable
 #    end
+#
+# @note *WARNING!* Please use this action carefully
 action :mkfs do
 ...
 end
 ```
+
+If you add tag `@resource` in the beginning of your provider you will see this provider in providers list of resource.
+
+Tag `@example` used for code examples, text after tag will be used as title for code example. Please not that code example should have two spaces indent in each line.
+
+Tag `@note` used for warning or additional info highlight.
 
 ### Attributes
 
@@ -178,6 +190,8 @@ Comment section beggining from `*Description*` till `...` will be used as detail
 **Recipe details** section of cookbook documentation.
 Please note, that first line of your code in recipe should have it own comment, in example above `cluster_name = ENV['OPSCODE_ORGNAME']` 
 have its own comment.
+
+You can also use tags `@note` and `@example` like for providers.
 
 ### Cookbooks (metadata.rb)
 
