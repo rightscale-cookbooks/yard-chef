@@ -61,10 +61,20 @@ module YARD::Handlers
       #
       def name
         string = ""
-        # YARD builds an abstract syntax tree (AST) which we need to traverse
-        # to obtain the complete docstring
-        statement.parameters.first.traverse do |child|
-          string << child.jump(:string_content).source if child.type == :string_content
+        value = statement.parameters.first
+        if value.is_a?(YARD::Parser::Ruby::MethodCallNode)
+          # The content is code, so evaluate it in the correct directory
+          # This handles ruby code like File.read in metadata.rb
+          current_directory = Dir.getwd
+          Dir.chdir(File.expand_path(File.dirname(statement.file)))
+          string << eval(value.source)
+          Dir.chdir current_directory
+        else
+          # YARD builds an abstract syntax tree (AST) which we need to traverse
+          # to obtain the complete docstring
+          value.traverse do |child|
+            string << child.jump(:string_content).source if child.type == :string_content
+          end
         end
         string
       end
