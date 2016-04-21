@@ -1,0 +1,7 @@
+<%=
+    if object.type == :cookbook
+      erb(:cookbook_attribute)
+    else
+      erb(:resource_attribute)
+    end
+%>

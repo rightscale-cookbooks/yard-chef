@@ -41,7 +41,10 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           <br /><span>[<a href="#" onclick="return false;" class="toggleSource">View JSON</a>]</span><br /><span class="source_code"><%= htmlify attribute.to_json %></span>
           <% end %>
         </td>
-        <td><%= htmlify attribute.docstring %></td>
+        <td>
+          <%= htmlify attribute.docstring %>
+          <%= yieldall :object => attribute, :owner => object %>
+        </td>
         <% if object.type == :resource %>
             <td><%= attribute.kind_of %></td>
         <% end %>
