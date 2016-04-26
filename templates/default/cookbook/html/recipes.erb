@@ -31,7 +31,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         <span class="summary_signature">
           <strong><a href="#<%= recipe.name %>"><%= recipe.name %></a></strong>
         </span>
-        <span class="summary_desc"><%= recipe.docstring %></span>
+        <span class="summary_desc"><%= recipe.docstring.to_s.split("\n").first %></span>
       </li>
     <% end %>
   </ul>
