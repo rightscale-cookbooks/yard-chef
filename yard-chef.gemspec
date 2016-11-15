@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.license     = "MIT"
 
   gem.add_runtime_dependency 'yard', '~> 0.8'
-  gem.add_runtime_dependency 'redcarpet', '~> 2.1.1'
+  gem.add_runtime_dependency 'redcarpet', '>= 2.1.1'
 
   gem.files = Dir.glob('templates/**/*.erb')
   gem.files += Dir.glob('templates/**/*.rb')
