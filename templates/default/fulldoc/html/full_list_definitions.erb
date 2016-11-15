@@ -22,16 +22,16 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<% n = 1 %>
+<% even_odd = 'odd' %>
 <% @items.each do |item| %>
   <%# unless item.namespace.parent.root? %>
-    <li class="r<%= n %>">
-      <span class="object_link">
-        <a href="<%= url_for(item.parent, item.name, false) %>" title="<%= item.file %>">
-          <%= h(item.name) %>
-        </a>
-      </span>
-    </li>
-    <% n = n == 2 ? 1 : 2 %>
+  <li id="definition_<%= item.path %>" class="<%= even_odd %>">
+    <div class="item"><span class="object_link">
+      <a href="<%= url_for(item.parent, item.name, false) %>" title="<%= item.file %>">
+        <%= h(item.name) %>
+      </a>
+    </span></div>
+  </li>
+  <% even_odd = (even_odd == 'even' ? 'odd' : 'even') %>
   <%# end %>
 <% end %>
