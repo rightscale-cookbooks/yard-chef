@@ -1,4 +1,6 @@
 # YARD-Chef
+[![Build Status](https://www.travis-ci.org/rightscale-cookbooks/yard-chef.svg?branch=master)](https://www.travis-ci.org/rightscale-cookbooks/yard-chef) [![Gem Version](https://badge.fury.io/rb/yard-chef.svg)](https://badge.fury.io/rb/yard-chef)
+
 
   * [YARD-Chef](#yard-chef)
     * [Description](#description)
@@ -22,28 +24,26 @@
 
 ## Description
 
-yard-chef is a [YARD](http://yardoc.org/) plugin for
-[Chef](http://www.opscode.com/chef/) that adds support for documenting Chef
-recipes, lightweight resources and providers, libraries and definitions.
+yard-chef is a [YARD](http://yardoc.org/) plugin for [Chef](https://www.chef.io/chef/) that adds support for documenting Chef recipes, lightweight resources and providers, libraries and definitions.
 
 ## Requirements
 
-* Ruby 2.0 or higher, travis tests 2.2.0 and 2.3.1
-* [YARD](http://yardoc.org/)
+- Ruby 2.2 or higher, travis tests 2.2.0 and 2.3.1
+- [YARD](http://yardoc.org/)
 
 ## Installation
 
 It is available from RubyGems:
 
-    gem install yard-chef
+```
+gem install yard-chef
+```
 
 ## Documenting Your Cookbooks
 
 ### README.md
 
-The cookbook `README.md` file included in your cookbooks will be the landing page for
-each cookbook.  Under this verbatim inclusion of your `README.md` will be a
-```Cookbook Documentation``` section that contains the auto-generated information
+The cookbook `README.md` file included in your cookbooks will be the landing page for each cookbook. Under this verbatim inclusion of your `README.md` will be a `Cookbook Documentation` section that contains the auto-generated information
 
 ### Resources
 
@@ -66,11 +66,9 @@ actions :enable
 actions :mkfs
 ```
 
-Comment above the `attribute` will be used as description for resource attributes in resource attributes table in documentation.
-Keyword `:kind_of` will be used as for type column and `:default` as default value column.
+Comment above the `attribute` will be used as description for resource attributes in resource attributes table in documentation. Keyword `:kind_of` will be used as for type column and `:default` as default value column.
 
-To have better documentation of our resources, please describe each action separately with keyword `actions` and comment above it.
-Actions will be also described in providers, so use this description as short summary for action.
+To have better documentation of our resources, please describe each action separately with keyword `actions` and comment above it. Actions will be also described in providers, so use this description as short summary for action.
 
 If you want to see list of providers for your resource, please use YARD tag `@resource` in your providers (check **Providers** section)
 
@@ -121,8 +119,7 @@ attribute "repo/default/revision",
     " from the repository. Example: mybranch",
 ```
 
-Attribute description will be received from `:description` section.
-But this method requires too many efforts to keep it up-to-date, always actual attributes will be placed in `cookbook/attributes/*.rb` file, so better to comment attributes there:
+Attribute description will be received from `:description` section. But this method requires too many efforts to keep it up-to-date, always actual attributes will be placed in `cookbook/attributes/*.rb` file, so better to comment attributes there:
 
 ```ruby
 #
@@ -186,10 +183,7 @@ To add long description of recipe, please add in the begining of your recipe com
 cluster_name = ENV['OPSCODE_ORGNAME']
 ```
 
-Comment section beggining from `*Description*` till `...` will be used as detailed description of recipe in
-**Recipe details** section of cookbook documentation.
-Please note, that first line of your code in recipe should have it own comment, in example above `cluster_name = ENV['OPSCODE_ORGNAME']`
-have its own comment.
+Comment section beggining from `*Description*` till `...` will be used as detailed description of recipe in **Recipe details** section of cookbook documentation. Please note, that first line of your code in recipe should have it own comment, in example above `cluster_name = ENV['OPSCODE_ORGNAME']` have its own comment.
 
 You can also use tags `@note` and `@example` like for providers.
 
@@ -206,8 +200,7 @@ This fields will be used in cookbooks list on the index page of your cookbooks d
 
 #### Cookbook Dependencies
 
-Please describe each dependency of your cookbook with `depends` keyword in `metadata.rb` and place proper comment, why
-this dependency needed.
+Please describe each dependency of your cookbook with `depends` keyword in `metadata.rb` and place proper comment, why this dependency needed.
 
 ```ruby
 # Subversion provider for `repo` resource
@@ -234,9 +227,7 @@ end
 
 ### Standard YARD Tags and Comments
 
-Your definitions, libraries, resources and providers can benefit from
-adding YARD tags and comments for each class and method.  You can learn more about the tags from
-yardoc.org and the [list of available tags](http://rubydoc.info/docs/yard/file/docs/Tags.md#List_of_Available_Tags)
+Your definitions, libraries, resources and providers can benefit from adding YARD tags and comments for each class and method. You can learn more about the tags from yardoc.org and the [list of available tags](http://rubydoc.info/docs/yard/file/docs/Tags.md#List_of_Available_Tags)
 
 Here is an example of adding standard YARD comments to a definition:
 
@@ -255,6 +246,7 @@ end
 ## Generating Cookbook Docs
 
 ### Rake Task
+
 For generating documentation it is recommended to create a rake task:
 
 ```ruby
@@ -271,28 +263,29 @@ end
 
 Then just run
 
-    rake yard
+```
+rake yard
+```
 
 ### Command-line
 
-From the root of your cookbook repository, run the ```yardoc``` command to
-generate documentation using the following command
+From the root of your cookbook repository, run the `yardoc` command to generate documentation using the following command
 
-    yardoc '**/*.rb' --plugin chef
+```
+yardoc '**/*.rb' --plugin chef
+```
 
 ## Viewing Cookbook Docs
 
-YARD output will be present in a folder named "doc" which will be located in
-the same folder from where the command was run.
+YARD output will be present in a folder named "doc" which will be located in the same folder from where the command was run.
 
-It is recommended to view these pages from a running YARD server.  To start a
-local YARD server you should be in the same directory that contains your
-generated ./doc directory.  Once there run:
+It is recommended to view these pages from a running YARD server. To start a local YARD server you should be in the same directory that contains your generated ./doc directory. Once there run:
 
-    yard server --reload -B localhost -p 8000 --plugin yard-chef
+```
+yard server --reload -B localhost -p 8000 --plugin yard-chef
+```
 
-Add a ```-d``` option flag to run the server in daemon mode.  For more
-information about YARD server see [http://yardoc.org/](http://rubydoc.info/docs/yard/file/docs/GettingStarted.md#yard_Executable)
+Add a `-d` option flag to run the server in daemon mode. For more information about YARD server see [http://yardoc.org/](http://rubydoc.info/docs/yard/file/docs/GettingStarted.md#yard_Executable)
 
 ## License
 
@@ -300,6 +293,7 @@ Copyright (c) 2012 RightScale, Inc.
 
 Copyright (c) 2015 Aleksey Hariton (aleksey.hariton@gmail.com)
 
+```
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 'Software'), to deal in the Software without restriction, including
@@ -318,5 +312,6 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
 
 Maintained by the RightScale ServerTemplate Team
