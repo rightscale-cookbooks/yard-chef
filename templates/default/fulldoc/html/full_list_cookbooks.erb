@@ -22,14 +22,12 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<% n = 1 %>
+<% even_odd = 'odd'  %>
 <% @items.each do |item| %>
-  <li class="r<%= n %>">
-    <span class="object_link">
-      <a href="<%= url_for(item) %>" title="<%= item.file %>">
-        <%= h(item.name) %>
-      </a>
-    </span>
+  <li id="cookbook_<%= item.path %>" class="<%= even_odd %>">
+    <div class="item"><span class="object_link">
+      <a href="<%= url_for(item) %>" title="<%= item.file %>"><%= h(item.name) %></a>
+    </span></div>
   </li>
-  <% n = n == 2 ? 1 : 2 %>
+  <% even_odd = (even_odd == 'even' ? 'odd' : 'even') %>
 <% end %>
