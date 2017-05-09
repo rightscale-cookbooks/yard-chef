@@ -10,7 +10,7 @@ Gem::Specification.new do |gem|
   gem.description = %q{yard-chef is a YARD plugin for Chef that adds support for documenting Chef cookbooks, resources, providers, and definitions.}
   gem.license     = "MIT"
 
-  gem.add_runtime_dependency 'yard', '~> 0.8'
+  gem.add_runtime_dependency 'yard', '~> 0.9.9'
   gem.add_runtime_dependency 'redcarpet', '>= 2.1.1'
 
   gem.files = Dir.glob('templates/**/*.erb')
