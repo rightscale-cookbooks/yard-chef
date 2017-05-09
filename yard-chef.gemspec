@@ -4,8 +4,8 @@ Gem::Specification.new do |gem|
   gem.version     = IO.read(File.join(File.dirname(__FILE__), "VERSION")).chomp
   gem.platform    = Gem::Platform::RUBY
   gem.authors     = ['Douglas Thrift', 'Nick Stakanov', 'Nitin Mohan']
-  gem.email       = ["douglas@rightscale.com", "nitin@rightscale.com"]
-  gem.homepage    = "https://github.com/rightscale/yard-chef"
+  gem.email       = ["douglas@rightscale.com", "nitin@rightscale.com", "support@rightscale.com"]
+  gem.homepage    = "https://github.com/rightscale-cookbooks/yard-chef"
   gem.summary     = %q{YARD plugin for Chef}
   gem.description = %q{yard-chef is a YARD plugin for Chef that adds support for documenting Chef cookbooks, resources, providers, and definitions.}
   gem.license     = "MIT"
