@@ -50,13 +50,13 @@ end
 def generate_definitions_list
   cookbooks = YARD::Registry.all(:cookbook).sort_by { |cookbook| cookbook.name.to_s }
   definitions = []
-  cookbooks.each { |cookbook| definitions = definitions + cookbook.definitions }
+  cookbooks.each { |cookbook| definitions += cookbook.definitions }
   generate_full_list(definitions, 'Definition', 'definitions')
 end
 
 # Called by menu_lists in layout/html/setup.rb by default
 def generate_cookbooks_list
-  cookbooks = YARD::Registry.all(:cookbook).sort_by{|cookbook| cookbook.name.to_s}
+  cookbooks = YARD::Registry.all(:cookbook).sort_by { |cookbook| cookbook.name.to_s }
   generate_full_list(cookbooks, 'Cookbooks', 'cookbooks')
 end
 
@@ -69,31 +69,30 @@ end
 def generate_full_list(objects, title, type)
   @items = objects
   @list_title = "#{title} List"
-  @list_type = "#{type}"
+  @list_type = type.to_s
   asset(url_for_list(@list_type), erb(:full_list))
 end
 
 def class_list(root = YARD::Registry.root)
-  out = ""
+  out = ''
   children = run_verifier(root.children)
-  children.reject {|c| c.nil? }.sort_by {|child| child.path }.map do |child|
-    if child.is_a?(CodeObjects::ModuleObject)
-      name = child.name
-      has_children = child.children.any? {|o| o.is_a?(CodeObjects::ModuleObject) }
-      out << "<li>"
-      out << "<a class='toggle'></a> " if has_children
-      out << linkify(child, name)
-      out << " &lt; #{child.superclass.name}" if child.is_a?(CodeObjects::ClassObject) && child.superclass
-      out << "<small class='search_info'>"
-      if !child.namespace || child.namespace.root?
-        out << "Top Level Namespace"
-      else
-        out << child.namespace.path
-      end
-      out << "</small>"
-      out << "</li>"
-      out << "<ul>#{class_list(child)}</ul>" if has_children
-    end
+  children.reject(&:nil?).sort_by(&:path).map do |child|
+    next unless child.is_a?(CodeObjects::ModuleObject)
+    name = child.name
+    has_children = child.children.any? { |o| o.is_a?(CodeObjects::ModuleObject) }
+    out << '<li>'
+    out << "<a class='toggle'></a> " if has_children
+    out << linkify(child, name)
+    out << " &lt; #{child.superclass.name}" if child.is_a?(CodeObjects::ClassObject) && child.superclass
+    out << "<small class='search_info'>"
+    out << if !child.namespace || child.namespace.root?
+             'Top Level Namespace'
+           else
+             child.namespace.path
+           end
+    out << '</small>'
+    out << '</li>'
+    out << "<ul>#{class_list(child)}</ul>" if has_children
   end
   out
 end

@@ -54,7 +54,7 @@ module YARD::CodeObjects
         else
           name = @name.to_s.capitalize
         end
-        namespace = @namespace.to_s.split('::').map { |str| str.capitalize }
+        namespace = @namespace.to_s.split('::').map(&:capitalize)
         "#{namespace.join('::')}::#{name}"
       end
 
@@ -65,12 +65,11 @@ module YARD::CodeObjects
       def map_resource(file)
         file_handle = File.open(File.expand_path(file), 'r')
         file_handle.readlines.each do |line|
-          if line =~ /#\s@resource/
-            resource_name = line.split(%r{@resource })[1].strip
-            @resource = ChefObject.register(RESOURCE, resource_name, :resource)
-            @resource.providers.push(self) unless @resource.providers.include?(self)
-            break
-          end
+          next unless line =~ /#\s@resource/
+          resource_name = line.split(/@resource /)[1].strip
+          @resource = ChefObject.register(RESOURCE, resource_name, :resource)
+          @resource.providers.push(self) unless @resource.providers.include?(self)
+          break
         end
       end
 

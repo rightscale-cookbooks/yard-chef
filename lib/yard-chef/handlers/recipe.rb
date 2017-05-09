@@ -40,7 +40,7 @@ module YARD::Handlers
       #
       def name
         recipe = statement.parameters.first.jump(:string_content, :ident).source
-        recipe = recipe.split("::")[1] if recipe =~ /::/
+        recipe = recipe.split('::')[1] if recipe =~ /::/
         recipe = 'default' if recipe == cookbook.name.to_s
         recipe
       end
@@ -51,7 +51,7 @@ module YARD::Handlers
       # @return [YARD::Docsting] the docstring
       #
       def docstring
-        description = ""
+        description = ''
         # YARD builds an abstract syntax tree (AST) which we need to traverse
         # to obtain the complete docstring
         statement.parameters[1].traverse do |child|
