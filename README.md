@@ -28,7 +28,7 @@ recipes, lightweight resources and providers, libraries and definitions.
 
 ## Requirements
 
-* Ruby 1.9 or higher
+* Ruby 2.0 or higher, travis tests 2.2.0 and 2.3.1
 * [YARD](http://yardoc.org/)
 
 ## Installation
