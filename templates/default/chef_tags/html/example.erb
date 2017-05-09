@@ -1,0 +1,11 @@
+<% if object.has_tag?(:example) %>
+  <div class="examples">
+    <p class="tag_title">Examples:</p>
+    <% object.tags(:example).each do |tag| %>
+      <% unless tag.name.empty? %>
+      <h4><%= tag.name  %></h4>
+      <% end %>
+      <pre class="example code"><code><%= html_syntax_highlight(tag.text) %></code></pre>
+    <% end %>
+  </div>
+<% end %>

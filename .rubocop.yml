@@ -30,3 +30,12 @@ Style/ClassVars:
 
 Style/FileName:
   Enabled: false
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+Metrics/BlockNesting:
+  Enabled: false
+
+Security/Eval:
+  Enabled: false

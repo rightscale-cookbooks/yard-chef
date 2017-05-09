@@ -27,12 +27,34 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
   <thead>
     <th>Attribute</th>
     <th>Description</th>
+    <% if object.type == :resource %>
+      <th>Type</th>
+    <% end %>
+    <th>Default</th>
   </thead>
   <tbody>
     <% @attributes.each do |attribute| %>
       <tr class="r<%= n %>">
-        <td><strong><%= attribute.name %></strong></td>
-        <td><%= attribute.docstring %></td>
+        <td>
+          <strong><%= attribute.name %></strong>
+          <% if object.type == :cookbook %>
+          <br /><span>[<a href="#" onclick="return false;" class="toggleSource">View JSON</a>]</span><br /><span class="source_code"><%= htmlify attribute.to_json %></span>
+          <% end %>
+        </td>
+        <td>
+          <%= htmlify attribute.docstring %>
+          <%= yieldall :object => attribute, :owner => object %>
+        </td>
+        <% if object.type == :resource %>
+            <td><%= attribute.kind_of %></td>
+        <% end %>
+        <td>
+          <% if attribute.default.size > 60 %>
+          <span>[<a href="#" onclick="return false;" class="toggleSource">View source</a>]</span><br /><span class="source_code"><%= htmlify attribute.default %></span>
+          <% else %>
+          <%= htmlify attribute.default %>
+          <%end%>
+        </td>
       </tr>
       <% n = n == 2 ? 1 : 2 %>
     <% end %>

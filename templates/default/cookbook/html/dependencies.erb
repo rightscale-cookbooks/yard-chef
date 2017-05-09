@@ -1,6 +1,6 @@
 <%# vim: filetype=eruby.html
 
-Copyright (c) 2007-2012 Loren Segal
+Copyright (c) 2015 Aleksey Hariton
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
@@ -22,13 +22,17 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 %>
 
-<table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines"><%= "\n\n\n" %><%= h format_lines(@object) %></pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File '<%= h @object.file %>'<% if @object.line %>, line <%= @object.line %><% end %></span><%= "\n\n" %><%= html_syntax_highlight @object.source %></pre>
-    </td>
-  </tr>
-</table>
+<% dependencies = object.children_by_type(:dependency) %>
+<% if dependencies.size > 0 %>
+  <h2>Dependencies</h2>
+  <ul class="summary">
+    <% dependencies.each do |dependency| %>
+      <li>
+        <span class="summary_signature">
+          <strong><a href="<%= dependency.name %>.html"><%= dependency.name %></a></strong>
+        </span>
+        <span class="summary_desc"><%= htmlify(dependency.docstring) %></span>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

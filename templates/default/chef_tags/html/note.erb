@@ -1,0 +1,10 @@
+<% if object.has_tag?(:note) %>
+  <p class="tag_title">Notes:</p>
+  <div class="notes">
+    <% object.tags(:note).each do |tag| %>
+      <div class="alert alert-info">
+        <p><%= htmlify(tag.text) %></p>
+      </div>
+    <% end %>
+  </div>
+<% end %>
