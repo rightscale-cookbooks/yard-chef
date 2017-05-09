@@ -58,17 +58,16 @@ module YARD::Handlers
       # @return [YARD::Docstring] docstring for the attribute
       #
       def docstring
-        description = ""
+        description = ''
         path_array = parser.file.to_s.split('/')
         if path_array.include?('metadata.rb')
           # Suppose :description string have concatenation operator '+' then
           # YARD builds an abstract syntax tree (AST). We need to traverse the
           # tree to get the whole description string
           statement.parameters[1].children.each do |ast_node|
-            if ast_node.jump(:ident).source == "description"
-              ast_node.traverse do |child|
-                description << child.jump(:string_content).source if child.type == :string_content
-              end
+            next unless ast_node.jump(:ident).source == 'description'
+            ast_node.traverse do |child|
+              description << child.jump(:string_content).source if child.type == :string_content
             end
           end
         else

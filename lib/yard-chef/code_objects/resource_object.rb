@@ -56,7 +56,7 @@ module YARD::CodeObjects
           name = @name.to_s.capitalize
         end
 
-        namespace = @namespace.to_s.split('::').map { |str| str.capitalize }
+        namespace = @namespace.to_s.split('::').map(&:capitalize)
         "#{namespace.join('::')}::#{name}"
       end
 

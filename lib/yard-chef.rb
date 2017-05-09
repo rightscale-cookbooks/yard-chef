@@ -44,21 +44,20 @@ module YARD::CodeObjects::Chef
   # be taken care of in the handler.
   # TODO: Investigate if YARD handlers can be invoked if parser is in a
   # specific directory.
-  YARD::Parser::SourceParser.before_parse_list do |files, globals|
+  YARD::Parser::SourceParser.before_parse_list do |files, _globals|
     files.each do |file|
       path_arr = File.expand_path(file).to_s.split('/')
-      unless (index = path_arr.index('recipes')).nil?
-        # Cookbook name can be derived from file path
-        # cookbook/<cookbook_name>/recipes/recipe_name.rb
-        cookbook_name = path_arr[index - 1]
-        cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
+      next if (index = path_arr.index('recipes')).nil?
+      # Cookbook name can be derived from file path
+      # cookbook/<cookbook_name>/recipes/recipe_name.rb
+      cookbook_name = path_arr[index - 1]
+      cookbook = ChefObject.register(CHEF, cookbook_name, :cookbook)
 
-        recipe_name = path_arr.last.to_s.sub('.rb','')
-        recipe = ChefObject.register(cookbook, recipe_name, :recipe)
+      recipe_name = path_arr.last.to_s.sub('.rb', '')
+      recipe = ChefObject.register(cookbook, recipe_name, :recipe)
 
-        recipe.source = IO.read(file)
-        recipe.add_file(file, 1)
-      end
+      recipe.source = IO.read(file)
+      recipe.add_file(file, 1)
     end
   end
 

@@ -45,7 +45,7 @@ module YARD::CodeObjects
       # @return [String] recipe name
       #
       def name
-        self.parent.name.to_s << '::' << @name.to_s
+        parent.name.to_s << '::' << @name.to_s
       end
     end
   end

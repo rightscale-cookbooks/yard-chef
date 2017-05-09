@@ -32,6 +32,6 @@ end
 #
 def link_to_provider(provider)
   url = url_for(provider.cookbook, provider.long_name)
-  url.slice!("../")
+  url.slice!('../')
   url
 end

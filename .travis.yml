@@ -6,3 +6,9 @@ rvm:
 - 2.3.1
 os:
 - linux
+
+matrix:
+  include:
+      env:
+        RUBOCOP: 1
+      script: $(which bundle) exec rubocop

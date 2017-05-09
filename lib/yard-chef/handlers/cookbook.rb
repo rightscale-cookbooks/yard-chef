@@ -60,7 +60,7 @@ module YARD::Handlers
       # @return [String] the method name
       #
       def name
-        string = ""
+        string = ''
         # YARD builds an abstract syntax tree (AST) which we need to traverse
         # to obtain the complete docstring
         statement.parameters.first.traverse do |child|
@@ -77,17 +77,17 @@ module YARD::Handlers
         type = ''
         string = ''
         readme_path = base_dir + '/README.md'
-        if File.exists?(readme_path)
+        if File.exist?(readme_path)
           type = :markdown
           string = IO.read(readme_path)
         else
           readme_path = base_dir + '/README.rdoc'
-          if File.exists?(readme_path)
+          if File.exist?(readme_path)
             type = :rdoc
             string = IO.read(readme_path)
           end
         end
-        return YARD::DocstringParser.new.parse(string).to_docstring, type
+        [YARD::DocstringParser.new.parse(string).to_docstring, type]
       end
     end
   end

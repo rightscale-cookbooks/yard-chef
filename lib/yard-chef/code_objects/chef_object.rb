@@ -70,8 +70,8 @@ module YARD::CodeObjects
           element_obj = YARD::Registry.resolve(:root, "#{namespace}::#{name}")
           if element_obj.nil?
             element_obj = element.new(namespace, name)
-            log.info "Created [#{type.to_s.capitalize}]" +
-              " #{element_obj.name} => #{element_obj.namespace}"
+            log.info "Created [#{type.to_s.capitalize}]" \
+                     " #{element_obj.name} => #{element_obj.namespace}"
           end
           element_obj
         else
@@ -87,7 +87,7 @@ module YARD::CodeObjects
       #
       def children_by_type(type)
         children = YARD::Registry.all(type)
-        children.reject { |child| child.parent != self }
+        children.select { |child| child.parent == self }
       end
 
       # Gets all Chef cookbooks.

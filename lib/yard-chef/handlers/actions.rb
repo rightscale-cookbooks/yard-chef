@@ -42,7 +42,7 @@ module YARD::Handlers
         # if multiple actions listed in same line, split the actions and
         # register them
         if statement.first_line =~ /,/
-          statement.first_line.split(%r{,?\s*:}).each do |action|
+          statement.first_line.split(/,?\s*:/).each do |_action|
             action = ChefObject.register(resource_obj, name, :action)
           end
         else
@@ -50,7 +50,7 @@ module YARD::Handlers
           action.docstring = statement.docstring
         end
 
-        log.info "Found [Actions] in #{parser.file.to_s}"
+        log.info "Found [Actions] in #{parser.file}"
       end
     end
   end

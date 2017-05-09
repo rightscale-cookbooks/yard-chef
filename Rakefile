@@ -1,2 +1,2 @@
-require "bundler/gem_tasks"
-task :default => [:build]
+require 'bundler/gem_tasks'
+task default: [:build]
