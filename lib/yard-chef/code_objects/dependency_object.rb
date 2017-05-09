@@ -1,4 +1,4 @@
-# Copyright (c) 2012 RightScale, Inc.
+# Copyright (c) 2015 Aleksey Hariton
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -19,9 +19,34 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-def init
-  @attributes = object.children_by_type(:attribute)
+require 'yard'
 
-  sections.push :attribute_header
-  sections.push :attribute, [T('chef_tags')]
+module YARD::CodeObjects
+  module Chef
+    # A DependencyObject represents a dependencies of a chef cookbook.
+    #
+    class DependencyObject < ChefObject
+      register_element :dependency
+
+      # Creates a new instance of DependencyObject.
+      #
+      # @param namespace [NamespaceObject] namespace to which the recipe belongs
+      # @param name [String] name of the recipe
+      #
+      # @return [DependencyObject] the newly created DependencyObject
+      #
+      def initialize(namespace, name)
+        super(namespace, name)
+        @docstring = ''
+      end
+
+      # Prefixes dependency name with the name of the cookbook.
+      #
+      # @return [String] recipe name
+      #
+      def name
+        @name.to_s
+      end
+    end
+  end
 end

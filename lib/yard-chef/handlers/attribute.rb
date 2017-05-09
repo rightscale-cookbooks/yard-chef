@@ -26,14 +26,17 @@ module YARD::Handlers
     # Handles "attributes" in cookbook metadata and lightweight resource.
     #
     class AttributeHandler < Base
+      MATCH = /^\s*(default|force_default|normal|override|force_override)(\[.+?\])\s*=\s*(.+)/m
       handles method_call(:attribute)
+      handles MATCH
 
       # Process "attribute" keyword.
       #
       def process
+        path_array = parser.file.to_s.split('/')
         # If file path includes metadata then handle cookbook attributes
         # else handle resource attributes
-        if parser.file =~ /metadata\.rb/
+        if path_array.include?('metadata.rb') || path_array.include?('attributes')
           namespace = cookbook
         else
           namespace = lwrp
@@ -46,9 +49,13 @@ module YARD::Handlers
         end
 
         # Register attribute if not already registered
-        attrib_obj = ChefObject.register(namespace, name, :attribute)
+        if path_array.include? 'attributes'
+          statement.source =~ MATCH
+          attrib_obj = ChefObject.register(namespace, "#{Regexp.last_match(1)}#{Regexp.last_match(2)}", :attribute)
+        else
+          attrib_obj = ChefObject.register(namespace, name, :attribute)
+        end
         attrib_obj.source = statement.source
-        attrib_obj.docstring = docstring
         attrib_obj.add_file(statement.file, statement.line)
       end
 
@@ -60,6 +67,7 @@ module YARD::Handlers
       def docstring
         description = ''
         path_array = parser.file.to_s.split('/')
+        # Parse docstring
         if path_array.include?('metadata.rb')
           # Suppose :description string have concatenation operator '+' then
           # YARD builds an abstract syntax tree (AST). We need to traverse the
@@ -73,7 +81,29 @@ module YARD::Handlers
         else
           description = statement.comments
         end
-        YARD::DocstringParser.new.parse(description).to_docstring
+        attrib_obj.docstring = YARD::DocstringParser.new.parse(description).to_docstring
+        is_kind_of = ''
+        is_default = ''
+        if path_array.include? 'attributes'
+          statement.source =~ MATCH
+          is_default = Regexp.last_match(3)
+        else
+          statement.parameters.each do |n|
+            next unless (n.is_a? YARD::Parser::Ruby::AstNode) && (n.source =~ /(default|kind_of)/)
+            n.each do |node|
+              if node.source =~ /default/
+                m = node.source.match(/\W+?\s(.*)/)
+                is_default = m[1] if m
+              end
+              if node.source =~ /kind_of/
+                m = node.source.match(/\W+?\s(.*)/)
+                is_kind_of = m[1] if m
+              end
+            end
+          end
+        end
+        attrib_obj.kind_of = is_kind_of
+        attrib_obj.default = is_default.split("\n").map { |s| "    #{s}" }.join("\n")
       end
     end
   end

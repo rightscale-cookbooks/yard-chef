@@ -38,6 +38,7 @@ module YARD::CodeObjects
       #
       def initialize(namespace, name)
         super(namespace, name)
+        @short_desc = ''
       end
 
       # Prefixes recipe name with the name of the cookbook.

@@ -20,7 +20,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 def init
-  sections.push :recipe_list, [:source]
+  sections.push :recipe_list, [T('chef_tags'), :source]
 end
 
 def source

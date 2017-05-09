@@ -26,12 +26,32 @@ module YARD::Handlers
     # Handles "recipes" in a cookbook.
     class RecipeHandler < Base
       handles method_call(:recipe)
+      handles :comment, :void_stmt
 
       def process
-        return unless statement.file.to_s =~ /metadata.rb/
+        path_array = statement.file.to_s.split('/')
 
-        recipe_obj = ChefObject.register(cookbook, name, :recipe)
-        recipe_obj.docstring = docstring
+        # Recipe declaration in metadata.rb
+        if path_array.include?('metadata.rb') && (statement.jump(:ident).source == 'recipe')
+          description = ''
+          recipe_obj = ChefObject.register(cookbook, name, :recipe)
+          # YARD builds an abstract syntax tree (AST) which we need to traverse
+          # to obtain the complete docstring
+          statement.parameters[1].traverse do |child|
+            description << child.jump(:string_content).source if child.type == :string_content
+          end
+          recipe_obj.short_desc = YARD::DocstringParser.new.parse(description).to_docstring
+          recipe_obj.docstring = statement.docstring
+        end
+
+        # Recipe description in the head of recipe, leading comment block
+        if path_array.include? 'recipes'
+          recipe_obj = ChefObject.register(cookbook, ::File.basename(statement.file.to_s, '.rb'), :recipe)
+          if statement.docstring =~ /[\s\t]*\*?Description[:]?\*?/i
+            recipe_obj.docstring = statement.docstring
+          end
+        end
+        recipe_obj
       end
 
       # Gets the recipe name from the metadata.rb.
@@ -50,15 +70,7 @@ module YARD::Handlers
       #
       # @return [YARD::Docsting] the docstring
       #
-      def docstring
-        description = ''
-        # YARD builds an abstract syntax tree (AST) which we need to traverse
-        # to obtain the complete docstring
-        statement.parameters[1].traverse do |child|
-          description << child.jump(:string_content).source if child.type == :string_content
-        end
-        YARD::DocstringParser.new.parse(description).to_docstring
-      end
+      def parse_docs; end
     end
   end
 end

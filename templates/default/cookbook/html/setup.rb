@@ -27,14 +27,18 @@ def init
              :docstring,
              :generated_docs,
              [
+               :dependencies,
+               T('attribute'),
                :recipes,
                T('resource'),
                T('provider'),
-               T('attribute'),
                :definitions,
                :libraries,
                :element_details,
-               [T('recipe'), T('action'), T('definition')]
+               [
+                 T('recipe'),
+                 T('definition')
+               ]
              ]
            ]
 end

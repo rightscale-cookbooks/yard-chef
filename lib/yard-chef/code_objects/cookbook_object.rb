@@ -96,13 +96,21 @@ module YARD::CodeObjects
         children_by_type(:method)
       end
 
+      # Dependencies of the cookbook.
+      #
+      # @return [Array<MethodObject>] dependencies of the cookbook
+      #
+      def dependencies
+        children_by_type(:dependency)
+      end
+
       # Libraries defined in the cookbook.
       #
       # @return [Array<ModuleObject>] libraries in the cookbook
       #
       def libraries
         modules = YARD::Registry.all(:module)
-        modules.select { |lib| !lib.parent.root? && lib.file =~ /#{@name}/ }
+        modules.select { |lib| lib.file.split('/').include?(@name.to_s) }
       end
     end
   end

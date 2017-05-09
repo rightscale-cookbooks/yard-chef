@@ -22,5 +22,5 @@
 def init
   @cookbooks = Registry.all(:cookbook).sort_by { |cookbook| cookbook.name.to_s }
 
-  sections.push :docstring, :cookbook_table
+  sections.push :cookbook_table
 end
